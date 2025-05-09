@@ -7,8 +7,14 @@ async function testChunking() {
     console.log(sampleText);
     console.log("\n--- Semantic Chunks ---");
 
+    // Define options to influence chunking behavior
+    const chunkingOptions = {
+        maxTokenSize: 600, // Increase max token size
+        similarityThreshold: 0.4 // Lower similarity threshold to allow merging less similar sentences
+    };
+
     try {
-        const chunks = await semantic_chunking(sampleText);
+        const chunks = await semantic_chunking(sampleText, chunkingOptions);
 
         if (chunks.length === 0) {
             console.log("No chunks were generated.");
