@@ -1,0 +1,14 @@
+{
+	"devDependencies": {
+		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"@boundaryml/baml": "^0.87.2",
+		"@langchain/community": "^0.3.38",
+		"@langchain/core": "^0.3.42",
+		"@langchain/langgraph": "^0.2.62",
+		"@langchain/openai": "^0.4.5",
+		"@zilliz/milvus2-sdk-node": "^2.5.8",
+		"dotenv": "^16.5.0"
+	}
+}
