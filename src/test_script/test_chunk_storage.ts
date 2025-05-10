@@ -1,6 +1,6 @@
 import Logger from '../lib/console/logger';
 import { surrealDBClient } from '../database/surrrealdbClient';
-import { text_embedding_ada_002_Embedding } from '../lib/embedding';
+import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
 import ChunkStorage, { ChunkDocument, EmbeddingFunc } from '../database/chunkStorage';
 
 const logger = new Logger('TestChunkStorage');
@@ -12,7 +12,7 @@ async function testChunkStorage() {
         const db = surrealDBClient.getDb();
 
         const testTableName = 'chunks_test';
-        const chunkStorage = new ChunkStorage(db, testTableName, text_embedding_ada_002_Embedding, 0.1); // Use actual embedding function
+        const chunkStorage = new ChunkStorage(db, testTableName, gte_Qwen2_7B_instruct_Embedding, 0.1); // Use actual embedding function
 
         // Define test data
         const testChunksContent = {
@@ -36,7 +36,7 @@ async function testChunkStorage() {
         // Generate embeddings for test chunks
         const testChunks: Record<string, Omit<ChunkDocument, 'id'>> = {};
         for (const [id, data] of Object.entries(testChunksContent)) {
-            const embedding = await text_embedding_ada_002_Embedding(data.content);
+            const embedding = await gte_Qwen2_7B_instruct_Embedding(data.content);
             if (embedding === null) {
                 logger.error(`Failed to generate embedding for chunk ${id}. Skipping upsert.`);
                 // Depending on requirements, you might want to throw an error or handle this differently

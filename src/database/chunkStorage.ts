@@ -11,6 +11,7 @@ export interface ChunkDocument {
 }
 
 // Define types based on the Python abstract class
+
 export type EmbeddingFunc = (text: string) => Promise<number[] | null>;
 
 interface BaseChunkStorage {
@@ -31,6 +32,9 @@ interface BaseChunkStorage {
     delete_by_ids(ids: string[]): Promise<void>; // Renamed to avoid conflict with delete(id)
 }
 
+/**
+ * test script: src/test_script/test_chunk_storage.ts
+ */
 export default class ChunkStorage implements BaseChunkStorage {
     private db: Surreal;
     embedding_func: EmbeddingFunc;
