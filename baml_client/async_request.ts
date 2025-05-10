@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {Entity, Resume} from "./types"
+import type {Entity, HyDE_rewrite_query, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -51,15 +51,35 @@ export class AsyncHttpRequest {
     }
   }
   
-  async ExtractResume(
-      resume: string,
+  async GenerateAnswer(
+      query: string,documents: RetrievedDocument[],language: string,
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
-        "ExtractResume",
+        "GenerateAnswer",
         {
-          "resume": resume
+          "query": query,"documents": documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async HyDE_rewrite(
+      query: string,language: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "HyDE_rewrite",
+        {
+          "query": query,"language": language
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -97,15 +117,35 @@ export class AsyncHttpStreamRequest {
     }
   }
   
-  async ExtractResume(
-      resume: string,
+  async GenerateAnswer(
+      query: string,documents: RetrievedDocument[],language: string,
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
-        "ExtractResume",
+        "GenerateAnswer",
         {
-          "resume": resume
+          "query": query,"documents": documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async HyDE_rewrite(
+      query: string,language: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "HyDE_rewrite",
+        {
+          "query": query,"language": language
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

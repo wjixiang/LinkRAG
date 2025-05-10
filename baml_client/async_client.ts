@@ -20,7 +20,7 @@ import { toBamlError, BamlStream, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, Resume} from "./types"
+import type {Entity, HyDE_rewrite_query, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { AsyncHttpRequest, AsyncHttpStreamRequest } from "./async_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -106,24 +106,47 @@ export class BamlAsyncClient {
     }
   }
   
-  async ExtractResume(
-      resume: string,
+  async GenerateAnswer(
+      query: string,documents: RetrievedDocument[],language: string,
       __baml_options__?: BamlCallOptions
-  ): Promise<Resume> {
+  ): Promise<string> {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = await this.runtime.callFunction(
-        "ExtractResume",
+        "GenerateAnswer",
         {
-          "resume": resume
+          "query": query,"documents": documents,"language": language
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
         options.clientRegistry,
         collector,
       )
-      return raw.parsed(false) as Resume
+      return raw.parsed(false) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async HyDE_rewrite(
+      query: string,language: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HyDE_rewrite_query> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "HyDE_rewrite",
+        {
+          "query": query,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as HyDE_rewrite_query
     } catch (error) {
       throw toBamlError(error);
     }
@@ -172,17 +195,17 @@ class BamlStreamClient {
     }
   }
   
-  ExtractResume(
-      resume: string,
+  GenerateAnswer(
+      query: string,documents: RetrievedDocument[],language: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
-  ): BamlStream<partial_types.Resume, Resume> {
+  ): BamlStream<string, string> {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = this.runtime.streamFunction(
-        "ExtractResume",
+        "GenerateAnswer",
         {
-          "resume": resume
+          "query": query,"documents": documents,"language": language
         },
         undefined,
         this.ctxManager.cloneContext(),
@@ -190,10 +213,39 @@ class BamlStreamClient {
         options.clientRegistry,
         collector,
       )
-      return new BamlStream<partial_types.Resume, Resume>(
+      return new BamlStream<string, string>(
         raw,
-        (a): partial_types.Resume => a,
-        (a): Resume => a,
+        (a): string => a,
+        (a): string => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  HyDE_rewrite(
+      query: string,language: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<partial_types.HyDE_rewrite_query, HyDE_rewrite_query> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "HyDE_rewrite",
+        {
+          "query": query,"language": language
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<partial_types.HyDE_rewrite_query, HyDE_rewrite_query>(
+        raw,
+        (a): partial_types.HyDE_rewrite_query => a,
+        (a): HyDE_rewrite_query => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {

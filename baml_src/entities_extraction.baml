@@ -5,7 +5,7 @@ class Entity {
 }
 
 function ExtractMainEntity(chunk_text:string) -> Entity {
-    client "FreeGLM4Flash"
+    client "GLM4Flash"
     prompt #"
     {{_.role('user')}}
 

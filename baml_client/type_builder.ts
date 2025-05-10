@@ -24,14 +24,16 @@ export default class TypeBuilder {
     
     Entity: ClassViewer<'Entity', "name" | "description" | "type">;
     
-    Resume: ClassViewer<'Resume', "name" | "email" | "experience" | "skills">;
+    HyDE_rewrite_query: ClassViewer<'HyDE_rewrite_query', "HyDE_answer">;
+    
+    RetrievedDocument: ClassViewer<'RetrievedDocument', "content" | "metadata">;
     
     
 
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "Entity","Resume",
+            "Entity","HyDE_rewrite_query","RetrievedDocument",
           ]),
           enums: new Set([
             
@@ -43,8 +45,12 @@ export default class TypeBuilder {
           "name","description","type",
         ]);
         
-        this.Resume = this.tb.classViewer("Resume", [
-          "name","email","experience","skills",
+        this.HyDE_rewrite_query = this.tb.classViewer("HyDE_rewrite_query", [
+          "HyDE_answer",
+        ]);
+        
+        this.RetrievedDocument = this.tb.classViewer("RetrievedDocument", [
+          "content","metadata",
         ]);
         
         

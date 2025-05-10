@@ -1,11 +1,11 @@
-import ChunkStorage from "../database/chunkStorage";
+import ChunkStorage, { ChunkDocument } from "../database/chunkStorage";
 import ReferenceDocumentStorage from "../database/referenceDocumentStorage";
 import Logger from "../lib/console/logger";
 
 export interface KnowledgeGraphRetrieverConfig {
     chunkTableName: string;
     chunkStorage: ChunkStorage;
-    // Add other configuration options as needed, e.g., chunking options
+    
 }
 
 export default class KnowledgeGraphRetriever {
@@ -19,5 +19,12 @@ export default class KnowledgeGraphRetriever {
         this.chunkStorage = config.chunkStorage
     }
 
-    
+    async chunks_retriver(query: string, top_k: number): Promise<ChunkDocument[]> {
+        // Use the query method from ChunkStorage which handles embedding and vector search
+        const retrievedChunks = await this.chunkStorage.query(query, top_k);
+
+        return retrievedChunks;
+    }
+
+
 }

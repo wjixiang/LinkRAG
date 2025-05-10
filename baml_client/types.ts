@@ -53,10 +53,13 @@ export interface Entity {
   
 }
 
-export interface Resume {
-  name: string
-  email: string
-  experience: string[]
-  skills: string[]
+export interface HyDE_rewrite_query {
+  HyDE_answer: string
+  
+}
+
+export interface RetrievedDocument {
+  content: string
+  metadata: string
   
 }

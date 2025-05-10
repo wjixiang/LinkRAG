@@ -19,7 +19,7 @@ import type { BamlRuntime, FunctionResult, BamlCtxManager, Image, Audio, ClientR
 import { toBamlError, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type * as types from "./types"
-import type {Entity, Resume} from "./types"
+import type {Entity, HyDE_rewrite_query, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { HttpRequest, HttpStreamRequest } from "./sync_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -108,24 +108,47 @@ export class BamlSyncClient {
     }
   }
   
-  ExtractResume(
-      resume: string,
+  GenerateAnswer(
+      query: string,documents: RetrievedDocument[],language: string,
       __baml_options__?: BamlCallOptions
-  ): Resume {
+  ): string {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = this.runtime.callFunctionSync(
-        "ExtractResume",
+        "GenerateAnswer",
         {
-          "resume": resume
+          "query": query,"documents": documents,"language": language
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
         options.clientRegistry,
         collector,
       )
-      return raw.parsed(false) as Resume
+      return raw.parsed(false) as string
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  HyDE_rewrite(
+      query: string,language: string,
+      __baml_options__?: BamlCallOptions
+  ): HyDE_rewrite_query {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "HyDE_rewrite",
+        {
+          "query": query,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as HyDE_rewrite_query
     } catch (error: any) {
       throw toBamlError(error);
     }

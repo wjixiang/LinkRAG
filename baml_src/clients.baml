@@ -1,12 +1,9 @@
-client<llm> FreeGLM4Flash {
+client<llm> Hunyuanlite {
   provider openai-generic
   options {
     model "hunyuan-lite"
     api_key env.CHATMODAL_API_KEY
     base_url "https://api.zhizengzeng.com/v1"
-    headers {
-      
-    }
   }
 }
 
@@ -16,6 +13,15 @@ client<llm> GLM4Flash {
     model "glm-4-flash"
     api_key env.GLM_API_KEY
     base_url "https://open.bigmodel.cn/api/paas/v4"
+  }
+}
+
+client<llm> QiniuDeepseekV3 {
+  provider openai-generic
+  options {
+    model "deepseek-v3"
+    api_key env.QINIU_DEEPSEEK_FREE_API_KEY
+    base_url "https://api.qnaigc.com/v1"
   }
 }
 

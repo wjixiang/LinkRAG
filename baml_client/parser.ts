@@ -20,7 +20,7 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, Resume} from "./types"
+import type {Entity, HyDE_rewrite_query, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
@@ -45,19 +45,37 @@ export class LlmResponseParser {
     }
   }
   
-  ExtractResume(
+  GenerateAnswer(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
-  ): Resume {
+  ): string {
     try {
       return this.runtime.parseLlmResponse(
-        "ExtractResume",
+        "GenerateAnswer",
         llmResponse,
         false,
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
-      ) as Resume
+      ) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  HyDE_rewrite(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): HyDE_rewrite_query {
+    try {
+      return this.runtime.parseLlmResponse(
+        "HyDE_rewrite",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as HyDE_rewrite_query
     } catch (error) {
       throw toBamlError(error);
     }
@@ -87,19 +105,37 @@ export class LlmStreamParser {
     }
   }
   
-  ExtractResume(
+  GenerateAnswer(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
-  ): partial_types.Resume {
+  ): string {
     try {
       return this.runtime.parseLlmResponse(
-        "ExtractResume",
+        "GenerateAnswer",
         llmResponse,
         true,
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
-      ) as partial_types.Resume
+      ) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  HyDE_rewrite(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.HyDE_rewrite_query {
+    try {
+      return this.runtime.parseLlmResponse(
+        "HyDE_rewrite",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.HyDE_rewrite_query
     } catch (error) {
       throw toBamlError(error);
     }
