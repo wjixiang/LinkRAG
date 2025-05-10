@@ -44,9 +44,11 @@ export async function gte_Qwen2_7B_instruct_Embedding(text: string): Promise<num
   }
 
   try {
-    const response = await axios.post(`https://dashscope.aliyuncs.com/api/v1/services/embeddings/text-embedding/text-embedding`, {
+    const response = await axios.post(`https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings`, {
       model: 'text-embedding-v3',
       input: text,
+      dimension: "1024",
+      encoding_format: "float"
     }, {
       headers: {
         'Content-Type': 'application/json',
@@ -54,7 +56,7 @@ export async function gte_Qwen2_7B_instruct_Embedding(text: string): Promise<num
       },
     });
 
-    return response.data.output.embeddings[0].embedding;
+    return response.data.data[0].embedding;
   } catch (error) {
     console.error('Error fetching embedding:', error);
     return null;

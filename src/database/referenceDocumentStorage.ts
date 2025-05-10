@@ -1,8 +1,9 @@
 import { surrealDBClient } from './surrrealdbClient';
 import { Surreal } from 'surrealdb';
+import { RecordId } from 'surrealdb';
 
 export interface ReferenceDocument {
-    id: string;
+    id?: RecordId;
     type: 'pdf' | 'txt' | 'markdown';
     content: string; // Store raw content
     plainText: string; // Store extracted plain text
@@ -51,17 +52,19 @@ export default class ReferenceDocumentStorage {
         return createdDocument[0] as unknown as ReferenceDocument;
     }
 
-    async getReferenceDocument(id: string): Promise<ReferenceDocument | undefined> {
-        const document = await this.db.select(`${this.tableName}:${id}`);
-        return document.length > 0 ? document[0] as unknown as ReferenceDocument : undefined;
+    async getReferenceDocument(id: RecordId): Promise<ReferenceDocument | undefined> {
+        console.debug(`[ReferenceDocumentStorage] Attempting to get document with ID: ${this.tableName}:${id.id}`);
+        const document = await this.db.select<ReferenceDocument>(id);
+        console.debug(`[ReferenceDocumentStorage] Result of select for ID ${id.id}:`, document);
+        return document
     }
 
-    async getPlainText(id: string): Promise<string | undefined> {
+    async getPlainText(id: RecordId): Promise<string | undefined> {
         const document = await this.getReferenceDocument(id);
         return document?.plainText;
     }
 
-    async removeReferenceDocument(id: string): Promise<void> {
+    async removeReferenceDocument(id: RecordId): Promise<void> {
         await this.db.delete(`${this.tableName}:${id}`);
     }
 

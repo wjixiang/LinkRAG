@@ -5,3 +5,8 @@ export interface embeddingInstance {
     EmbeddingModal: string
 }
   
+
+export type RecordId = {
+    tb: string;
+    id: string;
+}
