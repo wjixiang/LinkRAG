@@ -23,10 +23,13 @@ interface BaseChunkStorage {
     read(id?: string): Promise<ChunkDocument[]>;
     update(id: string, data: Partial<ChunkDocument>): Promise<ChunkDocument[]>;
     delete(id: string): Promise<ChunkDocument[]>;
-    query(query: string, top_k: number, ids?: string[] | null): Promise<ChunkDocument[]>;
+    query(query: string, top_k: number, ids?: string[] | null): Promise<{
+        document: Omit<ChunkDocument, 'embedding'>,
+        score: number;
+    }[]>;
     upsert(data: Record<string, Omit<ChunkDocument, 'id'>>): Promise<void>;
-    get_by_id(id: string): Promise<ChunkDocument | null>;
-    get_by_ids(ids: string[]): Promise<ChunkDocument[]>;
+    get_by_id(id: string): Promise<Omit<ChunkDocument, 'embedding'> | null>;
+    get_by_ids(ids: string[]): Promise<Omit<ChunkDocument, 'embedding'>[]>;
     delete_by_ids(ids: string[]): Promise<void>; // Renamed to avoid conflict with delete(id)
 }
 
@@ -111,7 +114,10 @@ export default class ChunkStorage implements BaseChunkStorage {
     /**
      * Query the chunk storage and retrieve top_k results based on vector similarity.
      */
-    async query(query: string, top_k: number, ids: string[] | null = null): Promise<ChunkDocument[]> {
+    async query(query: string, top_k: number, ids: string[] | null = null): Promise<{
+        document: Omit<ChunkDocument, 'embedding'>,
+        score: number;
+    }[]> {
         const queryEmbedding = await this.embedding_func(query);
 
         if (queryEmbedding === null) {
@@ -120,7 +126,7 @@ export default class ChunkStorage implements BaseChunkStorage {
         }
 
         let surrealQL = `
-            SELECT *, vector::similarity::cosine(embedding, ${JSON.stringify(queryEmbedding)}) AS score
+            SELECT id, referenceIds, content, vector::similarity::cosine(embedding, ${JSON.stringify(queryEmbedding)}) AS score
             FROM ${this.tableName}
         `;
 
@@ -143,7 +149,17 @@ export default class ChunkStorage implements BaseChunkStorage {
             this.logger.info("query raw result:", JSON.stringify(result, null, 2));
             if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
                  // Filter results based on cosine_better_than_threshold if score is available
-                return (result[0] as (ChunkDocument & { score: number })[]).filter((item: any) => item.score >= this.cosine_better_than_threshold);
+                return (result[0] as (ChunkDocument & { score: number })[])
+                    .filter((item: any) => item.score >= this.cosine_better_than_threshold)
+                    .map(item => ({
+                        document: {
+                            id: item.id,
+                            referenceIds: item.referenceIds,
+                            content: item.content,
+                            ...Object.fromEntries(Object.entries(item).filter(([key]) => !['id', 'referenceIds', 'content', 'embedding', 'score'].includes(key))) // Include other properties
+                        },
+                        score: item.score
+                    }));
             }
             return [];
         } catch (error) {
@@ -178,12 +194,15 @@ export default class ChunkStorage implements BaseChunkStorage {
     /**
      * Get chunk data by its ID.
      */
-    async get_by_id(id: string): Promise<ChunkDocument | null> {
+    async get_by_id(id: string): Promise<Omit<ChunkDocument, 'embedding'> | null> {
         try {
             const result = await this.db.select(`${this.tableName}:${id}`);
             this.logger.info(`Result from select for id ${id}:`, JSON.stringify(result, null, 2));
             if (result) { // select for a specific id should return a single object or null
-                return result as unknown as ChunkDocument;
+                const chunk = result as unknown as ChunkDocument;
+                // Omit the embedding field
+                const { embedding, ...chunkWithoutEmbedding } = chunk;
+                return chunkWithoutEmbedding;
             }
             return null;
         } catch (error) {
@@ -195,16 +214,20 @@ export default class ChunkStorage implements BaseChunkStorage {
     /**
      * Get multiple chunk data by their IDs.
      */
-    async get_by_ids(ids: string[]): Promise<ChunkDocument[]> {
+    async get_by_ids(ids: string[]): Promise<Omit<ChunkDocument, 'embedding'>[]> {
         if (ids.length === 0) {
             return [];
         }
         const surrealQL = `SELECT * FROM ${this.tableName} WHERE id IN [${ids.map(id => `'${this.tableName}:${id}'`).join(', ')}];`;
         try {
             const result = await this.db.query(surrealQL);
-            this.logger.info("get_by_ids raw result:", JSON.stringify(result, null, 2));
+            // this.logger.info("get_by_ids raw result:", JSON.stringify(result, null, 2));
             if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
-                return result[0] as ChunkDocument[];
+                // Omit the embedding field from each chunk
+                return (result[0] as ChunkDocument[]).map(chunk => {
+                    const { embedding, ...chunkWithoutEmbedding } = chunk;
+                    return chunkWithoutEmbedding;
+                });
             }
             return [];
         } catch (error) {
@@ -224,7 +247,7 @@ export default class ChunkStorage implements BaseChunkStorage {
         try {
             const surrealQL = `DELETE ${this.tableName} WHERE id IN [${recordIdsToDelete.map(id => `'${id}'`).join(', ')}];`;
             const result = await this.db.query(surrealQL);
-            this.logger.info("delete_by_ids raw result:", JSON.stringify(result, null, 2));
+            // this.logger.info("delete_by_ids raw result:", JSON.stringify(result, null, 2));
         } catch (error) {
             this.logger.error("Error deleting chunks:", error);
             throw error;
