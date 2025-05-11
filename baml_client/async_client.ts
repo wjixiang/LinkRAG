@@ -84,23 +84,23 @@ export class BamlAsyncClient {
 
   
   async ExtractMainEntity(
-      chunk_text: string,
+      chunk_text: string,entity_type: string[],
       __baml_options__?: BamlCallOptions
-  ): Promise<Entity> {
+  ): Promise<Entity[]> {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = await this.runtime.callFunction(
         "ExtractMainEntity",
         {
-          "chunk_text": chunk_text
+          "chunk_text": chunk_text,"entity_type": entity_type
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
         options.clientRegistry,
         collector,
       )
-      return raw.parsed(false) as Entity
+      return raw.parsed(false) as Entity[]
     } catch (error) {
       throw toBamlError(error);
     }
@@ -167,16 +167,16 @@ class BamlStreamClient {
 
   
   ExtractMainEntity(
-      chunk_text: string,
+      chunk_text: string,entity_type: string[],
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
-  ): BamlStream<partial_types.Entity, Entity> {
+  ): BamlStream<(partial_types.Entity | null)[], Entity[]> {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = this.runtime.streamFunction(
         "ExtractMainEntity",
         {
-          "chunk_text": chunk_text
+          "chunk_text": chunk_text,"entity_type": entity_type
         },
         undefined,
         this.ctxManager.cloneContext(),
@@ -184,10 +184,10 @@ class BamlStreamClient {
         options.clientRegistry,
         collector,
       )
-      return new BamlStream<partial_types.Entity, Entity>(
+      return new BamlStream<(partial_types.Entity | null)[], Entity[]>(
         raw,
-        (a): partial_types.Entity => a,
-        (a): Entity => a,
+        (a): (partial_types.Entity | null)[] => a,
+        (a): Entity[] => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {

@@ -1,14 +1,15 @@
-import { Surreal } from 'surrealdb';
+import { d, Surreal } from 'surrealdb';
+import { RecordId } from 'surrealdb';
 
 type Any = any; // Using 'any' for simplicity, can be refined later
 
 interface BaseGraphStorage {
     createNode(data: Record<string, Any>): Promise<Record<string, Any>[]>;
-    createEdge(fromNodeId: string, edgeTable: string, toNodeId: string, data?: Record<string, Any>): Promise<Record<string, Any>[]>;
-    getConnectedNodes(fromNodeId: string, edgeTable: string): Promise<Record<string, Any>[]>;
-    getEdges(fromNodeId: string, edgeTable: string): Promise<Record<string, Any>[]>;
-    deleteNode(nodeId: string): Promise<Record<string, Any>[]>;
-    deleteEdge(edgeId: string): Promise<Record<string, Any>[]>;
+    createEdge(fromNodeId: RecordId, edgeTable: string, toNodeId: RecordId, data?: Record<string, Any>): Promise<Record<string, Any>[]>;
+    getConnectedNodes(fromNodeId: RecordId, edgeTable: string): Promise<Record<string, Any>[]>;
+    getEdges(fromNodeId: RecordId, edgeTable: string): Promise<Record<string, Any>[]>;
+    deleteNode(nodeId: RecordId): Promise<{ [x: string]: unknown; id: RecordId<string>; }>;
+    deleteEdge(edgeId: RecordId): Promise<{ [x: string]: unknown; id: RecordId<string>; }>;
 }
 
 export default class GraphStorage implements BaseGraphStorage {
@@ -23,7 +24,7 @@ export default class GraphStorage implements BaseGraphStorage {
     /**
      * Create a new node.
      */
-    async createNode(data: Record<string, Any>): Promise<Record<string, Any>[]> {
+    async createNode(data: Record<string, Any>): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
             const result = await this.db.create(this.nodeTableName, data);
             return result;
@@ -36,9 +37,13 @@ export default class GraphStorage implements BaseGraphStorage {
     /**
      * Create an edge between two nodes.
      */
-    async createEdge(fromNodeId: string, edgeTable: string, toNodeId: string, data: Record<string, Any> = {}): Promise<Record<string, Any>[]> {
+    async createEdge(fromNodeId: RecordId, edgeTable: string, toNodeId: RecordId, data: Record<string, Any> = {}): Promise<Record<string, Any>[]> {
         try {
-            const result = await this.db.create(`${fromNodeId}->${edgeTable}->${toNodeId}`, data);
+            const result = await this.db.insertRelation(edgeTable,{
+                in: fromNodeId,
+                out: toNodeId,
+                data: data
+            })
             return result;
         } catch (error: any) {
             console.error(`Error creating edge from ${fromNodeId} to ${toNodeId} in table ${edgeTable}:`, error);
@@ -49,22 +54,15 @@ export default class GraphStorage implements BaseGraphStorage {
     /**
      * Get nodes connected from a specific node via a specific edge type.
      */
-    async getConnectedNodes(fromNodeId: string, edgeTable: string): Promise<Record<string, Any>[]> {
+    async getConnectedNodes(fromNodeId: RecordId, edgeTable: string): Promise<Record<string, Any>[]> {
         try {
+            // Perform a graph traversal to get the connected 'out' nodes
             const result = await this.db.query(`SELECT out FROM ${fromNodeId}->${edgeTable}`);
-             if (result && result.length > 0) {
-                // The result structure for graph traversals might be an array of results for each statement.
-                // Assuming the first result is the one we want and it contains an array of connected nodes in 'out'.
-                const connectedEdges = (result[0] as { result: Array<{ out: string }> }).result;
-                // Extract the 'out' IDs and fetch the actual nodes
-                const connectedNodeIds = connectedEdges.map(edge => edge.out);
-                 if (connectedNodeIds.length > 0) {
-                     // Fetch the actual node records using a SELECT query with WHERE IN
-                     const nodesResult = await this.db.query(`SELECT * FROM ${this.nodeTableName} WHERE id IN [${connectedNodeIds.map(id => `'${id}'`).join(', ')}];`);
-                      if (nodesResult && nodesResult.length > 0) {
-                         return (nodesResult[0] as { result: Array<Record<string, Any>> }).result;
-                     }
-                 }
+            // The result of a graph traversal is typically an array of records
+            // We expect the connected nodes to be directly in the result array
+            if (result && result.length > 0) {
+                // Assuming the result is an array of connected node records
+                return result as Array<Record<string, Any>>;
             }
             return [];
         } catch (error: any) {
@@ -76,12 +74,14 @@ export default class GraphStorage implements BaseGraphStorage {
      /**
      * Get edges originating from a specific node via a specific edge type.
      */
-    async getEdges(fromNodeId: string, edgeTable: string): Promise<Record<string, Any>[]> {
+    async getEdges(fromNodeId: RecordId, edgeTable: string): Promise<Record<string, Any>[]> {
         try {
+            // Select all edges originating from the node via the specified edge table
             const result = await this.db.query(`SELECT * FROM ${fromNodeId}->${edgeTable}`);
+            // The result of a SELECT query is typically an array of records
+            // We expect the edge records to be directly in the result array
              if (result && result.length > 0) {
-                // Assuming the first result is the one we want and it contains an array of edge records.
-                return (result[0] as { result: Array<Record<string, Any>> }).result;
+                return result as Array<Record<string, Any>>;
             }
             return [];
         } catch (error: any) {
@@ -95,7 +95,7 @@ export default class GraphStorage implements BaseGraphStorage {
      * Delete a node by its ID.
      * Deleting a node in SurrealDB also deletes its incoming and outgoing edges.
      */
-    async deleteNode(nodeId: string): Promise<Record<string, Any>[]> {
+    async deleteNode(nodeId: RecordId): Promise<{ [x: string]: unknown; id: RecordId<string>; }> {
         try {
             const result = await this.db.delete(nodeId);
             return result;
@@ -108,7 +108,7 @@ export default class GraphStorage implements BaseGraphStorage {
     /**
      * Delete an edge by its ID.
      */
-    async deleteEdge(edgeId: string): Promise<Record<string, Any>[]> {
+    async deleteEdge(edgeId: RecordId): Promise<{ [x: string]: unknown; id: RecordId<string>; }> {
         try {
             const result = await this.db.delete(edgeId);
             return result;

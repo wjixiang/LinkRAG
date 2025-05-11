@@ -32,14 +32,14 @@ export class AsyncHttpRequest {
 
   
   async ExtractMainEntity(
-      chunk_text: string,
+      chunk_text: string,entity_type: string[],
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
         "ExtractMainEntity",
         {
-          "chunk_text": chunk_text
+          "chunk_text": chunk_text,"entity_type": entity_type
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -98,14 +98,14 @@ export class AsyncHttpStreamRequest {
 
   
   async ExtractMainEntity(
-      chunk_text: string,
+      chunk_text: string,entity_type: string[],
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
         "ExtractMainEntity",
         {
-          "chunk_text": chunk_text
+          "chunk_text": chunk_text,"entity_type": entity_type
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

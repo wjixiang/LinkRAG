@@ -11,6 +11,7 @@ import { language } from '../../type';
  * This function retrieves relevant documents based on a query and then uses
  * a Language Model (LLM) to generate an answer based on the retrieved documents.
  * Optionally uses HyDE (Hypothetical Document Embedding) for retrieval.
+ * test script: `src/test_script/test_rag_workflow.ts`
  *
  * @param KnowledgeGraphRetriever - An instance of KnowledgeGraphRetriever for document retrieval.
  * @param query - The user's query.

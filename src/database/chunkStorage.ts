@@ -25,8 +25,6 @@ interface BaseChunkStorage {
     delete(id: string): Promise<ChunkDocument[]>;
     query(query: string, top_k: number, ids?: string[] | null): Promise<ChunkDocument[]>;
     upsert(data: Record<string, Omit<ChunkDocument, 'id'>>): Promise<void>;
-    delete_entity(entity_name: string): Promise<void>; // Assuming entity_name maps to chunk ID
-    delete_entity_relation(entity_name: string): Promise<void>; // Placeholder, depends on relation model
     get_by_id(id: string): Promise<ChunkDocument | null>;
     get_by_ids(ids: string[]): Promise<ChunkDocument[]>;
     delete_by_ids(ids: string[]): Promise<void>; // Renamed to avoid conflict with delete(id)
@@ -176,30 +174,6 @@ export default class ChunkStorage implements BaseChunkStorage {
         }
     }
 
-    /**
-     * Delete a single entity by its name.
-     * Assuming entity_name maps to the chunk record ID.
-     */
-    async delete_entity(entity_name: string): Promise<void> {
-        try {
-            await this.db.delete(`${this.tableName}:${entity_name}`);
-        } catch (error) {
-            this.logger.error("Error deleting entity:", error);
-            throw error;
-        }
-    }
-
-    /**
-     * Delete relations for a given entity.
-     * This method's implementation depends on how relations are modeled in SurrealDB for chunks.
-     * Assuming relations are stored in a separate table or linked via fields.
-     * This is a placeholder implementation assuming relations are linked by entity_name in the chunk table itself.
-     * A more robust implementation would require knowing the relation structure.
-     */
-    async delete_entity_relation(entity_name: string): Promise<void> {
-         this.logger.warning(`delete_entity_relation not fully implemented for SurrealDB. Entity: ${entity_name}`);
-         // Placeholder implementation - depends on your relation model
-    }
 
     /**
      * Get chunk data by its ID.

@@ -86,23 +86,23 @@ export class BamlSyncClient {
 
   
   ExtractMainEntity(
-      chunk_text: string,
+      chunk_text: string,entity_type: string[],
       __baml_options__?: BamlCallOptions
-  ): Entity {
+  ): Entity[] {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = this.runtime.callFunctionSync(
         "ExtractMainEntity",
         {
-          "chunk_text": chunk_text
+          "chunk_text": chunk_text,"entity_type": entity_type
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
         options.clientRegistry,
         collector,
       )
-      return raw.parsed(false) as Entity
+      return raw.parsed(false) as Entity[]
     } catch (error: any) {
       throw toBamlError(error);
     }

@@ -30,7 +30,7 @@ export class LlmResponseParser {
   ExtractMainEntity(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
-  ): Entity {
+  ): Entity[] {
     try {
       return this.runtime.parseLlmResponse(
         "ExtractMainEntity",
@@ -39,7 +39,7 @@ export class LlmResponseParser {
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
-      ) as Entity
+      ) as Entity[]
     } catch (error) {
       throw toBamlError(error);
     }
@@ -90,7 +90,7 @@ export class LlmStreamParser {
   ExtractMainEntity(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
-  ): partial_types.Entity {
+  ): (partial_types.Entity | null)[] {
     try {
       return this.runtime.parseLlmResponse(
         "ExtractMainEntity",
@@ -99,7 +99,7 @@ export class LlmStreamParser {
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
-      ) as partial_types.Entity
+      ) as (partial_types.Entity | null)[]
     } catch (error) {
       throw toBamlError(error);
     }

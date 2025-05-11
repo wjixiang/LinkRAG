@@ -17,7 +17,7 @@ function GenerateAnswer(query: string, documents: RetrievedDocument[], language:
   If the documents contain information that is not relevant to the question, ignore that information.  
   Summarize the relevant information from the documents to answer the question. Make full use of the information in the documents.
   Provide a clear and concise answer to the question. Prefer to use table/list format if applicable.
-  Annotate the answer with the document number(s) that support your answer.
+  Annotate the answer with the document index at the format given below to support your answer.
   
 
   ---example---
@@ -38,16 +38,30 @@ function GenerateAnswer(query: string, documents: RetrievedDocument[], language:
     Paris is the capital of France [ref:1] [ref:3]
 
   ---REAL CONTENT---
-  # query
-  {{ query }}
+    # query
+    {{ query }}
 
-  # documents
-  {% for document in documents %}
-  Document {{ loop.index }}:
-  {{ document.content }}
-  {% endfor %}
+    # documents
+    {% for document in documents %}
+    Document {{ loop.index }}:
+    {{ document.content }}
+    {% endfor %}
 
-  # answer
-  {{ ctx.output_format }}
+    # answer
+    {{ ctx.output_format }}
   "#
+}
+
+
+
+test TestBaselineRAGGeneration {
+  functions [GenerateAnswer]
+  args {
+    query #"
+      hello world
+    "#
+    language #"
+      hello world
+    "#
+  }
 }
