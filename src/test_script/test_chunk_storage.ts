@@ -1,5 +1,5 @@
 import Logger from '../lib/console/logger';
-import { surrealDBClient } from '../database/surrrealdbClient';
+import { surrealDBClient } from '../database/surrealdbClient';
 import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
 import ChunkStorage, { ChunkDocument, EmbeddingFunc } from '../database/chunkStorage';
 

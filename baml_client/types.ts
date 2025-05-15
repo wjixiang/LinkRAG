@@ -53,8 +53,23 @@ export interface Entity {
   
 }
 
+export interface EntityExtractionExample {
+  entity_type: string[]
+  example_input: string
+  extracted_entities: Entity[]
+  
+}
+
 export interface HyDE_rewrite_query {
   HyDE_answer: string
+  
+}
+
+export interface Relation {
+  source_entity: string
+  target_entity: string
+  relation: string
+  relationship_description: string
   
 }
 

@@ -3,18 +3,18 @@ import { RecordId } from 'surrealdb';
 
 type Any = any; // Using 'any' for simplicity, can be refined later
 
-interface BaseGraphStorage {
+interface BaseEntityStorage {
     createNode(data: Record<string, Any>): Promise<Record<string, Any>[]>;
     createEdge(fromNodeId: RecordId, edgeTable: string, toNodeId: RecordId, data?: Record<string, Any>): Promise<Record<string, Any>[]>;
     getConnectedNodes(fromNodeId: RecordId, edgeTable: string): Promise<Record<string, Any>[]>;
     getEdges(fromNodeId: RecordId, edgeTable: string): Promise<Record<string, Any>[]>;
-    deleteNode(nodeId: RecordId): Promise<{ [x: string]: unknown; id: RecordId<string>; }>;
-    deleteEdge(edgeId: RecordId): Promise<{ [x: string]: unknown; id: RecordId<string>; }>;
+    deleteNode(nodeId: RecordId): Promise<Array<Record<string, Any> & { id: RecordId }>>;
+    deleteEdge(edgeId: RecordId): Promise<Array<Record<string, Any> & { id: RecordId }>>;
 }
 
-export default class GraphStorage implements BaseGraphStorage {
+export default class EntityStorage implements BaseEntityStorage {
     private db: Surreal;
-    private nodeTableName: string; // Table for nodes
+    private nodeTableName: string; // namespace for nodes
 
     constructor(db: Surreal, nodeTableName: string = 'nodes') {
         this.db = db;
@@ -95,10 +95,11 @@ export default class GraphStorage implements BaseGraphStorage {
      * Delete a node by its ID.
      * Deleting a node in SurrealDB also deletes its incoming and outgoing edges.
      */
-    async deleteNode(nodeId: RecordId): Promise<{ [x: string]: unknown; id: RecordId<string>; }> {
+    async deleteNode(nodeId: RecordId): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
             const result = await this.db.delete(nodeId);
-            return result;
+            // Use a double assertion to bypass potential incorrect type definitions
+            return result as unknown as Array<Record<string, Any> & { id: RecordId }>;
         } catch (error: any) {
             console.error(`Error deleting node with id ${nodeId}:`, error);
             throw error;
@@ -108,12 +109,49 @@ export default class GraphStorage implements BaseGraphStorage {
     /**
      * Delete an edge by its ID.
      */
-    async deleteEdge(edgeId: RecordId): Promise<{ [x: string]: unknown; id: RecordId<string>; }> {
+    async deleteEdge(edgeId: RecordId): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
             const result = await this.db.delete(edgeId);
-            return result;
+            // Use a double assertion to bypass potential incorrect type definitions
+            return result as unknown as Array<Record<string, Any> & { id: RecordId }>;
         } catch (error: any) {
             console.error(`Error deleting edge with id ${edgeId}:`, error);
+            throw error;
+        }
+    }
+ 
+     /**
+      * Update a node by its ID, merging new data.
+      */
+    async updateNode(nodeId: RecordId, data: Record<string, Any>): Promise<Array<Record<string, Any> & { id: RecordId }>> {
+        try {
+            // Use the MERGE statement to merge data into the existing record
+            const result = await this.db.merge(nodeId, data);
+            // Use a double assertion to bypass potential incorrect type definitions
+            return result as unknown as Array<Record<string, Any> & { id: RecordId }>;
+        } catch (error: any) {
+            console.error(`Error updating node with id ${nodeId} in table ${this.nodeTableName}:`, error);
+            throw error;
+        }
+    }
+
+     /**
+      * Find an entity by its name.
+      */
+    async findEntityByName(name: string): Promise<Array<Record<string, Any> & { id: RecordId }>> {
+        try {
+            const result = await this.db.query(`SELECT * FROM ${this.nodeTableName} WHERE name = "${name}"`);
+            // The result of db.query is an array of results, one for each statement.
+            // For a single SELECT statement, the actual data is in result[0].result
+            if (result && result.length > 0) {
+                const queryResult = result[0] as { status: string; result: Array<Record<string, Any> & { id: RecordId }> };
+                if (queryResult.status === 'OK' && Array.isArray(queryResult.result)) {
+                    return queryResult.result;
+                }
+            }
+            return [];
+        } catch (error: any) {
+            console.error(`Error finding entity with name "${name}" in table ${this.nodeTableName}:`, error);
             throw error;
         }
     }

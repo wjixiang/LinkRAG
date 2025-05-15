@@ -1,4 +1,4 @@
-import { surrealDBClient } from './surrrealdbClient';
+import { surrealDBClient } from './surrealdbClient';
 import { Surreal } from 'surrealdb';
 import { RecordId } from 'surrealdb';
 

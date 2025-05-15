@@ -1,0 +1,1 @@
+export const entity_type  = ["disease", "symptom","sign","anatomy_structure","organ","tissue","cell", "pathology_change","medicine","treatment","surgery", "population", "examination","diagnosis","etiology","risk_factor","prognosis","complication","prevention","pathogenesis"]

@@ -1,6 +1,6 @@
 import KnowledgeGraphWeaver, { KnowledgeGraphWeaverConfig } from '../core/KnowledgeGraphWeaver';
 import Logger from '../lib/console/logger';
-import { surrealDBClient } from '../database/surrrealdbClient';
+import { surrealDBClient } from '../database/surrealdbClient';
 
 const logger = new Logger('TestSaveKnowledgeGraph');
 

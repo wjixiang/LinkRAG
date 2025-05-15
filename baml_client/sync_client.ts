@@ -19,7 +19,7 @@ import type { BamlRuntime, FunctionResult, BamlCtxManager, Image, Audio, ClientR
 import { toBamlError, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type * as types from "./types"
-import type {Entity, HyDE_rewrite_query, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { HttpRequest, HttpStreamRequest } from "./sync_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -85,7 +85,7 @@ export class BamlSyncClient {
   }
 
   
-  ExtractMainEntity(
+  ExtractEntity(
       chunk_text: string,entity_type: string[],
       __baml_options__?: BamlCallOptions
   ): Entity[] {
@@ -93,7 +93,7 @@ export class BamlSyncClient {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = this.runtime.callFunctionSync(
-        "ExtractMainEntity",
+        "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
         },
@@ -103,6 +103,75 @@ export class BamlSyncClient {
         collector,
       )
       return raw.parsed(false) as Entity[]
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityLoop(
+      chunk_text: string,entity_type: string[],already_identified_entities: Entity[],already_identified_relations: Relation[],
+      __baml_options__?: BamlCallOptions
+  ): Entity[] {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "ExtractEntityLoop",
+        {
+          "chunk_text": chunk_text,"entity_type": entity_type,"already_identified_entities": already_identified_entities,"already_identified_relations": already_identified_relations
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as Entity[]
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations(
+      content: string,entities: Entity[],language: string,
+      __baml_options__?: BamlCallOptions
+  ): Relation[] {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "Extract_relations",
+        {
+          "content": content,"entities": entities,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as Relation[]
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations_Loop(
+      content: string,language: string,already_identified_relations: Relation[],new_indentified_entities: Entity[],
+      __baml_options__?: BamlCallOptions
+  ): Relation[] {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "Extract_relations_Loop",
+        {
+          "content": content,"language": language,"already_identified_relations": already_identified_relations,"new_indentified_entities": new_indentified_entities
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as Relation[]
     } catch (error: any) {
       throw toBamlError(error);
     }

@@ -1,7 +1,7 @@
 import baseline_rag_workflow from '../lib/llm_workflow/baseline_rag_workflow';
 import KnowledgeGraphRetriever from '../core/KnowledgeGraphRetriever';
 import ChunkStorage from '../database/chunkStorage';
-import { surrealDBClient } from '../database/surrrealdbClient'; // Use named import for the exported instance
+import { surrealDBClient } from '../database/surrealdbClient'; // Use named import for the exported instance
 import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
 
 

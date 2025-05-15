@@ -1,9 +1,9 @@
-import { Surreal } from 'surrealdb';
+import { RecordId, Surreal } from 'surrealdb';
 import Logger from '../lib/console/logger';
 
 // Define the structure for a chunk document, combining document and vector properties
 export interface ChunkDocument {
-    id?: string; // Optional ID for SurrealDB records
+    id?: RecordId; // Optional ID for SurrealDB records
     referenceIds: string[]; // Assuming this is an array of strings
     embedding: number[];
     content: string;
@@ -28,8 +28,8 @@ interface BaseChunkStorage {
         score: number;
     }[]>;
     upsert(data: Record<string, Omit<ChunkDocument, 'id'>>): Promise<void>;
-    get_by_id(id: string): Promise<Omit<ChunkDocument, 'embedding'> | null>;
-    get_by_ids(ids: string[]): Promise<Omit<ChunkDocument, 'embedding'>[]>;
+    get_by_id(id: RecordId): Promise<Omit<ChunkDocument, 'embedding'> | null>;
+    get_by_ids(ids: RecordId[]): Promise<Omit<ChunkDocument, 'embedding'>[]>;
     delete_by_ids(ids: string[]): Promise<void>; // Renamed to avoid conflict with delete(id)
 }
 
@@ -194,10 +194,10 @@ export default class ChunkStorage implements BaseChunkStorage {
     /**
      * Get chunk data by its ID.
      */
-    async get_by_id(id: string): Promise<Omit<ChunkDocument, 'embedding'> | null> {
+    async get_by_id(id: RecordId): Promise<Omit<ChunkDocument, 'embedding'> | null> {
         try {
-            const result = await this.db.select(`${this.tableName}:${id}`);
-            this.logger.info(`Result from select for id ${id}:`, JSON.stringify(result, null, 2));
+            const result = await this.db.select(id);
+            // this.logger.info(`Result from select for id ${id}:`, JSON.stringify(result, null, 2));
             if (result) { // select for a specific id should return a single object or null
                 const chunk = result as unknown as ChunkDocument;
                 // Omit the embedding field
@@ -214,11 +214,11 @@ export default class ChunkStorage implements BaseChunkStorage {
     /**
      * Get multiple chunk data by their IDs.
      */
-    async get_by_ids(ids: string[]): Promise<Omit<ChunkDocument, 'embedding'>[]> {
+    async get_by_ids(ids: RecordId[]): Promise<Omit<ChunkDocument, 'embedding'>[]> {
         if (ids.length === 0) {
             return [];
         }
-        const surrealQL = `SELECT * FROM ${this.tableName} WHERE id IN [${ids.map(id => `'${this.tableName}:${id}'`).join(', ')}];`;
+        const surrealQL = `SELECT * FROM ${this.tableName} WHERE id IN [${ids.map(id => `'${this.tableName}:${id.id}'`).join(', ')}];`;
         try {
             const result = await this.db.query(surrealQL);
             // this.logger.info("get_by_ids raw result:", JSON.stringify(result, null, 2));

@@ -1,4 +1,4 @@
-import { surrealDBClient } from '../database/surrrealdbClient';
+import { surrealDBClient } from '../database/surrealdbClient';
 
 
 async function testConnection() {

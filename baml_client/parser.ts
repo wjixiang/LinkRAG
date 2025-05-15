@@ -20,26 +20,80 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, HyDE_rewrite_query, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
   
-  ExtractMainEntity(
+  ExtractEntity(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
   ): Entity[] {
     try {
       return this.runtime.parseLlmResponse(
-        "ExtractMainEntity",
+        "ExtractEntity",
         llmResponse,
         false,
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as Entity[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityLoop(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): Entity[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractEntityLoop",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as Entity[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): Relation[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "Extract_relations",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as Relation[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations_Loop(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): Relation[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "Extract_relations_Loop",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as Relation[]
     } catch (error) {
       throw toBamlError(error);
     }
@@ -87,19 +141,73 @@ export class LlmStreamParser {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
   
-  ExtractMainEntity(
+  ExtractEntity(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
   ): (partial_types.Entity | null)[] {
     try {
       return this.runtime.parseLlmResponse(
-        "ExtractMainEntity",
+        "ExtractEntity",
         llmResponse,
         true,
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as (partial_types.Entity | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityLoop(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): (partial_types.Entity | null)[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractEntityLoop",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as (partial_types.Entity | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): (partial_types.Relation | null)[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "Extract_relations",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as (partial_types.Relation | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations_Loop(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): (partial_types.Relation | null)[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "Extract_relations_Loop",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as (partial_types.Relation | null)[]
     } catch (error) {
       throw toBamlError(error);
     }

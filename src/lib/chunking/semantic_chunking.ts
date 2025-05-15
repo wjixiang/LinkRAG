@@ -1,3 +1,4 @@
+// @ts-ignore: Cannot find module 'semantic-chunking'
 import { chunkit, ChunkitOptions } from 'semantic-chunking';
 
 export async function semantic_chunking(
@@ -10,5 +11,5 @@ export async function semantic_chunking(
 
     const chunks = await chunkit(documents, options);
 
-    return chunks.map(chunk => chunk.text);
+    return chunks.map((chunk: { text: string }) => chunk.text);
 }

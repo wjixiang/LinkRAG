@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {Entity, HyDE_rewrite_query, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -31,15 +31,75 @@ export class HttpRequest {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
   
-  ExtractMainEntity(
+  ExtractEntity(
       chunk_text: string,entity_type: string[],
       __baml_options__?: BamlCallOptions
   ): HTTPRequest {
     try {
       return this.runtime.buildRequestSync(
-        "ExtractMainEntity",
+        "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityLoop(
+      chunk_text: string,entity_type: string[],already_identified_entities: Entity[],already_identified_relations: Relation[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "ExtractEntityLoop",
+        {
+          "chunk_text": chunk_text,"entity_type": entity_type,"already_identified_entities": already_identified_entities,"already_identified_relations": already_identified_relations
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations(
+      content: string,entities: Entity[],language: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "Extract_relations",
+        {
+          "content": content,"entities": entities,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations_Loop(
+      content: string,language: string,already_identified_relations: Relation[],new_indentified_entities: Entity[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "Extract_relations_Loop",
+        {
+          "content": content,"language": language,"already_identified_relations": already_identified_relations,"new_indentified_entities": new_indentified_entities
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -97,15 +157,75 @@ export class HttpStreamRequest {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
   
-  ExtractMainEntity(
+  ExtractEntity(
       chunk_text: string,entity_type: string[],
       __baml_options__?: BamlCallOptions
   ): HTTPRequest {
     try {
       return this.runtime.buildRequestSync(
-        "ExtractMainEntity",
+        "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityLoop(
+      chunk_text: string,entity_type: string[],already_identified_entities: Entity[],already_identified_relations: Relation[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "ExtractEntityLoop",
+        {
+          "chunk_text": chunk_text,"entity_type": entity_type,"already_identified_entities": already_identified_entities,"already_identified_relations": already_identified_relations
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations(
+      content: string,entities: Entity[],language: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "Extract_relations",
+        {
+          "content": content,"entities": entities,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  Extract_relations_Loop(
+      content: string,language: string,already_identified_relations: Relation[],new_indentified_entities: Entity[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "Extract_relations_Loop",
+        {
+          "content": content,"language": language,"already_identified_relations": already_identified_relations,"new_indentified_entities": new_indentified_entities
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

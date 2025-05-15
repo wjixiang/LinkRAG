@@ -24,7 +24,11 @@ export default class TypeBuilder {
     
     Entity: ClassViewer<'Entity', "name" | "description" | "type">;
     
+    EntityExtractionExample: ClassViewer<'EntityExtractionExample', "entity_type" | "example_input" | "extracted_entities">;
+    
     HyDE_rewrite_query: ClassViewer<'HyDE_rewrite_query', "HyDE_answer">;
+    
+    Relation: ClassViewer<'Relation', "source_entity" | "target_entity" | "relation" | "relationship_description">;
     
     RetrievedDocument: ClassViewer<'RetrievedDocument', "content" | "metadata">;
     
@@ -33,7 +37,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "Entity","HyDE_rewrite_query","RetrievedDocument",
+            "Entity","EntityExtractionExample","HyDE_rewrite_query","Relation","RetrievedDocument",
           ]),
           enums: new Set([
             
@@ -45,8 +49,16 @@ export default class TypeBuilder {
           "name","description","type",
         ]);
         
+        this.EntityExtractionExample = this.tb.classViewer("EntityExtractionExample", [
+          "entity_type","example_input","extracted_entities",
+        ]);
+        
         this.HyDE_rewrite_query = this.tb.classViewer("HyDE_rewrite_query", [
           "HyDE_answer",
+        ]);
+        
+        this.Relation = this.tb.classViewer("Relation", [
+          "source_entity","target_entity","relation","relationship_description",
         ]);
         
         this.RetrievedDocument = this.tb.classViewer("RetrievedDocument", [

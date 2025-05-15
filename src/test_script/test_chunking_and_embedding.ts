@@ -1,6 +1,6 @@
 import KnowledgeGraphWeaver, { KnowledgeGraphWeaverConfig } from '../core/KnowledgeGraphWeaver';
 import { RecordId } from 'surrealdb';
-import { surrealDBClient } from '../database/surrrealdbClient';
+import { surrealDBClient } from '../database/surrealdbClient';
 import Logger from '../lib/console/logger';
 
 const logger = new Logger('TestChunkingAndEmbedding');
