@@ -1,5 +1,5 @@
 function MergeEntities(previous_entity: Entity, latest_entity: Entity) -> string {
-    client "QWen3"
+    client "GLM4Flash"
     prompt #"
         {{_.role("system")}}
         You are a knowledge management helper to complement current entity definition with new information given in the query.
@@ -7,9 +7,9 @@ function MergeEntities(previous_entity: Entity, latest_entity: Entity) -> string
         1. Analyze the new information, determine if it contradicts existing definitions
         2. For non-conflicting fields, merge the most complete/descriptive version
         3. For conflicting fields:
-        - Prefer more specific information over generic
-        - Prefer newer information unless older is more authoritative
-        - If both are equally valid, combine with clarification
+            - Prefer more specific information over generic
+            - Prefer newer information unless older is more authoritative
+            - If both are equally valid, combine with clarification
         4. Preserve all unique metadata from both versions
         5. Return the merged entity with all combined information
 
@@ -21,5 +21,13 @@ function MergeEntities(previous_entity: Entity, latest_entity: Entity) -> string
         ---output format---
         Return the merged definition of the Entity
 
+        {{_.role("user")}}
+        ---task---
+        - Current definition:  {{previous_entity.description}}
+        - new information ready to be merged: {{latest_entity.description}}
+        
+        ---response---
+        {{ctx.output_format}}
+        
     "#
 }

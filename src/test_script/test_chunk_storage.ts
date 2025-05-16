@@ -9,7 +9,7 @@ async function testChunkStorage() {
     try {
         // Initialize SurrealDB connection using the client
         await surrealDBClient.connect();
-        const db = surrealDBClient.getDb();
+        const db = await surrealDBClient.getDb();
 
         const testTableName = 'chunks_test_verify';
         const chunkStorage = new ChunkStorage(db, testTableName, gte_Qwen2_7B_instruct_Embedding, 0.1); // Use actual embedding function

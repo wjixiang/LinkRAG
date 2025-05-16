@@ -12,6 +12,7 @@ import { Entity, Relation } from 'baml_client';
 import relations_extract_workflow from '@/lib/llm_workflow/relations_extract_workflow';
 import EntityStorage from '../database/EntityStorage'; // Import EntityStorage
 import { b } from 'baml_client'; // Import the BAML client as 'b'
+// import { EntityRecord, RelationRecord } from '@/type';
 
 
 export interface KnowledgeGraphWeaverConfig {
@@ -25,20 +26,27 @@ export default class KnowledgeGraphWeaver {
 
     private logger: Logger;
     private referenceDocumentStorage: ReferenceDocumentStorage;
-    private chunkStorage: ChunkStorage;
-    private entityStorage: EntityStorage; // Add entityStorage property
+    private chunkStorage!: ChunkStorage; // Definite assignment assertion
+    private entityStorage!: EntityStorage; // Definite assignment assertion
     private config: KnowledgeGraphWeaverConfig;
+
+    private async initializeStorages() {
+        const db = await surrealDBClient.getDb();
+        this.chunkStorage = new ChunkStorage(
+            db,
+            this.config.chunkTableName,
+            gte_Qwen2_7B_instruct_Embedding
+        );
+        this.entityStorage = new EntityStorage(db);
+    }
 
     constructor(config: KnowledgeGraphWeaverConfig) {
         this.config = config;
         this.logger = new Logger('KnowledgeGraphWeaver');
         this.referenceDocumentStorage = new ReferenceDocumentStorage();
-        this.chunkStorage = new ChunkStorage(
-            surrealDBClient.getDb(),
-            this.config.chunkTableName,
-            gte_Qwen2_7B_instruct_Embedding // Use the specified embedding function
-        );
-        this.entityStorage = new EntityStorage(surrealDBClient.getDb()); // Instantiate EntityStorage
+        this.initializeStorages().catch(error => {
+            this.logger.error("Failed to initialize storage instances:", error);
+        });
     }
 
     /**
@@ -175,6 +183,7 @@ export default class KnowledgeGraphWeaver {
         }
     }
 
+
     async relation_extraction(id: RecordId, entities: Entity[]): Promise<Relation[]> {
         const chunk_tobe_extracted = await this.chunkStorage.get_by_id(id);
         if(!chunk_tobe_extracted){
@@ -185,7 +194,8 @@ export default class KnowledgeGraphWeaver {
         // Implement your relation extraction logic here
         const relations = await relations_extract_workflow(chunk_tobe_extracted.content, entities, 'zh');
         this.logger.debug(`Finished relation extraction. Extracted relations: ${JSON.stringify(relations)}`);
-        return relations;
+        return relations
+        
     }
 
     /**
@@ -193,35 +203,53 @@ export default class KnowledgeGraphWeaver {
      * @param entity The entity to check and merge or create.
      * @returns The RecordId of the saved or merged entity.
      */
-    private async checkAndMergeEntity(entity: Entity): Promise<RecordId> {
+    private async checkAndMergeEntity(entity: Entity, chunkId: RecordId): Promise<RecordId> {
         this.logger.debug(`Checking and merging entity: ${JSON.stringify(entity)}`);
-        const existingEntities = await this.entityStorage.findEntityByName(entity.name);
-
-        if (existingEntities.length > 0) {
-            const existingEntity = existingEntities[0];
-            this.logger.info(`Entity with name "${entity.name}" already exists. Merging properties into ID: ${existingEntity.id}`);
-            // Merge properties from the new entity into the existing one
-
-            const mergedDefinition = b.MergeEntities({
-                name: existingEntity.name,
-                description: existingEntity.description,
-                type: existingEntity.type
-            },entity)
-
-            this.logger.info("merged definition:",mergedDefinition)
-            await this.entityStorage.updateNode(existingEntity.id, {...entity, description: mergedDefinition});
-            this.logger.debug(`Merged properties for entity ID: ${existingEntity.id}`);
-            return existingEntity.id;
+        // const existingEntities = await this.entityStorage.findEntityByName(entity.name);
+        this.logger.info(`Entity with name "${entity.name}" not found. Creating new entity.`);
+        const createdEntities = await this.entityStorage.createNode(entity);
+        const referenceDb = await surrealDBClient.getDb();
+        await referenceDb.insertRelation("reference", {
+                    in: createdEntities[0].id,
+                    out: chunkId,
+                });
+        if (createdEntities.length > 0) {
+            this.logger.info(`Created new entity with ID: ${createdEntities[0].id}`);
+            return createdEntities[0].id;
         } else {
-            this.logger.info(`Entity with name "${entity.name}" not found. Creating new entity.`);
-            const createdEntities = await this.entityStorage.createNode(entity);
-            if (createdEntities.length > 0) {
-                this.logger.info(`Created new entity with ID: ${createdEntities[0].id}`);
-                return createdEntities[0].id;
-            } else {
-                throw new Error(`Failed to create entity: ${entity.name}`);
-            }
+            throw new Error(`Failed to create entity: ${entity.name}`);
         }
+
+        // if (existingEntities.length > 0) {
+        //     const existingEntity = existingEntities[0];
+        //     this.logger.info(`Entity with name "${entity.name}" already exists. Merging properties into ID: ${existingEntity.id}`);
+        //     // Merge properties from the new entity into the existing one
+
+        //     const mergedDefinition = b.MergeEntities({
+        //         name: existingEntity.name,
+        //         description: existingEntity.description,
+        //         type: existingEntity.type
+        //     },entity)
+
+        //     this.logger.info("merged definition:",mergedDefinition)
+        //     await this.entityStorage.updateNode(existingEntity.id, {...entity, description: mergedDefinition});
+        //     this.logger.debug(`Merged properties for entity ID: ${existingEntity.id}`);
+        //     return existingEntity.id;
+        // } else {
+        //     this.logger.info(`Entity with name "${entity.name}" not found. Creating new entity.`);
+        //     const createdEntities = await this.entityStorage.createNode(entity);
+        //     const referenceDb = await surrealDBClient.getDb();
+        //     await referenceDb.insertRelation("reference", {
+        //                 in: createdEntities[0].id,
+        //                 out: chunkId,
+        //             });
+        //     if (createdEntities.length > 0) {
+        //         this.logger.info(`Created new entity with ID: ${createdEntities[0].id}`);
+        //         return createdEntities[0].id;
+        //     } else {
+        //         throw new Error(`Failed to create entity: ${entity.name}`);
+        //     }
+        // }
     }
 
     /**
@@ -238,7 +266,7 @@ export default class KnowledgeGraphWeaver {
             // 2. Process entities (check existence and merge/create)
             const entityIdMap = new Map<string, RecordId>();
             for (const entity of entities) {
-                const entityId = await this.checkAndMergeEntity(entity);
+                const entityId = await this.checkAndMergeEntity(entity, chunkId);
                 entityIdMap.set(entity.name, entityId);
             }
             this.logger.info(`Processed ${entityIdMap.size} unique entities.`);
@@ -263,6 +291,14 @@ export default class KnowledgeGraphWeaver {
                     // Create a basic entity with just the name
                     const newEntity: Entity = { name: relation.source_entity, description: '', type: 'Unknown' }; // Provide default values
                     const createdEntities = await this.entityStorage.createNode(newEntity);
+                    // create entity--reference-->chunk
+                    const db = await surrealDBClient.getDb();
+                    await db.insertRelation("reference", {
+                        in: createdEntities[0].id,
+                        out: chunkId,
+                        // data: { description: relation.relationship_description } // Include relation properties
+                    });
+
                     if (createdEntities.length > 0) {
                         this.logger.info(`Created new source entity with ID: ${createdEntities[0].id}`);
                         entityIdMap.set(relation.source_entity, createdEntities[0].id);
@@ -292,13 +328,23 @@ export default class KnowledgeGraphWeaver {
                 const toEntityId = entityIdMap.get(relation.target_entity)!; // Use non-null assertion as we've ensured existence
 
                 this.logger.debug(`Creating relation: ${relation.source_entity} -> ${relation.relation} -> ${relation.target_entity}`);
-                await surrealDBClient.getDb().insertRelation(this.config.relation_table_name, {
+                const relationDb = await surrealDBClient.getDb();
+                const createdRelation = await relationDb.insertRelation(this.config.relation_table_name, {
                     in: fromEntityId,
                     out: toEntityId,
                     relation: relation.relation,
                     // data: { description: relation.relationship_description } // Include relation properties
                 });
                 this.logger.debug(`Created relation successfully.`);
+
+                // create relation--reference-->chunk
+                const db = await surrealDBClient.getDb();
+                await db.insertRelation("reference", {
+                    in: createdRelation[0].id,
+                    out: chunkId,
+                    // data: { description: relation.relationship_description } // Include relation properties
+                });
+
                 processedRelationNames.add(relationKey); // Mark as processed
             }
 
@@ -310,4 +356,103 @@ export default class KnowledgeGraphWeaver {
             this.logger.error(`Error during knowledge graph generation for chunk ID ${chunkId}:`, error);
         }
     }
+
+    async joint_graph() {
+        const db = await surrealDBClient.getDb();
+        const duplicated_entities_groups = await db.query<{count: number, name: string}[][]>(`SELECT * FROM (SELECT name, count() AS count FROM nodes GROUP BY name) WHERE count > 1;`)
+        this.logger.info(`Get ${duplicated_entities_groups[0].length} groups of duplicated entities`)
+
+        // Process each entity name with concurrency control
+        const limit = pLimit(5); // Limit to 5 concurrent merges
+        const mergePromises = duplicated_entities_groups[0].map(({name}) => {
+            return limit(async () => {
+                try {
+                    await this.merge_entities(name);
+                    this.logger.debug(`Successfully processed entity: ${name}`);
+                } catch (error) {
+                    this.logger.error(`Failed to merge entities for name ${name}:`, error);
+                }
+            });
+        });
+
+        await Promise.all(mergePromises);
+        this.logger.info(`Finished processing all duplicated entities`);
+    }
+
+    /**
+     * 
+     * @param entity_name shared name of duplicated entities
+     */
+    async merge_entities(entity_name: string){
+        const db = await surrealDBClient.getDb();
+        const duplicated_entities = await db.query<EntityRecord[][]>(`SELECT * FROM nodes WHERE name = "${entity_name}";`)
+        
+        if (duplicated_entities[0].length < 2) {
+            this.logger.info(`No duplicates found for entity: ${entity_name}`);
+            return;
+        }
+
+
+        // Use first entity as base for merging
+        let mergedEntity = duplicated_entities[0][0];
+        
+        // Merge all other entities into the base one
+        for (let i = 1; i < duplicated_entities[0].length; i++) {
+            const currentEntity = duplicated_entities[0][i];
+            this.logger.debug(`Merging entity ${currentEntity.id} into ${mergedEntity.id}`);
+
+            // Merge properties using BAML
+            const mergedDefinition = await b.MergeEntities(mergedEntity, currentEntity);
+            
+            // Update the merged entity with new properties
+            mergedEntity = {
+                ...mergedEntity,
+                description: mergedDefinition,
+                // type: currentEntity.type || mergedEntity.type
+            };
+
+            // Update the merged entity in storage
+            await this.entityStorage.updateNode(mergedEntity.id, mergedEntity);
+
+            // Get all relations involving the current entity
+            const incomingRelations = await db.query<{id: RecordId, in: RecordId, out: RecordId, relation: string}[][]>(
+                `SELECT * FROM ${this.config.relation_table_name} WHERE in = ${currentEntity.id};`
+            );
+            const outgoingRelations = await db.query<{id: RecordId, in: RecordId, out: RecordId, relation: string}[][]>(
+                `SELECT * FROM ${this.config.relation_table_name} WHERE out = ${currentEntity.id};`
+            );
+
+            // Delete all existing relations first
+            await db.query(
+                `DELETE FROM ${this.config.relation_table_name} WHERE in = ${currentEntity.id} OR out = ${currentEntity.id};`
+            );
+
+            // Create new relations pointing to merged entity
+            for (const rel of incomingRelations[0] || []) {
+                await db.insertRelation(this.config.relation_table_name, {
+                    in: mergedEntity.id,
+                    out: rel.out,
+                    relation: rel.relation
+                });
+            }
+            for (const rel of outgoingRelations[0] || []) {
+                await db.insertRelation(this.config.relation_table_name, {
+                    in: rel.in,
+                    out: mergedEntity.id,
+                    relation: rel.relation
+                });
+            }
+
+            this.logger.debug(`Recreated ${incomingRelations[0]?.length || 0} incoming and ${outgoingRelations[0]?.length || 0} outgoing relations for entity ${currentEntity.id}`);
+
+            // Only delete after all relations are recreated
+            await this.entityStorage.deleteNode(currentEntity.id);
+        }
+
+        this.logger.info(`Successfully merged ${duplicated_entities[0].length} entities for name: ${entity_name}`);
+    }
+}
+
+interface EntityRecord extends Entity {
+    id: RecordId
 }

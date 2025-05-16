@@ -17,7 +17,7 @@ async function runTest() {
         const config: KnowledgeGraphWeaverConfig = {
             chunkTableName: 'chunks_test', // Use a test table name
             embeddingConcurrencyLimit: 5,
-            // Add other config if needed
+            relation_table_name: 'relation'
         };
 
         // Instantiate KnowledgeGraphWeaver
