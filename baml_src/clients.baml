@@ -16,6 +16,15 @@ client<llm> GLM4Flash {
   }
 }
 
+client<llm> DeepseekV3 {
+  provider  openai-generic
+  options {
+    model ""
+    api_key ""
+    base_url ""
+  }
+}
+
 client<llm> QiniuDeepseekV3 {
   provider openai-generic
   options {
@@ -25,78 +34,20 @@ client<llm> QiniuDeepseekV3 {
   }
 }
 
-// Learn more about clients at https://docs.boundaryml.com/docs/snippets/clients/overview
-
-client<llm> CustomGPT4o {
-  provider openai
+client<llm> OpenrouterQWEN3 {
+  provider openai-generic
   options {
-    model "gpt-4o"
-    api_key env.OPENAI_API_KEY
+    model "qwen/qwen3-235b-a22b"
+    api_key env.OPENROUTER_API_KEY
+    base_url "https://openrouter.ai/api/v1"
   }
 }
 
-client<llm> CustomGPT4oMini {
-  provider openai
-  retry_policy Exponential
+client<llm> QWen3 {
+  provider openai-generic
   options {
-    model "gpt-4o-mini"
-    api_key env.OPENAI_API_KEY
-  }
-}
-
-client<llm> CustomSonnet {
-  provider anthropic
-  options {
-    model "claude-3-5-sonnet-20241022"
-    api_key env.ANTHROPIC_API_KEY
-  }
-}
-
-
-client<llm> CustomHaiku {
-  provider anthropic
-  retry_policy Constant
-  options {
-    model "claude-3-haiku-20240307"
-    api_key env.ANTHROPIC_API_KEY
-  }
-}
-
-// https://docs.boundaryml.com/docs/snippets/clients/round-robin
-client<llm> CustomFast {
-  provider round-robin
-  options {
-    // This will alternate between the two clients
-    strategy [CustomGPT4oMini, CustomHaiku]
-  }
-}
-
-// https://docs.boundaryml.com/docs/snippets/clients/fallback
-client<llm> OpenaiFallback {
-  provider fallback
-  options {
-    // This will try the clients in order until one succeeds
-    strategy [CustomGPT4oMini, CustomGPT4oMini]
-  }
-}
-
-// https://docs.boundaryml.com/docs/snippets/clients/retry
-retry_policy Constant {
-  max_retries 3
-  // Strategy is optional
-  strategy {
-    type constant_delay
-    delay_ms 200
-  }
-}
-
-retry_policy Exponential {
-  max_retries 2
-  // Strategy is optional
-  strategy {
-    type exponential_backoff
-    delay_ms 300
-    multiplier 1.5
-    max_delay_ms 10000
+    model "qwen-plus-latest"
+    api_key env.ALIBABA_API_KEY
+    base_url "https://dashscope.aliyuncs.com/compatible-mode/v1/"
   }
 }

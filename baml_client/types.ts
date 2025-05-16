@@ -69,7 +69,6 @@ export interface Relation {
   source_entity: string
   target_entity: string
   relation: string
-  relationship_description: string
   
 }
 

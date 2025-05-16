@@ -54,7 +54,6 @@ export namespace partial_types {
         source_entity?: (string | null)
         target_entity?: (string | null)
         relation?: (string | null)
-        relationship_description?: (string | null)
     }
     
     export interface RetrievedDocument {

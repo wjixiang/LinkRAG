@@ -151,6 +151,26 @@ export class HttpRequest {
     }
   }
   
+  MergeEntities(
+      previous_entity: Entity,latest_entity: Entity,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "MergeEntities",
+        {
+          "previous_entity": previous_entity,"latest_entity": latest_entity
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
 }
 
 export class HttpStreamRequest {
@@ -266,6 +286,26 @@ export class HttpStreamRequest {
         "HyDE_rewrite",
         {
           "query": query,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  MergeEntities(
+      previous_entity: Entity,latest_entity: Entity,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "MergeEntities",
+        {
+          "previous_entity": previous_entity,"latest_entity": latest_entity
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

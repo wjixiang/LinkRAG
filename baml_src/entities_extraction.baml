@@ -97,7 +97,7 @@ function ExtractEntityLoop(chunk_text:string, entity_type: string[], already_ide
   - source_entity: {{ relation.source_entity }}
       - target_entity: {{relation.target_entity}}
       - relation: {{ relation.relation }}
-      - relationship_description: {{ relation.relationship_description }}
+
   {% endfor %}
   
   ---input---

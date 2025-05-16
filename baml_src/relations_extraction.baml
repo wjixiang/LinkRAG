@@ -2,27 +2,25 @@ class Relation {
     source_entity string
     target_entity string
     relation string
-    relationship_description string
 }
 
 function Extract_relations(content:string, entities: Entity[], language: string) -> Relation[] {
-    client "GLM4Flash"
+    client "QWen3"
     prompt #"
         {{_.role('system')}}
-        You are a helpful assistant that extracts relations among the given entities from a given text.
-        The entities must be one of the input entities, It will be fatal error if you extract dupilcated relations.  
-
-        Given a text document that is potentially relevant to this activity and a list of entity types, identify relationships among the identified entities.
-        Use {{language}} as main output language, and use English in relation field.
+        ---instruction
+        1. You are a helpful assistant that extracts relations among the given entities from a given text.
+        2. The entities must be one of the input entities.  
+        3. Given a text document that is potentially relevant to this activity and a list of entity types, identify relationships among the identified entities.
+        4. Use {{language}} as main output language.
+        5. Using the original words to describe the `realtion` preferentially, and as detailed as possible.
         
         ---Steps---
         1. From the entities, identify all pairs of (source_entity, target_entity) that are *clearly related* to each other.
         2. For each pair of related entities, extract the following information:
             - source_entity: name of the source entity, must be one of the input entities
             - target_entity: name of the target entity, must be one of the input entities
-            - relation: one high-level key word that summarize the overarching nature of the relationship, focusing on concepts or themes rather than specific details
-            - relationship_description: explanation as to why you think the source entity and the target entity are related to each other
-            - relationship_strength: a numeric score indicating strength of the relationship between the source entity and target entity
+            - relationship: explanation as to why you think the source entity and the target entity are related to each other
         3. Identify high-level key words that summarize the main concepts, themes, or topics of the entire text. These should capture the overarching ideas present in the document.
         
 
@@ -60,10 +58,7 @@ function Extract_relations_Loop(content:string, language: string, already_identi
         2. For each pair of related entities, extract the following information:
             - source_entity: name of the source entity, must be one of the input entities
             - target_entity: name of the target entity, must be one of the input entities
-            - relation: one high-level key word that summarize the overarching nature of the relationship, focusing on concepts or themes rather than specific details
-            - relationship_description: explanation as to why you think the source entity and the target entity are related to each other
-            - relationship_strength: a numeric score indicating strength of the relationship between the source entity and target entity
-        3. Identify high-level key words that summarize the main concepts, themes, or topics of the entire text. These should capture the overarching ideas present in the document.
+            - relation: explanation as to why you think the source entity and the target entity are related to each other.
         
 
         {{_.role('user')}}
@@ -76,8 +71,7 @@ function Extract_relations_Loop(content:string, language: string, already_identi
         - exised relation {{loop.index}}: 
             - source_entity: {{relation.source_entity}}
             - target_entity: {{relation.target_entity}}
-            - relation string: {{relation.relation}}
-            - relationship_description: {{relation.relationship_description}}
+            - relation: {{relation.relation}}
         {% endfor %}
 
         # new entities

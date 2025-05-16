@@ -28,7 +28,7 @@ export default class TypeBuilder {
     
     HyDE_rewrite_query: ClassViewer<'HyDE_rewrite_query', "HyDE_answer">;
     
-    Relation: ClassViewer<'Relation', "source_entity" | "target_entity" | "relation" | "relationship_description">;
+    Relation: ClassViewer<'Relation', "source_entity" | "target_entity" | "relation">;
     
     RetrievedDocument: ClassViewer<'RetrievedDocument', "content" | "metadata">;
     
@@ -58,7 +58,7 @@ export default class TypeBuilder {
         ]);
         
         this.Relation = this.tb.classViewer("Relation", [
-          "source_entity","target_entity","relation","relationship_description",
+          "source_entity","target_entity","relation",
         ]);
         
         this.RetrievedDocument = this.tb.classViewer("RetrievedDocument", [

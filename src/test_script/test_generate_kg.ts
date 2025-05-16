@@ -3,7 +3,7 @@ import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
 import { RecordId } from 'surrealdb';
 
 async function main() {
-    const chunkId: RecordId = new RecordId('chunks_test', '004h1shptt01sc52o0kk'); // Provided chunk ID
+    const chunkId: RecordId = new RecordId('chunks_test', '01liampncalcuhi4y3qo'); // Provided chunk ID
 
     try {
         await surrealDBClient.connect(); // Ensure DB connection is open FIRST
@@ -12,6 +12,7 @@ async function main() {
         const config = {
             chunkTableName: 'chunks_test', // Assuming this is the correct chunk table name
             embeddingConcurrencyLimit: 5, // Reasonable concurrency limit
+            relation_table_name: "relation"
         };
 
         const kgWeaver = new KnowledgeGraphWeaver(config);

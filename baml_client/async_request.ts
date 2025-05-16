@@ -151,6 +151,26 @@ export class AsyncHttpRequest {
     }
   }
   
+  async MergeEntities(
+      previous_entity: Entity,latest_entity: Entity,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "MergeEntities",
+        {
+          "previous_entity": previous_entity,"latest_entity": latest_entity
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
 }
 
 export class AsyncHttpStreamRequest {
@@ -266,6 +286,26 @@ export class AsyncHttpStreamRequest {
         "HyDE_rewrite",
         {
           "query": query,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async MergeEntities(
+      previous_entity: Entity,latest_entity: Entity,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "MergeEntities",
+        {
+          "previous_entity": previous_entity,"latest_entity": latest_entity
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

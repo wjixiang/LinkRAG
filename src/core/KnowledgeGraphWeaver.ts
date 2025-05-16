@@ -17,6 +17,7 @@ import { b } from 'baml_client'; // Import the BAML client as 'b'
 export interface KnowledgeGraphWeaverConfig {
     chunkTableName: string;
     embeddingConcurrencyLimit: number;
+    relation_table_name: string;
     // Add other configuration options as needed, e.g., chunking options
 }
 
@@ -200,7 +201,15 @@ export default class KnowledgeGraphWeaver {
             const existingEntity = existingEntities[0];
             this.logger.info(`Entity with name "${entity.name}" already exists. Merging properties into ID: ${existingEntity.id}`);
             // Merge properties from the new entity into the existing one
-            await this.entityStorage.updateNode(existingEntity.id, entity);
+
+            const mergedDefinition = b.MergeEntities({
+                name: existingEntity.name,
+                description: existingEntity.description,
+                type: existingEntity.type
+            },entity)
+
+            this.logger.info("merged definition:",mergedDefinition)
+            await this.entityStorage.updateNode(existingEntity.id, {...entity, description: mergedDefinition});
             this.logger.debug(`Merged properties for entity ID: ${existingEntity.id}`);
             return existingEntity.id;
         } else {
@@ -283,10 +292,11 @@ export default class KnowledgeGraphWeaver {
                 const toEntityId = entityIdMap.get(relation.target_entity)!; // Use non-null assertion as we've ensured existence
 
                 this.logger.debug(`Creating relation: ${relation.source_entity} -> ${relation.relation} -> ${relation.target_entity}`);
-                await surrealDBClient.getDb().insertRelation(relation.relation, {
+                await surrealDBClient.getDb().insertRelation(this.config.relation_table_name, {
                     in: fromEntityId,
                     out: toEntityId,
-                    data: { description: relation.relationship_description } // Include relation properties
+                    relation: relation.relation,
+                    // data: { description: relation.relationship_description } // Include relation properties
                 });
                 this.logger.debug(`Created relation successfully.`);
                 processedRelationNames.add(relationKey); // Mark as processed
