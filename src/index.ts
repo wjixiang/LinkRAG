@@ -6,4 +6,4 @@ export type { KnowledgeGraphWeaverConfig } from './core/KnowledgeGraphWeaver';
 
 // Re-export commonly used types
 export type { ChunkDocument } from './database/chunkStorage';
-export type { RecordId } from './type';
+// export type { RecordId } from './type';

@@ -9,6 +9,7 @@ import { default as ChunkStorage } from '../database/chunkStorage';
 
 export interface GraphGeneratorConfig {
     relation_table_name: string;
+    reference_table_name: string;
 }
 
 export class GraphGenerator {
@@ -123,7 +124,7 @@ export class GraphGenerator {
                     const createdEntities = await this.entityStorage.createNode(newEntity);
                     // create entity--reference-->chunk
                     const db = await surrealDBClient.getDb();
-                    await db.insertRelation("reference", {
+                    await db.insertRelation(this.config.reference_table_name, {
                         in: createdEntities[0].id,
                         out: chunkId,
                         // data: { description: relation.relationship_description } // Include relation properties

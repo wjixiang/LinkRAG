@@ -2,6 +2,7 @@ import KnowledgeGraphWeaver, { KnowledgeGraphWeaverConfig } from '../core/Knowle
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
 import Logger from '../lib/console/logger';
+import { KnowledgeGraphWeaver_config } from '@/settings';
 
 const logger = new Logger('TestChunkingAndEmbedding');
 
@@ -13,16 +14,11 @@ async function runTest() {
         logger.info('Connected to SurrealDB.');
         logger.debug('Successfully connected to SurrealDB.');
 
-        // KnowledgeGraphWeaver configuration
-        const config: KnowledgeGraphWeaverConfig = {
-            chunkTableName: 'chunks_test', // Use a test table name
-            embeddingConcurrencyLimit: 5,
-            relation_table_name: 'relation'
-        };
+
 
         // Instantiate KnowledgeGraphWeaver
-        logger.debug('Instantiating KnowledgeGraphWeaver with config:', config);
-        const weaver = new KnowledgeGraphWeaver(config);
+        logger.debug('Instantiating KnowledgeGraphWeaver with config:', KnowledgeGraphWeaver_config);
+        const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
         logger.info('KnowledgeGraphWeaver instantiated.');
         logger.debug('KnowledgeGraphWeaver successfully instantiated.');
 

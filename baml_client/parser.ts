@@ -20,7 +20,7 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RelationGroup, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
@@ -34,6 +34,24 @@ export class LlmResponseParser {
     try {
       return this.runtime.parseLlmResponse(
         "ExtractEntity",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as Entity[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityFromQuery(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): Entity[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractEntityFromQuery",
         llmResponse,
         false,
         this.ctxManager.cloneContext(),
@@ -112,6 +130,24 @@ export class LlmResponseParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GroupRelations(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): RelationGroup[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "GroupRelations",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as RelationGroup[]
     } catch (error) {
       throw toBamlError(error);
     }
@@ -177,6 +213,24 @@ export class LlmStreamParser {
     }
   }
   
+  ExtractEntityFromQuery(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): (partial_types.Entity | null)[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractEntityFromQuery",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as (partial_types.Entity | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   ExtractEntityLoop(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -244,6 +298,24 @@ export class LlmStreamParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GroupRelations(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): (partial_types.RelationGroup | null)[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "GroupRelations",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as (partial_types.RelationGroup | null)[]
     } catch (error) {
       throw toBamlError(error);
     }

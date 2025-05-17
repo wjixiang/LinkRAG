@@ -13,11 +13,15 @@ export interface ReferenceDocument {
 }
 
 export default class ReferenceDocumentStorage {
-    private db: Surreal;
+    private db!: Surreal; // Use definite assignment assertion as it will be initialized in the async constructor
     private tableName = 'reference_documents';
 
     constructor() {
-        this.db = surrealDBClient.getDb();
+        this.initializeDb();
+    }
+
+    private async initializeDb() {
+        this.db = await surrealDBClient.getDb();
     }
 
     private simpleHash(str: string): string {

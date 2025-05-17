@@ -19,7 +19,7 @@ import type { BamlRuntime, FunctionResult, BamlCtxManager, Image, Audio, ClientR
 import { toBamlError, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RelationGroup, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { HttpRequest, HttpStreamRequest } from "./sync_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -96,6 +96,29 @@ export class BamlSyncClient {
         "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as Entity[]
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityFromQuery(
+      arg: string,
+      __baml_options__?: BamlCallOptions
+  ): Entity[] {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "ExtractEntityFromQuery",
+        {
+          "arg": arg
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
@@ -195,6 +218,29 @@ export class BamlSyncClient {
         collector,
       )
       return raw.parsed(false) as string
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GroupRelations(
+      core_entity: Entity,relations: Relation[],
+      __baml_options__?: BamlCallOptions
+  ): RelationGroup[] {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "GroupRelations",
+        {
+          "core_entity": core_entity,"relations": relations
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as RelationGroup[]
     } catch (error: any) {
       throw toBamlError(error);
     }

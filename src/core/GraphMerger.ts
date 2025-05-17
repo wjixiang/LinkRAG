@@ -4,13 +4,11 @@ import EntityStorage from '../database/EntityStorage';
 import { surrealDBClient } from '../database/surrealdbClient';
 import Logger from '../lib/console/logger';
 import pLimit from 'p-limit';
-
-interface EntityRecord extends Entity {
-    id: RecordId
-}
+import { EntityRecord } from '@/type';
 
 export interface GraphMergerConfig {
     relation_table_name: string;
+    reference_table_name: string;
 }
 
 export class GraphMerger {
@@ -88,9 +86,19 @@ export class GraphMerger {
                 `SELECT * FROM ${this.config.relation_table_name} WHERE out = ${currentEntity.id};`
             );
 
+            // Get references involving the current entity
+            const referencs = await db.query<{ id: RecordId, in: RecordId, out: RecordId }[][]>(
+                `SELECT * FROM ${this.config.relation_table_name} WHERE out = ${currentEntity.id};`
+            );
+
             // Delete all existing relations first
             await db.query(
                 `DELETE FROM ${this.config.relation_table_name} WHERE in = ${currentEntity.id} OR out = ${currentEntity.id};`
+            );
+
+            // Delete references
+            await db.query(
+                `DELETE FROM ${this.config.reference_table_name} WHERE in = ${currentEntity.id} OR out = ${currentEntity.id};`
             );
 
             // Create new relations pointing to merged entity
@@ -103,13 +111,20 @@ export class GraphMerger {
             }
             for (const rel of outgoingRelations[0] || []) {
                 await db.insertRelation(this.config.relation_table_name, {
-                    in: rel.in,
-                    out: mergedEntity.id,
+                    in: mergedEntity.id,
+                    out: rel.out,
                     relation: rel.relation
                 });
             }
 
-            this.logger.debug(`Recreated ${incomingRelations[0]?.length || 0} incoming and ${outgoingRelations[0]?.length || 0} outgoing relations for entity ${currentEntity.id}`);
+            for (const rel of referencs[0] || []) {
+                await db.insertRelation(this.config.reference_table_name, {
+                    in: rel.in,
+                    out: mergedEntity.id,
+                });
+            }
+
+            this.logger.debug(`Recreated ${incomingRelations[0]?.length || 0} incoming and ${outgoingRelations[0]?.length || 0} outgoing relations and ${referencs[0]?.length || 0} references for entity ${currentEntity.id}`);
 
             // Only delete after all relations are recreated
             await this.entityStorage.deleteNode(currentEntity.id);

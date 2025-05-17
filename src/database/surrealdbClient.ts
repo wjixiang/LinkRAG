@@ -50,7 +50,7 @@ class SurrealDBClient {
       throw new Error('SurrealDB connection not established.');
     }
     await this.checkAndRefreshAuth();
-    return this.db;
+    return this.db as Surreal;
   }
 
   async close(): Promise<void> {

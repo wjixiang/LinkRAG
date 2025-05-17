@@ -1,5 +1,6 @@
 import { surrealDBClient } from '../database/surrealdbClient';
 import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
+import { KnowledgeGraphWeaver_config } from '@/settings';
 
 async function main() {
     try {
@@ -8,10 +9,11 @@ async function main() {
         const config = {
             chunkTableName: 'chunks_test',
             embeddingConcurrencyLimit: 5,
-            relation_table_name: "relation"
+            relation_table_name: "relation",
+            reference_table_name: "reference"
         };
 
-        const kgWeaver = new KnowledgeGraphWeaver(config);
+        const kgWeaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
         // Wait for storage initialization
         await new Promise(resolve => setTimeout(resolve, 1000));
 

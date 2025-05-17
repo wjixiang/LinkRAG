@@ -30,6 +30,8 @@ export default class TypeBuilder {
     
     Relation: ClassViewer<'Relation', "source_entity" | "target_entity" | "relation">;
     
+    RelationGroup: ClassViewer<'RelationGroup', "group_name" | "relation_index" | "Reasoning">;
+    
     RetrievedDocument: ClassViewer<'RetrievedDocument', "content" | "metadata">;
     
     
@@ -37,7 +39,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "Entity","EntityExtractionExample","HyDE_rewrite_query","Relation","RetrievedDocument",
+            "Entity","EntityExtractionExample","HyDE_rewrite_query","Relation","RelationGroup","RetrievedDocument",
           ]),
           enums: new Set([
             
@@ -59,6 +61,10 @@ export default class TypeBuilder {
         
         this.Relation = this.tb.classViewer("Relation", [
           "source_entity","target_entity","relation",
+        ]);
+        
+        this.RelationGroup = this.tb.classViewer("RelationGroup", [
+          "group_name","relation_index","Reasoning",
         ]);
         
         this.RetrievedDocument = this.tb.classViewer("RetrievedDocument", [

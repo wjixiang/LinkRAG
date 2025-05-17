@@ -114,10 +114,7 @@ export default class ChunkStorage implements BaseChunkStorage {
     /**
      * Query the chunk storage and retrieve top_k results based on vector similarity.
      */
-    async query(query: string, top_k: number, ids: string[] | null = null): Promise<{
-        document: Omit<ChunkDocument, 'embedding'>,
-        score: number;
-    }[]> {
+    async query(query: string, top_k: number, ids: string[] | null = null): Promise<semanticSearchResult[]> {
         const queryEmbedding = await this.embedding_func(query);
 
         if (queryEmbedding === null) {
@@ -253,4 +250,9 @@ export default class ChunkStorage implements BaseChunkStorage {
             throw error;
         }
     }
+}
+
+export interface semanticSearchResult {
+    document: Omit<ChunkDocument, 'embedding'>,
+    score: number;
 }

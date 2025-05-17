@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RelationGroup, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -40,6 +40,26 @@ export class AsyncHttpRequest {
         "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async ExtractEntityFromQuery(
+      arg: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "ExtractEntityFromQuery",
+        {
+          "arg": arg
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -120,6 +140,26 @@ export class AsyncHttpRequest {
         "GenerateAnswer",
         {
           "query": query,"documents": documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GroupRelations(
+      core_entity: Entity,relations: Relation[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "GroupRelations",
+        {
+          "core_entity": core_entity,"relations": relations
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -197,6 +237,26 @@ export class AsyncHttpStreamRequest {
     }
   }
   
+  async ExtractEntityFromQuery(
+      arg: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "ExtractEntityFromQuery",
+        {
+          "arg": arg
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async ExtractEntityLoop(
       chunk_text: string,entity_type: string[],already_identified_entities: Entity[],already_identified_relations: Relation[],
       __baml_options__?: BamlCallOptions
@@ -266,6 +326,26 @@ export class AsyncHttpStreamRequest {
         "GenerateAnswer",
         {
           "query": query,"documents": documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GroupRelations(
+      core_entity: Entity,relations: Relation[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "GroupRelations",
+        {
+          "core_entity": core_entity,"relations": relations
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

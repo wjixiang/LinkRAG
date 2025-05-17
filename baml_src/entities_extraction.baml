@@ -25,6 +25,9 @@ function ExtractEntity(chunk_text:string, entity_type: string[], ) -> Entity[] {
   4. The type should be one of the following: {{entity_type}}
   5. The description should strictly follow the text, without any additional information or interpretation. Prioritize useing the original text in the input.
   
+  ---rule---
+  1. Entity should be one object. It should not be a combination of multiple objects. (e.g. EntityA ✅ ; EntityA and EntityB ❌)
+
   ---example---
   ###example_input###
   乳腺囊性增生病（breast cystic hyperplasia）亦称乳腺病、乳腺小叶增生症、乳腺结构不良症、纤维囊性病，常见于中年女性。其病理形态表现多样，增生可发生于腺管周围并伴有大小不等的囊肿形成，囊内含淡黄色或棕褐色液体；或腺管内表现为不同程度的乳头状增生，伴乳管囊性扩张；也有发生于小叶实质者，主要为乳管及腺泡上皮增生。
@@ -106,6 +109,26 @@ function ExtractEntityLoop(chunk_text:string, entity_type: string[], already_ide
   {{ ctx.output_format }}
   "#
 }
+
+function ExtractEntityFromQuery(arg:string) -> Entity[] {
+  client "GLM4Flash"
+  prompt #"
+    Your prompt here in jinja format
+  "#
+}
+
+template_string EntityExtractExamples(examples: EntityExtractionExample) #"
+  {% for example in examples %}
+  ## EXAMPLE {{ loop.index }}
+  ### input_content
+  {{example.example_input}}
+  ### entity_type
+  {{example.entity_type}}
+  ### extracted_entities
+  {{example.extracted_entities}}
+  
+  {% endfor %}
+"#
 
 
 

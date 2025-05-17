@@ -72,6 +72,13 @@ export interface Relation {
   
 }
 
+export interface RelationGroup {
+  group_name: string
+  relation_index: number[]
+  Reasoning: string
+  
+}
+
 export interface RetrievedDocument {
   content: string
   metadata: string

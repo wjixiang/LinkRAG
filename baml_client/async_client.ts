@@ -20,7 +20,7 @@ import { toBamlError, BamlStream, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RelationGroup, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { AsyncHttpRequest, AsyncHttpStreamRequest } from "./async_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -94,6 +94,29 @@ export class BamlAsyncClient {
         "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as Entity[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async ExtractEntityFromQuery(
+      arg: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<Entity[]> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "ExtractEntityFromQuery",
+        {
+          "arg": arg
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
@@ -198,6 +221,29 @@ export class BamlAsyncClient {
     }
   }
   
+  async GroupRelations(
+      core_entity: Entity,relations: Relation[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<RelationGroup[]> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "GroupRelations",
+        {
+          "core_entity": core_entity,"relations": relations
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as RelationGroup[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async HyDE_rewrite(
       query: string,language: string,
       __baml_options__?: BamlCallOptions
@@ -269,6 +315,35 @@ class BamlStreamClient {
         "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<(partial_types.Entity | null)[], Entity[]>(
+        raw,
+        (a): (partial_types.Entity | null)[] => a,
+        (a): Entity[] => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityFromQuery(
+      arg: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<(partial_types.Entity | null)[], Entity[]> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "ExtractEntityFromQuery",
+        {
+          "arg": arg
         },
         undefined,
         this.ctxManager.cloneContext(),
@@ -396,6 +471,35 @@ class BamlStreamClient {
         raw,
         (a): string => a,
         (a): string => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GroupRelations(
+      core_entity: Entity,relations: Relation[],
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<(partial_types.RelationGroup | null)[], RelationGroup[]> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "GroupRelations",
+        {
+          "core_entity": core_entity,"relations": relations
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<(partial_types.RelationGroup | null)[], RelationGroup[]>(
+        raw,
+        (a): (partial_types.RelationGroup | null)[] => a,
+        (a): RelationGroup[] => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {
