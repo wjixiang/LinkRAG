@@ -91,8 +91,8 @@ function GroupRelations(core_entity: Entity, relations: Relation[]) -> RelationG
         ## User Real Input
         ---core entity---
         - entity name: {{core_entity.name}}
-        - entity definition: {{core_entity.description}}
         - entity type: {{core_entity.type}}
+        - entity definition: {{core_entity.description}}
         
         ---relations---
         {% for relation in relations %}

@@ -211,6 +211,26 @@ export class AsyncHttpRequest {
     }
   }
   
+  async SummarizeRelations(
+      relations: Relation[],entity_property: string,central_entity: Entity,language: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "SummarizeRelations",
+        {
+          "relations": relations,"entity_property": entity_property,"central_entity": central_entity,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
 }
 
 export class AsyncHttpStreamRequest {
@@ -386,6 +406,26 @@ export class AsyncHttpStreamRequest {
         "MergeEntities",
         {
           "previous_entity": previous_entity,"latest_entity": latest_entity
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async SummarizeRelations(
+      relations: Relation[],entity_property: string,central_entity: Entity,language: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "SummarizeRelations",
+        {
+          "relations": relations,"entity_property": entity_property,"central_entity": central_entity,"language": language
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

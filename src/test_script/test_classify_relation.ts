@@ -19,7 +19,7 @@ async function testClassifyRelation() {
     // Wait for initialization to complete
     await (weaver as any).initializeComponents();
 
-    const entityId = new RecordId('nodes', 'bvtu2fugdthiug3p5wem'); // Replace 'entity1' with a valid entity ID if available
+    const entityId = new RecordId('nodes', '04d4j27vfzjfw4fill8v'); // 04d4j27vfzjfw4fill8v bvtu2fugdthiug3p5wem
 
     try {
         await weaver.classify_relation(entityId);
