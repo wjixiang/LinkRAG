@@ -79,6 +79,12 @@ export interface RelationGroup {
   
 }
 
+export interface RelationReference {
+  relation: Relation
+  doucment: string[]
+  
+}
+
 export interface RetrievedDocument {
   content: string
   metadata: string

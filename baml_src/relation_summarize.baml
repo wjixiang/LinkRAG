@@ -1,60 +1,63 @@
-function SummarizeRelations(relations: Relation[], entity_property: string, central_entity: Entity, language: string) -> string {
+class RelationReference {
+  relation Relation
+  doucment string[]
+}
+
+function SummarizeRelations(relationReferences: RelationReference[], entity_property: string, central_entity: Entity, language: string) -> string {
     client "GLM4Flash"
     prompt #"
         {{_.role("system")}}
-        You are a helpful knowledge management assistant for summarizing multiple knowledge relationships about one given topic.
+        You are a helpful knowledge management assistant for summarizing knowledge by analysising given relations and documents
         Use {{language}} as output language
 
         {{_.role("user")}}
         ## task
-        Summarize relationships about {{entity_property}} of {{central_entity.name}} ({{central_entity.type}})
+        Summarize {{entity_property}} of {{central_entity.name}} ({{central_entity.type}})
         
-
-        ## relations
-        {% for relation in relations %}
-        - {{relation.source_entity}} -> {{relation.relation}} -> {{relation.target_entity}}
-        {% endfor %}
-
         ## Output Format Requirements
-        1. Maximum 5 bullet points total
+        1. Brief and highly summarized
         2. Each point must contain synthesized knowledge
-        3. Use precise medical terminology
+        3. Use precise terminology
         4. Focus on patterns not individual relations
 
-        ## Knowledge Synthesis Template
-        - **Core Pathology**: {{central_entity.name}} primarily manifests through [key patterns]
-        - **Diagnostic Hallmarks**: [most characteristic features]
-        - **Systemic Effects**: [secondary manifestations]
-        - **Clinical Relevance**: [why these patterns matter]
-        - **Knowledge Summary**: [1-sentence synthesis]
+        ## Documents
+        {% for relationRef in relationReferences %}
+        - Knowledge Relation: {{relationRef.relation.source_entity}} -> {{relationRef.relation.relation}} -> {{relationRef.relation.target_entity}}
+          - Document: {{relationRef.doucment}}
+        {% endfor %}
 
-        ## rules
-        1. Use only factual statements
-        2. No narrative explanations
-        3. Maximum 2 sentences per point
-        4. Use technical/medical terminology precisely
-        5. Omit any subjective language
+        ## output
+        {{ctx.output_format}}
     "#
 }
 
 test TestSummarizeRelations {
   functions [SummarizeRelations]
   args {
-    relations [
+    relationReferences [
       {
-        source_entity "Apple"
-        target_entity "iPhone"
-        relation "manufactures"
+        relation {
+          source_entity "Apple"
+          target_entity "iPhone"
+          relation "manufactures"
+        }
+        doucment "During the recent Apple Special Event, the company unveiled the latest iteration of its flagship smartphone, the iPhone. The announcement highlighted significant improvements in camera technology, processing power with the new A-series chip, and enhanced battery life, continuing Apple's trend of annual iPhone updates."
       }
       {
-        source_entity "Apple"
-        target_entity "MacBook"
-        relation "manufactures"
+        relation {
+          source_entity "Apple"
+          target_entity "MacBook"
+          relation "manufactures"
+        }
+        doucment "The redesigned MacBook Pro lineup now exclusively features Apple's powerful custom silicon, including the M1 Pro and M1 Max chips. These processors deliver substantial performance gains and improved power efficiency compared to previous Intel-based models, making the MacBook Pro a preferred choice for creative professionals."
       }
       {
-        source_entity "Apple"
-        target_entity "iOS"
-        relation "develops"
+        relation {
+          source_entity "Apple"
+          target_entity "iOS"
+          relation "develops"
+        }
+        doucment "Apple is constantly evolving its mobile operating system, iOS, releasing major updates annually that introduce new features, performance enhancements, and security improvements. The development cycle involves extensive beta testing with developers and the public to refine the software before its official release to millions of iPhone and iPad users worldwide."
       }
     ]
     entity_property #"
@@ -74,21 +77,30 @@ test TestSummarizeRelations {
 test TestSummarizeMedicalRelations {
   functions [SummarizeRelations]
   args {
-    relations [
+    relationReferences [
       {
-        source_entity "皮肌炎"
-        target_entity "皮肤"
-        relation "病变累及皮肤，表现为典型红疹"
+        relation {
+          source_entity "皮肌炎"
+          target_entity "皮肤"
+          relation "病变累及皮肤，表现为典型红疹"
+        }
+        doucment "皮肌炎是一种以皮肤和肌肉炎症为特征的自身免疫性疾病。其典型的皮肤病变是诊断的重要线索，其中包括出现在指关节、掌指关节和肘关节伸侧的Gottron丘疹，以及暴露在阳光下的面部、颈部和上胸部的向阳疹，这些皮疹常伴有瘙痒或疼痛。"
       }
       {
-        source_entity "皮肌炎"
-        target_entity "红疹"
-        relation "典型皮肤表现是红疹"
+        relation {
+          source_entity "皮肌炎"
+          target_entity "红疹"
+          relation "典型皮肤表现是红疹"
+        }
+        doucment "根据国际上广泛采用的皮肌炎分类和诊断标准，特征性的皮肤病变，特别是Gottron丘疹和向阳疹，是诊断皮肌炎的关键要素之一。即使在没有明显肌肉受累的情况下，这些典型的皮肤表现也足以高度提示皮肌炎的诊断，需要进一步检查以确诊。"
       }
       {
-        source_entity "皮肌炎"
-        target_entity "心肌炎"
-        relation "部分患者可出现肌肉以外的表现"
+        relation {
+          source_entity "皮肌炎"
+          target_entity "心肌炎"
+          relation "部分患者可出现肌肉以外的表现"
+        }
+        doucment "虽然皮肌炎主要影响皮肤和肌肉，但它是一种系统性疾病，可累及多个器官。在少数患者中，皮肌炎可能合并心脏受累，表现为心肌炎、心律失常或心力衰竭。因此，在皮肌炎的临床管理中，需要对患者进行全面的评估，警惕心脏并发症的发生，并及时进行相应的干预和治疗。"
       }
     ]
     entity_property #"

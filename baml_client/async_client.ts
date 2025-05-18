@@ -20,7 +20,7 @@ import { toBamlError, BamlStream, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RelationGroup, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { AsyncHttpRequest, AsyncHttpStreamRequest } from "./async_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -291,7 +291,7 @@ export class BamlAsyncClient {
   }
   
   async SummarizeRelations(
-      relations: Relation[],entity_property: string,central_entity: Entity,language: string,
+      relationReferences: RelationReference[],entity_property: string,central_entity: Entity,language: string,
       __baml_options__?: BamlCallOptions
   ): Promise<string> {
     try {
@@ -300,7 +300,7 @@ export class BamlAsyncClient {
       const raw = await this.runtime.callFunction(
         "SummarizeRelations",
         {
-          "relations": relations,"entity_property": entity_property,"central_entity": central_entity,"language": language
+          "relationReferences": relationReferences,"entity_property": entity_property,"central_entity": central_entity,"language": language
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
@@ -589,7 +589,7 @@ class BamlStreamClient {
   }
   
   SummarizeRelations(
-      relations: Relation[],entity_property: string,central_entity: Entity,language: string,
+      relationReferences: RelationReference[],entity_property: string,central_entity: Entity,language: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
   ): BamlStream<string, string> {
     try {
@@ -598,7 +598,7 @@ class BamlStreamClient {
       const raw = this.runtime.streamFunction(
         "SummarizeRelations",
         {
-          "relations": relations,"entity_property": entity_property,"central_entity": central_entity,"language": language
+          "relationReferences": relationReferences,"entity_property": entity_property,"central_entity": central_entity,"language": language
         },
         undefined,
         this.ctxManager.cloneContext(),
