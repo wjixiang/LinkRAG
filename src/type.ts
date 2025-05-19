@@ -21,3 +21,14 @@ export interface RelationRecord  {
     out: RecordId;
     relation: string;
 }
+
+export interface RelationWithId extends Relation {
+    id: RecordId
+}
+
+export interface PropertySummarizeResult {
+    core_entity: EntityRecord;
+    relation_set: RelationWithId[];
+    property_name: string;
+    property_content: string;
+}

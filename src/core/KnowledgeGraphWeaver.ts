@@ -9,9 +9,10 @@ import { surrealDBClient } from '../database/surrealdbClient';
 import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import ReferenceDocumentStorage from '../database/referenceDocumentStorage';
-import { embeddingInstance, RelationRecord } from '@/type';
+import { embeddingInstance, EntityRecord, PropertySummarizeResult, RelationRecord } from '@/type';
 import KnowledgeGraphRetriever from './KnowledgeGraphRetriever';
-import { b, Entity, Relation, RelationReference } from 'baml_client';
+import { b, Entity, Property, Relation, RelationReference } from 'baml_client';
+import pLimit from 'p-limit';
 
 
 export interface KnowledgeGraphWeaverConfig {
@@ -146,7 +147,7 @@ export default class KnowledgeGraphWeaver {
         return entity[0][0].name
     }
 
-    async extract_entity_props(id: RecordId): Promise<string[] | void> {
+    async extract_entity_props(id: RecordId): Promise<PropertySummarizeResult[] | void> {
         try {
             const db = await surrealDBClient.getDb();
             
@@ -192,7 +193,7 @@ export default class KnowledgeGraphWeaver {
                 )
             ];
 
-            const summaries: string[] = [];
+            const summaries: PropertySummarizeResult[] = [];
             
             for (const group of relation_groups) {
                 // Get relations for this group using indices
@@ -232,7 +233,12 @@ export default class KnowledgeGraphWeaver {
                     "中文"
                 );
                 
-                summaries.push(summary);
+                summaries.push({
+                    core_entity: core_entity,
+                    relation_set: group_relations,
+                    property_name: group.group_name,
+                    property_content: summary
+                });
                 this.logger.debug(`Summary for ${group.group_name}: ${summary}`);
             }
 
@@ -269,7 +275,122 @@ export default class KnowledgeGraphWeaver {
         }
     }
 
-    async save_entity_property() {
+    /**
+     * Build entity-property-entity graph
+     */
+    async build_local_EPE_graph(property: PropertySummarizeResult) {
         const db = await surrealDBClient.getDb()
+
+        // save property
+        const property_insert_result = await db.insert("property", {
+            core_entity: property.core_entity.id,
+            property_name: property.property_name,
+            property_content: property.property_content
+        })
+
+        // build entity-->property relationship
+        const entity_property_build_result = await db.insertRelation("subset",{
+            in: property.core_entity.id,
+            out: property_insert_result[0].id
+        })
+
+        // build property-->relation reference relationship
+        const property_relation_build_result = await Promise.all(property.relation_set.map(async(e) => {
+            return  await db.insertRelation("propertyToRelation", {
+                in: property_insert_result[0].id,
+                out: e.id
+            })
+        }))
+
+        // reconnet inlink entities
+        // 1. Retrieve relation record
+        const relation_records = await Promise.all(property.relation_set.map(async(e) => {
+            const relation_record = await db.query<{id: RecordId, in: RecordId, out: RecordId}[][]>(`SELECT id, in, out FROM ${this.config.relation_table_name} WHERE id = ${e.id}`)
+            
+            // Verify relation record existed
+            if(relation_record[0].length!==1) {
+                this.logger.error(JSON.stringify(relation_record[0]))
+                throw new Error(`relation ${e.id} not exised`);
+            }
+
+            return relation_record[0][0]         
+        }))
+
+        // 2. reconnect entity
+        await Promise.all(relation_records.map(async(e) => {
+            switch (property.core_entity.id.id) {
+                case e.in.id:
+                    return db.insertRelation("superset",{
+                        in: e.out,
+                        out: property_insert_result[0].id,
+                    })
+                case e.out.id:
+                    return db.insertRelation("superset",{
+                        in: e.in,
+                        out: property_insert_result[0].id,
+                    })
+                default:
+                    this.logger.warning("None target entity identified in relationship:", e,property.core_entity)
+                    break;
+            }
+        }))
+
+    }
+
+    async build_global_EPE_graph(concurrencyLimit = 100) {
+        try {
+            const db = await surrealDBClient.getDb();
+            
+            // Query all entities from the nodes table
+            const entities = await db.query<{id: RecordId}[][]>(
+                `SELECT id FROM ${this.config.entity_table_name}`
+            );
+            
+            if (!entities || entities[0].length === 0) {
+                this.logger.warning('No entities found in the database');
+                return;
+            }
+
+            this.logger.info(`Found ${entities[0].length} entities to process with concurrency limit ${concurrencyLimit}`);
+
+            // Create p-limit instance
+            const limit = pLimit(concurrencyLimit);
+
+            // Process entities concurrently
+            const processingTasks = entities[0].map(row =>
+                limit(async () => {
+                    const entity = row;
+                    try {
+                        this.logger.debug(`Processing entity ${entity.id}`);
+                        
+                        // Step 1: Extract entity properties
+                        const properties = await this.extract_entity_props(entity.id);
+                        if (!properties || properties.length === 0) {
+                            this.logger.debug(`No properties extracted for entity ${entity.id}`);
+                            return;
+                        }
+
+                        // Step 2: Build local EPE graph for each property
+                        await Promise.all(
+                            properties.map(property =>
+                                this.build_local_EPE_graph(property)
+                            )
+                        );
+
+                        this.logger.debug(`Finished processing entity ${entity.id}`);
+                    } catch (error) {
+                        this.logger.error(`Error processing entity ${entity.id}:`, error);
+                        // Continue with next entity even if one fails
+                    }
+                })
+            );
+
+            await Promise.all(processingTasks);
+
+            this.logger.info('Finished building global EPE graph');
+        } catch (error) {
+            this.logger.error('Failed to build global EPE graph:', error);
+            throw error;
+        }
     }
 }

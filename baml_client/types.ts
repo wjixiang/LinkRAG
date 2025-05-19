@@ -65,6 +65,12 @@ export interface HyDE_rewrite_query {
   
 }
 
+export interface Property {
+  prop_name: string
+  content: string
+  
+}
+
 export interface Relation {
   source_entity: string
   target_entity: string

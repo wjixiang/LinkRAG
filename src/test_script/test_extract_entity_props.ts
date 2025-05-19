@@ -29,7 +29,7 @@ async function testExtractEntityProps() {
         if (summaries) {
             console.log('Extracted Entity Property Summaries:');
             summaries.forEach((summary, index) => {
-                console.log(`Summary ${index + 1}:\n${summary}\n---`);
+                console.log(`Summary ${index + 1}:\n${summary.property_name}\n${summary.property_content}\n---`);
             });
         } else {
             console.log('No summaries extracted.');
