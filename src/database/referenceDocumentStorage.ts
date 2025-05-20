@@ -13,16 +13,16 @@ export interface ReferenceDocument {
 }
 
 export default class ReferenceDocumentStorage {
-    private db!: Surreal; // Use definite assignment assertion as it will be initialized in the async constructor
+    // private db!: Surreal; // Use definite assignment assertion as it will be initialized in the async constructor
     private tableName = 'reference_documents';
 
     constructor() {
-        this.initializeDb();
+        // this.initializeDb();
     }
 
-    private async initializeDb() {
-        this.db = await surrealDBClient.getDb();
-    }
+    // private async initializeDb() {
+    //     this.db = await surrealDBClient.getDb();
+    // }
 
     private simpleHash(str: string): string {
         let hash = 0;
@@ -40,8 +40,9 @@ export default class ReferenceDocumentStorage {
             document.hash = this.simpleHash(document.content);
         }
 
+        const db = await surrealDBClient.getDb()
         // Check for existing document with the same hash
-        const existingDocuments = await this.db.query(
+        const existingDocuments = await db.query(
             `SELECT * FROM ${this.tableName} WHERE hash = $hash`,
             { hash: document.hash }
         ) as { result: ReferenceDocument[] }[];
@@ -52,13 +53,14 @@ export default class ReferenceDocumentStorage {
         }
 
         // Add the new document
-        const createdDocument = await this.db.create(this.tableName, document);
+        const createdDocument = await db.create(this.tableName, document);
         return createdDocument[0] as unknown as ReferenceDocument;
     }
 
     async getReferenceDocument(id: RecordId): Promise<ReferenceDocument | undefined> {
+        const db = await surrealDBClient.getDb()
         console.debug(`[ReferenceDocumentStorage] Attempting to get document with ID: ${this.tableName}:${id.id}`);
-        const document = await this.db.select<ReferenceDocument>(id);
+        const document = await db.select<ReferenceDocument>(id);
         console.debug(`[ReferenceDocumentStorage] Result of select for ID ${id.id}:`, document);
         return document
     }
@@ -69,11 +71,13 @@ export default class ReferenceDocumentStorage {
     }
 
     async removeReferenceDocument(id: RecordId): Promise<void> {
-        await this.db.delete(`${this.tableName}:${id}`);
+        const db = await surrealDBClient.getDb()
+        await db.delete(`${this.tableName}:${id}`);
     }
 
     async listReferenceDocuments(): Promise<ReferenceDocument[]> {
-        const documents = await this.db.select(this.tableName);
+        const db = await surrealDBClient.getDb()
+        const documents = await db.select(this.tableName);
         return documents as unknown as ReferenceDocument[];
     }
 }

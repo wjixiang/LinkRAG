@@ -10,6 +10,7 @@ import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
+import pLimit from 'p-limit';
 
 
 export interface KnowledgeGraphWeaverConfig {
@@ -45,13 +46,14 @@ export default class KnowledgeGraphWeaver {
     }
 
     private async initializeComponents() {
+        // await surrealDBClient.connect()
         const db = await surrealDBClient.getDb();
         const chunkStorage = new ChunkStorage(
             db,
             this.config.chunkTableName,
             gte_Qwen2_7B_instruct_Embedding
         );
-        this.entityStorage = new EntityStorage(db);
+        this.entityStorage = new EntityStorage(db, this.config.entity_table_name);
 
         this.chunkProcessor = new ChunkProcessor(this.referenceDocumentStorage, {
             chunkTableName: this.config.chunkTableName,
@@ -66,6 +68,55 @@ export default class KnowledgeGraphWeaver {
             reference_table_name: this.config.reference_table_name
         });
         this.knowledgeGraphProcessor = new KnowledgeGraphProcessor(this.config, this.logger);
+    }
+
+    async weave(file_path: string) {
+        await surrealDBClient.connect()
+
+        const reference_document_id = await this.save_to_reference_document_storage(file_path);
+        if(!reference_document_id) throw new Error(`Add new document failed: ${file_path}`);
+
+        await this.chunking_and_embedding(reference_document_id)
+        await this.generateKgsForReference(reference_document_id)
+        await this.joint_graph(20)
+        await this.build_global_EPE_graph(20)
+
+    }
+
+    async generateKgsForReference(referenceId: RecordId,ConcurrencyLimit=50): Promise<void> {
+        try {
+            
+            const db = await surrealDBClient.getDb();
+            const result = await db.query<{id: RecordId}[][]>(
+                `SELECT id FROM ${this.config.chunkTableName} WHERE referenceIds CONTAINS ${referenceId}`
+            );
+            
+            if (!result || result.length === 0) {
+                this.logger.info('No matching chunks found');
+                return;
+            }
+
+            const recordIds = result[0].map(r => r.id);
+            this.logger.info(`Found ${recordIds.length} chunks to process`);
+
+            const limit = pLimit(ConcurrencyLimit);
+            await Promise.all(recordIds.map(recordId =>
+                limit(async () => {
+                    try {
+                        this.logger.info(`Starting knowledge graph generation for chunk ID: ${recordId}`);
+                        await this.generate_kg(recordId);
+                        this.logger.info(`Knowledge graph generation completed for chunk ID: ${recordId}`);
+                    } catch (error) {
+                        this.logger.error(`Error processing chunk ${recordId}:`, error);
+                    }
+                })
+            ));
+        } catch (error) {
+            this.logger.error('Error during knowledge graph generation:', error);
+            throw error;
+        } finally {
+            await surrealDBClient.close();
+        }
     }
 
 
@@ -86,8 +137,8 @@ export default class KnowledgeGraphWeaver {
         await this.graphGenerator.generateGraph(chunkId);
     }
 
-    async joint_graph() {
-        await this.graphMerger.jointGraph();
+    async joint_graph(concurrencyLimit=10) {
+        await this.graphMerger.jointGraph(concurrencyLimit);
     }
 
     async classify_relation(entity_id: RecordId) {

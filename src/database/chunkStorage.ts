@@ -4,7 +4,7 @@ import Logger from '../lib/console/logger';
 // Define the structure for a chunk document, combining document and vector properties
 export interface ChunkDocument {
     id?: RecordId; // Optional ID for SurrealDB records
-    referenceIds: string[]; // Assuming this is an array of strings
+    referenceIds: RecordId[]; // Assuming this is an array of strings
     embedding: number[];
     content: string;
     [key: string]: any; // Allow other properties

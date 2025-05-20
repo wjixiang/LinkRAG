@@ -46,6 +46,7 @@ class SurrealDBClient {
   }
 
   async getDb(): Promise<Surreal> {
+    await this.connect()
     if (!this.db) {
       throw new Error('SurrealDB connection not established.');
     }

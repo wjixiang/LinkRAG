@@ -56,12 +56,9 @@ export class ChunkProcessor {
                     const embedding = await gte_Qwen2_7B_instruct_Embedding(chunkContent);
                     if (embedding) {
                         chunkDocuments.push({
-                            referenceIds: [id.id], // Link chunk to the reference document
+                            referenceIds: [id], // Link chunk to the reference document
                             embedding: embedding,
                             content: chunkContent,
-                            metadata: {
-                                referenceDocumentId: id.id,
-                            },
                         });
                     } else {
                         this.logger.warning(`Failed to generate embedding for a chunk.`);

@@ -22,13 +22,13 @@ export class GraphMerger {
         this.logger = new Logger('GraphMerger');
     }
 
-    async jointGraph() {
+    async jointGraph(concurrencyLimit=10) {
         const db = await surrealDBClient.getDb();
         const duplicated_entities_groups = await db.query<{ count: number, name: string }[][]>(`SELECT * FROM (SELECT name, count() AS count FROM nodes GROUP BY name) WHERE count > 1;`);
         this.logger.info(`Get ${duplicated_entities_groups[0].length} groups of duplicated entities`);
 
         // Process each entity name with concurrency control
-        const limit = pLimit(5); // Limit to 5 concurrent merges
+        const limit = pLimit(concurrencyLimit); // Limit to 5 concurrent merges
         const mergePromises = duplicated_entities_groups[0].map(({ name }) => {
             return limit(async () => {
                 try {
