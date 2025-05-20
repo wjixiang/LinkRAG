@@ -1,7 +1,7 @@
 import Logger from '../lib/console/logger';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
-import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
+import { embedding } from '../lib/embedding';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import { PropertySummarizeResult, RelationRecord } from '@/type';
 import KnowledgeGraphRetriever from './KnowledgeGraphRetriever';
@@ -42,7 +42,7 @@ export class KnowledgeGraphProcessor {
             const chunkStorage = new ChunkStorage(
                 db,
                 this.config.chunkTableName,
-                gte_Qwen2_7B_instruct_Embedding,
+                embedding,
                 0.2 // cosine_better_than_threshold
             );
             this.logger.debug(`ChunkStorage initialized with table: ${this.config.chunkTableName}`);
@@ -183,7 +183,7 @@ export class KnowledgeGraphProcessor {
             const chunkStorage = new ChunkStorage(
                 db,
                 this.config.chunkTableName,
-                gte_Qwen2_7B_instruct_Embedding,
+                embedding,
                 0.2
             );
             const retriever = new KnowledgeGraphRetriever({

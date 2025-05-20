@@ -34,11 +34,11 @@ async function getEmbedding(modal: string,text: string): Promise<number[] | null
   }
 }
 
-export function text_embedding_ada_002_Embedding(text: string): Promise<number[] | null>{
+function text_embedding_ada_002_Embedding(text: string): Promise<number[] | null>{
   return getEmbedding('text-embedding-ada-002', text);
 }
 
-export async function gte_Qwen2_7B_instruct_Embedding(text: string): Promise<number[] | null> {
+async function gte_Qwen2_7B_instruct_Embedding(text: string): Promise<number[] | null> {
   if (!EMBEDDING_API_KEY || !EMBEDDING_API_BASE) {
     return null; // Or throw an error
   }
@@ -61,4 +61,8 @@ export async function gte_Qwen2_7B_instruct_Embedding(text: string): Promise<num
     console.error('Error fetching embedding:', error);
     return null;
   }
+}
+
+export function embedding(text: string): Promise<number[] | null>{
+  return gte_Qwen2_7B_instruct_Embedding(text)
 }

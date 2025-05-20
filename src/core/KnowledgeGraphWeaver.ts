@@ -9,7 +9,7 @@ import { KnowledgeGraphProcessor } from './KnowledgeGraphProcessor';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { default as ChunkStorage } from '../database/chunkStorage';
-import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
+import { embedding } from '../lib/embedding';
 import pLimit from 'p-limit';
 
 
@@ -51,7 +51,7 @@ export default class KnowledgeGraphWeaver {
         const chunkStorage = new ChunkStorage(
             db,
             this.config.chunkTableName,
-            gte_Qwen2_7B_instruct_Embedding
+            embedding
         );
         this.entityStorage = new EntityStorage(db, this.config.entity_table_name);
 

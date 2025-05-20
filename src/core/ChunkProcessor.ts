@@ -1,7 +1,7 @@
 import { ChunkDocument, default as ChunkStorage } from '../database/chunkStorage';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { semantic_chunking } from '../lib/chunking/semantic_chunking';
-import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
+import { embedding } from '../lib/embedding';
 import Logger from '../lib/console/logger';
 import { RecordId } from 'surrealdb';
 import pLimit from 'p-limit';
@@ -34,7 +34,7 @@ export class ChunkProcessor {
         this.chunkStorage = new ChunkStorage(
             db,
             this.config.chunkTableName,
-            gte_Qwen2_7B_instruct_Embedding
+            embedding
         );
     }
 
@@ -53,11 +53,11 @@ export class ChunkProcessor {
 
             const embeddingPromises = chunks.map(async (chunkContent) => {
                 return limit(async () => {
-                    const embedding = await gte_Qwen2_7B_instruct_Embedding(chunkContent);
-                    if (embedding) {
+                    const Embedding = await embedding(chunkContent);
+                    if (Embedding) {
                         chunkDocuments.push({
                             referenceIds: [id], // Link chunk to the reference document
-                            embedding: embedding,
+                            embedding: Embedding,
                             content: chunkContent,
                         });
                     } else {

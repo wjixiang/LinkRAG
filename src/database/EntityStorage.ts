@@ -16,7 +16,7 @@ export default class EntityStorage implements BaseEntityStorage {
     private db: Surreal;
     private nodeTableName: string; // namespace for nodes
 
-    constructor(db: Surreal, nodeTableName: string = 'nodes') {
+    constructor(db: Surreal, nodeTableName: string ) {
         this.db = db;
         this.nodeTableName = nodeTableName;
     }

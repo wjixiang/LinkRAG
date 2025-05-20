@@ -2,7 +2,7 @@ import baseline_rag_workflow from '../lib/llm_workflow/baseline_rag_workflow';
 import KnowledgeGraphRetriever from '../core/KnowledgeGraphRetriever';
 import ChunkStorage from '../database/chunkStorage';
 import { surrealDBClient } from '../database/surrealdbClient'; // Use named import for the exported instance
-import { gte_Qwen2_7B_instruct_Embedding } from '../lib/embedding';
+import { embedding } from '../lib/embedding';
 
 
 async function runTest() {
@@ -19,7 +19,7 @@ async function runTest() {
     const chunkStorage = new ChunkStorage(
         await surrealDBClient.getDb(),
         chunkTableName,
-        gte_Qwen2_7B_instruct_Embedding,
+        embedding,
         0.2 // cosine_better_than_threshold
     );
 
