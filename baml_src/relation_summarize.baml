@@ -7,20 +7,21 @@ function SummarizeRelations(relationReferences: RelationReference[], entity_prop
     client "GLM4Flash"
     prompt #"
         {{_.role("system")}}
-        You are a helpful knowledge management assistant for summarizing knowledge by analysising given relations and documents
-        Use {{language}} as output language
+        You are a helpful knowledge management assistant for summarizing knowledge by analyzing given relations and documents.
+        Use {{language}} as output language.
 
         {{_.role("user")}}
         ## task
         Summarize {{entity_property}} of {{central_entity.name}} ({{central_entity.type}})
         
-        ## Output Format Requirements
-        1. Brief and highly summarized
+        ## Instruction
+        1. As detailed as possible, extracting all information about {{entity_property}} of {{central_entity.name}}
+        2. Brief and highly summarized, highlight the structrue and relation of knowledge.
         2. Each point must contain synthesized knowledge
         3. Use precise terminology
         4. Focus on patterns not individual relations
 
-        ## Documents
+        ## Reference Documents
         {% for relationRef in relationReferences %}
         - Knowledge Relation: {{relationRef.relation.source_entity}} -> {{relationRef.relation.relation}} -> {{relationRef.relation.target_entity}}
           - Document: {{relationRef.doucment}}
@@ -84,7 +85,7 @@ test TestSummarizeMedicalRelations {
           target_entity "皮肤"
           relation "病变累及皮肤，表现为典型红疹"
         }
-        doucment "皮肌炎是一种以皮肤和肌肉炎症为特征的自身免疫性疾病。其典型的皮肤病变是诊断的重要线索，其中包括出现在指关节、掌指关节和肘关节伸侧的Gottron丘疹，以及暴露在阳光下的面部、颈部和上胸部的向阳疹，这些皮疹常伴有瘙痒或疼痛。"
+        doucment ["皮肌炎是一种以皮肤和肌肉炎症为特征的自身免疫性疾病。其典型的皮肤病变是诊断的重要线索，其中包括出现在指关节、掌指关节和肘关节伸侧的Gottron丘疹，以及暴露在阳光下的面部、颈部和上胸部的向阳疹，这些皮疹常伴有瘙痒或疼痛。"]
       }
       {
         relation {
@@ -92,7 +93,7 @@ test TestSummarizeMedicalRelations {
           target_entity "红疹"
           relation "典型皮肤表现是红疹"
         }
-        doucment "根据国际上广泛采用的皮肌炎分类和诊断标准，特征性的皮肤病变，特别是Gottron丘疹和向阳疹，是诊断皮肌炎的关键要素之一。即使在没有明显肌肉受累的情况下，这些典型的皮肤表现也足以高度提示皮肌炎的诊断，需要进一步检查以确诊。"
+        doucment ["根据国际上广泛采用的皮肌炎分类和诊断标准，特征性的皮肤病变，特别是Gottron丘疹和向阳疹，是诊断皮肌炎的关键要素之一。即使在没有明显肌肉受累的情况下，这些典型的皮肤表现也足以高度提示皮肌炎的诊断，需要进一步检查以确诊。"]
       }
       {
         relation {
@@ -100,7 +101,7 @@ test TestSummarizeMedicalRelations {
           target_entity "心肌炎"
           relation "部分患者可出现肌肉以外的表现"
         }
-        doucment "虽然皮肌炎主要影响皮肤和肌肉，但它是一种系统性疾病，可累及多个器官。在少数患者中，皮肌炎可能合并心脏受累，表现为心肌炎、心律失常或心力衰竭。因此，在皮肌炎的临床管理中，需要对患者进行全面的评估，警惕心脏并发症的发生，并及时进行相应的干预和治疗。"
+        doucment ["虽然皮肌炎主要影响皮肤和肌肉，但它是一种系统性疾病，可累及多个器官。在少数患者中，皮肌炎可能合并心脏受累，表现为心肌炎、心律失常或心力衰竭。因此，在皮肌炎的临床管理中，需要对患者进行全面的评估，警惕心脏并发症的发生，并及时进行相应的干预和治疗。"]
       }
     ]
     entity_property #"
