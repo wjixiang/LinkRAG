@@ -282,7 +282,7 @@ export class KnowledgeGraphProcessor {
         this.logger.debug(`Retrieving relation references for relation ID: ${relationId}`);
         try {
             const db = await surrealDBClient.getDb();
-            const reference_chunks_of_relation = await db.query<{ id: RecordId, in: RecordId, out: RecordId }[][]>(`SELECT * FROM reference WHERE in = ${relationId}`);
+            const reference_chunks_of_relation = await db.query<{ id: RecordId, in: RecordId, out: RecordId }[][]>(`SELECT * FROM ${this.config.reference_table_name} WHERE in = ${relationId}`);
             this.logger.debug(`Reference chunks query result for relation ${relationId}: ${JSON.stringify(reference_chunks_of_relation[0])}`);
 
             if (!reference_chunks_of_relation || reference_chunks_of_relation.length === 0 || reference_chunks_of_relation[0].length === 0) {
@@ -325,10 +325,16 @@ export class KnowledgeGraphProcessor {
             this.logger.debug('Database client obtained.');
 
             // save property
+            const embedding_vector = await embedding(property.property_content)
+            if(!embedding_vector){
+                this.logger.error(`Embed property ${property.property_name} error`)
+            }
+
             const property_insert_result = await db.insert("property", {
                 core_entity: property.core_entity.id,
                 property_name: property.property_name,
-                property_content: property.property_content
+                property_content: property.property_content,
+                embedding_vector: embedding_vector
             });
             if (!property_insert_result || property_insert_result.length === 0) {
                 this.logger.error(`Failed to insert property record for ${property.property_name} of entity ${property.core_entity.id}.`);

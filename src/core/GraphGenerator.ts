@@ -40,7 +40,7 @@ export class GraphGenerator {
         this.logger.info(`Entity with name "${entity.name}" not found. Creating new entity.`);
         const createdEntities = await this.entityStorage.createNode(entity);
         const referenceDb = await surrealDBClient.getDb();
-        await referenceDb.insertRelation("reference", {
+        await referenceDb.insertRelation(this.config.reference_table_name, {
             in: createdEntities[0].id,
             out: chunkId,
         });
@@ -51,36 +51,6 @@ export class GraphGenerator {
             throw new Error(`Failed to create entity: ${entity.name}`);
         }
 
-        // if (existingEntities.length > 0) {
-        //     const existingEntity = existingEntities[0];
-        //     this.logger.info(`Entity with name "${entity.name}" already exists. Merging properties into ID: ${existingEntity.id}`);
-        //     // Merge properties from the new entity into the existing one
-
-        //     const mergedDefinition = b.MergeEntities({
-        //         name: existingEntity.name,
-        //         description: existingEntity.description,
-        //         type: existingEntity.type
-        //     },entity)
-
-        //     this.logger.info("merged definition:",mergedDefinition)
-        //     await this.entityStorage.updateNode(existingEntity.id, {...entity, description: mergedDefinition});
-        //     this.logger.debug(`Merged properties for entity ID: ${existingEntity.id}`);
-        //     return existingEntity.id;
-        // } else {
-        //     this.logger.info(`Entity with name "${entity.name}" not found. Creating new entity.`);
-        //     const createdEntities = await this.entityStorage.createNode(entity);
-        //     const referenceDb = await surrealDBClient.getDb();
-        //     await referenceDb.insertRelation("reference", {
-        //                 in: createdEntities[0].id,
-        //                 out: chunkId,
-        //             });
-        //     if (createdEntities.length > 0) {
-        //         this.logger.info(`Created new entity with ID: ${createdEntities[0].id}`);
-        //         return createdEntities[0].id;
-        //     } else {
-        //         throw new Error(`Failed to create entity: ${entity.name}`);
-        //     }
-        // }
     }
 
     /**
@@ -95,6 +65,7 @@ export class GraphGenerator {
             this.logger.info(`Extracted ${entities.length} entities.`);
 
             // 2. Process entities (check existence and merge/create)
+            // 
             const entityIdMap = new Map<string, RecordId>();
             for (const entity of entities) {
                 const entityId = await this.checkAndMergeEntity(entity, chunkId);
@@ -170,7 +141,7 @@ export class GraphGenerator {
 
                 // create relation--reference-->chunk
                 const db = await surrealDBClient.getDb();
-                await db.insertRelation("reference", {
+                await db.insertRelation(this.config.reference_table_name, {
                     in: createdRelation[0].id,
                     out: chunkId,
                     // data: { description: relation.relationship_description } // Include relation properties

@@ -12,10 +12,10 @@ dotenv.config();
 // Define configuration
 const config = {
     chunkTableName: 'chunk',
-    embeddingConcurrencyLimit: 5,
+    embeddingConcurrencyLimit: 10,
     entity_table_name: 'entity',
     relation_table_name: 'relation',
-    reference_table_name: 'reference_document'
+    reference_table_name: 'reference'
 };
 
 async function processFile(filePath: string) {
