@@ -20,7 +20,7 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
@@ -102,7 +102,7 @@ export class LlmResponseParser {
   Extract_relations(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
-  ): Relation[] {
+  ): RelationExtractResult[] {
     try {
       return this.runtime.parseLlmResponse(
         "Extract_relations",
@@ -111,7 +111,7 @@ export class LlmResponseParser {
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
-      ) as Relation[]
+      ) as RelationExtractResult[]
     } catch (error) {
       throw toBamlError(error);
     }
@@ -324,7 +324,7 @@ export class LlmStreamParser {
   Extract_relations(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
-  ): (partial_types.Relation | null)[] {
+  ): (partial_types.RelationExtractResult | null)[] {
     try {
       return this.runtime.parseLlmResponse(
         "Extract_relations",
@@ -333,7 +333,7 @@ export class LlmStreamParser {
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
-      ) as (partial_types.Relation | null)[]
+      ) as (partial_types.RelationExtractResult | null)[]
     } catch (error) {
       throw toBamlError(error);
     }

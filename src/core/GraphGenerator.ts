@@ -1,5 +1,5 @@
 import { RecordId } from 'surrealdb';
-import { Entity, Relation, b } from 'baml_client';
+import { Entity, Relation, RelationExtractResult, b } from 'baml_client';
 import EntityStorage from '../database/EntityStorage';
 import { surrealDBClient } from '../database/surrealdbClient';
 import Logger from '../lib/console/logger';
@@ -42,82 +42,114 @@ export class GraphGenerator {
             this.logger.info(`Extracted ${entities.length} entities.`);
 
             // 2. Extract relations
-            const relations = await this.relationExtractor.extractRelations(chunkId, entities);
-            this.logger.info(`Extracted ${relations.length} relations.`);
+            const relationResults: RelationExtractResult[] = await this.relationExtractor.extractRelations(chunkId, entities);
+            this.logger.info(`Extracted ${relationResults.length} relations.`);
+
+            // Convert RelationExtractResult to Relation using entity indices
+            const relations: Relation[] = relationResults.map(result => {
+                const sourceIndex = Number(result.source_entity) - 1; // Convert to 0-based index
+                const targetIndex = Number(result.target_entity) - 1;
+
+                if (isNaN(sourceIndex)) {
+                    this.logger.error(`Invalid source entity index (not a number): ${result.source_entity}`);
+                    return null;
+                }
+                if (isNaN(targetIndex)) {
+                    this.logger.error(`Invalid target entity index (not a number): ${result.target_entity}`);
+                    return null;
+                }
+                if (sourceIndex < 0 || sourceIndex >= entities.length) {
+                    this.logger.error(`Invalid source entity index (out of range): ${result.source_entity}`);
+                    return null;
+                }
+                if (targetIndex < 0 || targetIndex >= entities.length) {
+                    this.logger.error(`Invalid target entity index (out of range): ${result.target_entity}`);
+                    return null;
+                }
+
+                return {
+                    source_entity: entities[sourceIndex].name,
+                    target_entity: entities[targetIndex].name,
+                    relation: result.relation,
+                };
+            }).filter(rel => rel !== null) as Relation[]; // Filter out any null relations
+
+            this.logger.info(`Converted ${relations.length} relations to entity names.`);
 
             // 3. Process extracted entities
             const allEntities = new Map<string, Entity>();
-            
+
             // Store extracted entities
             for (const entity of entities) {
                 allEntities.set(entity.name, entity);
             }
 
-            // 4. Verify relation entities exist in extracted entities
+            // 4. Verify relation entities exist in extracted entities (including aliases)
             try {
-                const chunk = await this.chunkStorage.get_by_id(chunkId);
-                const chunkText = chunk?.content || '';
+                // const chunk = await this.chunkStorage.get_by_id(chunkId);
+                // const chunkText = chunk?.content || '';
 
-                for (const relation of relations) {
-                    // Verify source entity
-                    if (!allEntities.has(relation.source_entity)) {
-                        const matchResult = await b.VerifyEntities(
-                            relation.source_entity,
-                            Array.from(allEntities.values()),
-                            chunkText
-                        );
+                // for (const relation of relations) {
+                //     // Verify source entity
+                //     if (!this.entityExists(relation.source_entity, allEntities)) {
+                //         const matchResult = await b.VerifyEntities(
+                //             relation.source_entity,
+                //             Array.from(allEntities.values()),
+                //             chunkText
+                //         );
 
-                        if (matchResult.is_match && matchResult.matched_entity_name) {
-                            // Rename relation to use matched entity
-                            relation.source_entity = matchResult.matched_entity_name;
-                        } else {
-                            // Extract missing entity from context using specialized prompt
-                            const result = await b.ExtractMissingEntities(
-                                relation.source_entity,
-                                Array.from(allEntities.values()),
-                                chunkText
-                            );
-                            if (result.extracted_entities.length > 0) {
-                                allEntities.set(result.extracted_entities[0].name, result.extracted_entities[0]);
-                                this.logger.debug(`Extracted missing source entity: ${JSON.stringify(result)}`);
-                            } else {
-                                this.logger.error(`Could not resolve source entity: ${relation.source_entity}`);
-                                continue;
-                            }
-                        }
-                    }
+                //         if (matchResult.is_match && matchResult.matched_entity_name) {
+                //             // Rename relation to use matched entity
+                //             relation.source_entity = matchResult.matched_entity_name;
+                //         } else {
+                //             // Extract missing entity from context using specialized prompt
+                //             const result = await b.ExtractMissingEntities(
+                //                 relation.source_entity,
+                //                 Array.from(allEntities.values()),
+                //                 chunkText
+                //             );
+                //             if (result.extracted_entities.length > 0) {
+                //                 allEntities.set(result.extracted_entities[0].name, result.extracted_entities[0]);
+                //                 this.logger.debug(`Extracted missing source entity: ${JSON.stringify(result)}`);
+                //             } else {
+                //                 this.logger.error(`Could not resolve source entity: ${relation.source_entity}`);
+                //                 continue;
+                //             }
+                //         }
+                //     }
 
-                    // Verify target entity
-                    if (!allEntities.has(relation.target_entity)) {
-                        const matchResult = await b.VerifyEntities(
-                            relation.target_entity,
-                            Array.from(allEntities.values()),
-                            chunkText
-                        );
+                //     // Verify target entity
+                //     if (!this.entityExists(relation.target_entity, allEntities)) {
+                //         const matchResult = await b.VerifyEntities(
+                //             relation.target_entity,
+                //             Array.from(allEntities.values()),
+                //             chunkText
+                //         );
 
-                        if (matchResult.is_match && matchResult.matched_entity_name) {
-                            // Rename relation to use matched entity
-                            relation.target_entity = matchResult.matched_entity_name;
-                        } else {
-                            // Extract missing entity from context using specialized prompt
-                            const result = await b.ExtractMissingEntities(
-                                relation.target_entity,
-                                Array.from(allEntities.values()),
-                                chunkText
-                            );
-                            if (result.extracted_entities.length > 0) {
-                                allEntities.set(result.extracted_entities[0].name, result.extracted_entities[0]);
-                                this.logger.debug(`Extracted missing target entity: ${JSON.stringify(result)}`);
-                            } else {
-                                this.logger.error(`Could not resolve target entity: ${relation.target_entity}`);
-                                continue;
-                            }
-                        }
-                    }
-                }
+                //         if (matchResult.is_match && matchResult.matched_entity_name) {
+                //             // Rename relation to use matched entity
+                //             relation.target_entity = matchResult.matched_entity_name;
+                //         } else {
+                //             // Extract missing entity from context using specialized prompt
+                //             const result = await b.ExtractMissingEntities(
+                //                 relation.target_entity,
+                //                 Array.from(allEntities.values()),
+                //                 chunkText
+                //             );
+                //             if (result.extracted_entities.length > 0) {
+                //                 allEntities.set(result.extracted_entities[0].name, result.extracted_entities[0]);
+                //                 this.logger.debug(`Extracted missing target entity: ${JSON.stringify(result)}`);
+                //             } else {
+                //                 this.logger.error(`Could not resolve target entity: ${relation.target_entity}`);
+                //                 continue;
+                //             }
+                //         }
+                //     }
+                // }
             } catch (err) {
                 this.logger.error('Error during entity verification:', err);
             }
+
 
             // 5. Store all entities
             this.logger.debug(`Entities in allEntities before storage: ${JSON.stringify(Array.from(allEntities.keys()))}`);
@@ -199,5 +231,20 @@ export class GraphGenerator {
             this.logger.error(`Error during knowledge graph generation for chunk ID ${chunkId}:`, error);
             throw error; // Re-throw the error to be caught by the caller
         }
+    }
+
+    /**
+     * Checks if an entity name exists in the map, considering both name and aliases.
+     * @param entityName The name to check.
+     * @param allEntities The map of entities.
+     * @returns True if the entity exists, false otherwise.
+     */
+    private entityExists(entityName: string, allEntities: Map<string, Entity>): boolean {
+        for (const entity of allEntities.values()) {
+            if (entity.name === entityName || (entity.aliases && entity.aliases.includes(entityName))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

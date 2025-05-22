@@ -1,5 +1,5 @@
 import { RecordId } from 'surrealdb';
-import { Entity, Relation } from 'baml_client';
+import { Entity, Relation, RelationExtractResult } from 'baml_client';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import relations_extract_workflow from '@/lib/llm_workflow/relations_extract_workflow';
 import Logger from '../lib/console/logger';
@@ -13,7 +13,7 @@ export class RelationExtractor {
         this.logger = new Logger('RelationExtractor');
     }
 
-    async extractRelations(chunkId: RecordId, entities: Entity[]): Promise<Relation[]> {
+    async extractRelations(chunkId: RecordId, entities: Entity[]): Promise<RelationExtractResult[]> {
         const chunk_tobe_extracted = await this.chunkStorage.get_by_id(chunkId);
         if (!chunk_tobe_extracted) {
             this.logger.error(`Chunk with ID ${chunkId} not found for relation extraction.`);

@@ -422,10 +422,10 @@ export class KnowledgeGraphProcessor {
                     return null; // Continue with other entities
                 }
             }));
-            this.logger.info(`Finished local EPE graph build for property: ${property.property_name} of entity ${property.core_entity.id}`);
+            this.logger.info(`Finished local EPE graph build for property: ${property.property_name} of entity ${property.core_entity.name}`);
 
         } catch (error) {
-            this.logger.error(`Failed to build local EPE graph for property ${property?.property_name} of entity ${property?.core_entity?.id}:`, error);
+            this.logger.error(`Failed to build local EPE graph for property ${property?.property_name} of entity ${property?.core_entity?.name}:`, error);
             throw error;
         }
     }

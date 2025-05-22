@@ -1,8 +1,9 @@
-function MergeEntities(previous_entity: Entity, latest_entity: Entity) -> string {
+function MergeEntities(previous_entity: Entity, latest_entity: Entity, language: string) -> string {
     client "GLM4Flash"
     prompt #"
         {{_.role("system")}}
         You are a knowledge management assistant for deeply merging and synthesizing entity descriptions.
+        Use {{language}} as output language.
         ---step---
         1. Carefully analyze the current entity description and the new information provided.
         2. Synthesize and integrate the information from both descriptions into a single, cohesive narrative.

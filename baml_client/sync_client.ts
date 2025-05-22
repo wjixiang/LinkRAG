@@ -19,7 +19,7 @@ import type { BamlRuntime, FunctionResult, BamlCtxManager, Image, Audio, ClientR
 import { toBamlError, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { HttpRequest, HttpStreamRequest } from "./sync_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -180,7 +180,7 @@ export class BamlSyncClient {
   Extract_relations(
       content: string,entities: Entity[],language: string,
       __baml_options__?: BamlCallOptions
-  ): Relation[] {
+  ): RelationExtractResult[] {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
@@ -194,7 +194,7 @@ export class BamlSyncClient {
         options.clientRegistry,
         collector,
       )
-      return raw.parsed(false) as Relation[]
+      return raw.parsed(false) as RelationExtractResult[]
     } catch (error: any) {
       throw toBamlError(error);
     }
@@ -293,7 +293,7 @@ export class BamlSyncClient {
   }
   
   MergeEntities(
-      previous_entity: Entity,latest_entity: Entity,
+      previous_entity: Entity,latest_entity: Entity,language: string,
       __baml_options__?: BamlCallOptions
   ): string {
     try {
@@ -302,7 +302,7 @@ export class BamlSyncClient {
       const raw = this.runtime.callFunctionSync(
         "MergeEntities",
         {
-          "previous_entity": previous_entity,"latest_entity": latest_entity
+          "previous_entity": previous_entity,"latest_entity": latest_entity,"language": language
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),

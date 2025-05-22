@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -212,14 +212,14 @@ export class AsyncHttpRequest {
   }
   
   async MergeEntities(
-      previous_entity: Entity,latest_entity: Entity,
+      previous_entity: Entity,latest_entity: Entity,language: string,
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
         "MergeEntities",
         {
-          "previous_entity": previous_entity,"latest_entity": latest_entity
+          "previous_entity": previous_entity,"latest_entity": latest_entity,"language": language
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -458,14 +458,14 @@ export class AsyncHttpStreamRequest {
   }
   
   async MergeEntities(
-      previous_entity: Entity,latest_entity: Entity,
+      previous_entity: Entity,latest_entity: Entity,language: string,
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
         "MergeEntities",
         {
-          "previous_entity": previous_entity,"latest_entity": latest_entity
+          "previous_entity": previous_entity,"latest_entity": latest_entity,"language": language
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

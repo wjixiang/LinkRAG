@@ -93,6 +93,13 @@ export interface Relation {
   
 }
 
+export interface RelationExtractResult {
+  source_entity: number
+  target_entity: number
+  relation: string
+  
+}
+
 export interface RelationGroup {
   group_name: string
   relation_index: number[]

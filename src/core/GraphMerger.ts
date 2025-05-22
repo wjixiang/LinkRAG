@@ -66,7 +66,8 @@ export class GraphMerger {
             this.logger.debug(`Merging entity ${currentEntity.id} into ${mergedEntity.id}`);
 
             // Merge properties using BAML
-            const mergedDefinition = await b.MergeEntities(mergedEntity, currentEntity);
+            const language = process.env.LANGUAGE || 'en'; // Read language from environment variable, default to 'en'
+            const mergedDefinition = await b.MergeEntities(mergedEntity, currentEntity, language);
 
             // Update the merged entity with new properties
             mergedEntity = {
