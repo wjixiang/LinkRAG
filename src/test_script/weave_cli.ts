@@ -4,24 +4,15 @@ import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import dotenv from 'dotenv';
-import { surrealDBClient } from '@/database/surrealdbClient';
+import { KnowledgeGraphWeaver_config } from '@/settings';
 
 // Load environment variables
 dotenv.config();
 
-// Define configuration
-const config = {
-    chunkTableName: 'chunk',
-    embeddingConcurrencyLimit: 10,
-    entity_table_name: 'entity',
-    relation_table_name: 'relation',
-    reference_table_name: 'reference'
-};
-
 async function processFile(filePath: string) {
     // await surrealDBClient.connect()
     try {
-        const weaver = new KnowledgeGraphWeaver(config);
+        const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
         console.log(`Processing file: ${filePath}`);
         await weaver.weave(filePath);
         console.log('Successfully processed file');

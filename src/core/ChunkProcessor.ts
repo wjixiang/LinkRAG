@@ -6,22 +6,22 @@ import Logger from '../lib/console/logger';
 import { RecordId } from 'surrealdb';
 import pLimit from 'p-limit';
 import ReferenceDocumentStorage from '../database/referenceDocumentStorage';
+import { ChunkitOptions } from 'semantic-chunking';
 
 
 export interface ChunkProcessorConfig {
     chunkTableName: string;
     embeddingConcurrencyLimit: number;
+    ChunkitOptions: ChunkitOptions;
 }
 
 export class ChunkProcessor {
     private logger: Logger;
     private chunkStorage!: ChunkStorage;
     private config: ChunkProcessorConfig;
-    private referenceDocumentStorage: ReferenceDocumentStorage;
 
 
-    constructor(referenceDocumentStorage: ReferenceDocumentStorage, config: ChunkProcessorConfig) {
-        this.referenceDocumentStorage = referenceDocumentStorage;
+    constructor(config: ChunkProcessorConfig) {
         this.config = config;
         this.logger = new Logger('ChunkProcessor');
         this.initializeStorage().catch(error => {
@@ -42,16 +42,26 @@ export class ChunkProcessor {
         this.logger.debug(`Starting chunking_and_embedding for ID: ${id}`);
         try {
             this.logger.debug(`Starting semantic chunking for document ID: ${id.id}`);
-            const chunks = await semantic_chunking(plainText);
+            const chunks = await semantic_chunking(plainText,this.config.ChunkitOptions);
             this.logger.info(`Chunked document into ${chunks.length} chunks.`);
             this.logger.debug(`Semantic chunking finished. Generated ${chunks.length} chunks.`);
+
+            // Combine adjacent chunks
+            const combinedChunks: string[] = [];
+            for (let i = 0; i < chunks.length - 1; i++) {
+                combinedChunks.push(chunks[i] + ' ' + chunks[i + 1]);
+            }
+            this.logger.info(`Combined adjacent chunks, resulting in ${combinedChunks.length} new chunks.`);
+
+            const allChunks = [ ...combinedChunks];
+            this.logger.info(`Total chunks for embedding: ${allChunks.length}`);
 
             this.logger.debug(`Starting embedding process with concurrency limit: ${this.config.embeddingConcurrencyLimit}`);
             const limit = pLimit(this.config.embeddingConcurrencyLimit);
             const chunkDocuments: Omit<ChunkDocument, 'id'>[] = [];
             this.logger.debug(`Created p-limit instance and initialized chunkDocuments array.`);
 
-            const embeddingPromises = chunks.map(async (chunkContent) => {
+            const embeddingPromises = allChunks.map(async (chunkContent, index) => {
                 return limit(async () => {
                     const Embedding = await embedding(chunkContent);
                     if (Embedding) {
@@ -61,7 +71,7 @@ export class ChunkProcessor {
                             content: chunkContent,
                         });
                     } else {
-                        this.logger.warning(`Failed to generate embedding for a chunk.`);
+                        this.logger.warning(`Failed to generate embedding for chunk index ${index}.`);
                     }
                 });
             });
@@ -76,6 +86,7 @@ export class ChunkProcessor {
             const chunkDocumentsWithIds: Record<string, Omit<ChunkDocument, 'id'>> = {};
             chunkDocuments.forEach((chunk, index) => {
                 this.logger.debug(`Generating ID for chunk index ${index}`);
+                // Generate a unique ID for each chunk, distinguishing original and combined chunks
                 const chunkId = `${id.id}_chunk_${index}`;
                 chunkDocumentsWithIds[chunkId] = chunk;
             });
@@ -83,12 +94,10 @@ export class ChunkProcessor {
             this.logger.debug(`Calling chunkStorage.upsert with ${Object.keys(chunkDocumentsWithIds).length} documents.`);
             await this.chunkStorage.upsert(chunkDocumentsWithIds);
             this.logger.info(`Saved ${chunkDocuments.length} chunk documents to storage.`);
-            this.logger.debug(`chunkStorage.upsert call completed.`);
             this.logger.debug(`Finished chunking_and_embedding for ID: ${id}`);
 
         } catch (error) {
             this.logger.error("Error during chunking and embedding:", error);
-            this.logger.debug(`Caught error during chunking_and_embedding: ${error}`);
             throw error;
         }
     }

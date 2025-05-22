@@ -11,6 +11,7 @@ import { surrealDBClient } from '../database/surrealdbClient';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import { embedding } from '../lib/embedding';
 import pLimit from 'p-limit';
+import { ChunkitOptions } from 'semantic-chunking';
 
 
 export interface KnowledgeGraphWeaverConfig {
@@ -19,6 +20,7 @@ export interface KnowledgeGraphWeaverConfig {
     entity_table_name: string;
     relation_table_name: string;
     reference_table_name: string;
+    ChunkitOptions: ChunkitOptions;
     // Add other configuration options as needed, e.g., chunking options
 }
 
@@ -54,10 +56,12 @@ export default class KnowledgeGraphWeaver {
             embedding
         );
         this.entityStorage = new EntityStorage(db, this.config.entity_table_name);
+        
 
-        this.chunkProcessor = new ChunkProcessor(this.referenceDocumentStorage, {
+        this.chunkProcessor = new ChunkProcessor( {
             chunkTableName: this.config.chunkTableName,
-            embeddingConcurrencyLimit: this.config.embeddingConcurrencyLimit
+            embeddingConcurrencyLimit: this.config.embeddingConcurrencyLimit,
+            ChunkitOptions: this.config.ChunkitOptions
         });
         this.graphGenerator = new GraphGenerator(this.entityStorage, chunkStorage, {
             relation_table_name: this.config.relation_table_name,
@@ -126,10 +130,11 @@ export default class KnowledgeGraphWeaver {
 
     async chunking_and_embedding(id: RecordId) {
         const referenceDocument = await this.referenceDocumentStorage.getReferenceDocument(id);
-         if (!referenceDocument) {
-                this.logger.error(`Reference document with ID ${id.id} not found.`);
-                return;
-            }
+        if (!referenceDocument) {
+            this.logger.error(`Reference document with ID ${id.id} not found.`);
+            return;
+        }
+        
         await this.chunkProcessor.processDocument(id, referenceDocument.plainText);
     }
 
