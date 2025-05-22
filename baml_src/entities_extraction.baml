@@ -141,7 +141,7 @@ test TestExtractMainEntity {
   functions [ExtractEntity]
   args {
     chunk_text #"
-      急性肾盂肾炎（acute pyelonephritis） 可累及单侧或双侧肾脏。表现为局限或广泛肾盂肾盏黏膜充血、水肿，表面有脓性分泌物，黏膜下可有细小脓肿，可见大小不一、尖端指向肾乳头的楔形炎症病灶。病灶内有不同程度的肾小管上皮细胞肿胀、坏死、脱落，肾小管管腔内有白细胞管型。肾间质水肿，有中性粒细胞浸润和小脓肿形成。炎症剧烈时可有广泛性出血，较大的炎症病灶愈合后局部形成瘢痕。肾小球一般无形态学改变。
+      弥漫性肾小球肾炎（diffuse glomerulonephritis） （1）膜性肾病（membranous nephropathy，MN）。 （2） 增生性肾小球肾炎（proliferative glomerulonephritis）：① 系膜增生性肾小球肾炎（mesangial proliferative glomerulonephritis）；②毛细血管内增生性肾小球肾炎（endocapillary proliferative glomerulonephritis）； ③ 系膜毛细血管性肾小球肾炎（mesangial capillary glomerulonephritis），包括膜增生性肾小球肾炎 （membranoproliferative glomerulonephritis，MPGN）Ⅰ型和Ⅲ型；④致密物沉积病（dense deposit disease），又称为膜增生性肾小球肾炎Ⅱ型；⑤新月体性肾小球肾炎（crescentic glomerulonephritis）。 （3）硬化性肾小球肾炎（sclerosing glomerulonephritis）。
     "#
     entity_type ["disease", "symptom","body_part","organ","tissue","cell", "pathology_change","medicine","treatment","surgery", "population", "examination","diagnosis","etiology","risk_factor","prognosis","complication","differential_diagnosis","prevention"]
   }
