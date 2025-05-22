@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 class Logger {
     private prefix: string;
 
@@ -6,19 +8,19 @@ class Logger {
     }
 
     debug(message: string, ...args: any[]): void {
-        console.debug(`[${this.prefix}:debug] ${message}`, ...args);
+        console.debug(chalk.blue(`[${this.prefix}:debug] ${message}`), ...args);
     }
 
     info(message: string, ...args: any[]): void {
-        console.info(`[${this.prefix}:info] ${message}`, ...args);
+        console.info(chalk.green(`[${this.prefix}:info] ${message}`), ...args);
     }
 
     warning(message: string, ...args: any[]): void {
-        console.warn(`[${this.prefix}:warn] ${message}`, ...args);
+        console.warn(chalk.yellow(`[${this.prefix}:warn] ${message}`), ...args);
     }
 
     error(message: string, ...args: any[]): void {
-        console.error(`[${this.prefix}:error] ${message}`, ...args);
+        console.error(chalk.red(`[${this.prefix}:error] ${message}`), ...args);
     }
 }
 

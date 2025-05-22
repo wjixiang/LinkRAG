@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -80,6 +80,26 @@ export class HttpRequest {
         "ExtractEntityLoop",
         {
           "chunk_text": chunk_text,"entity_type": entity_type,"already_identified_entities": already_identified_entities,"already_identified_relations": already_identified_relations
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractMissingEntities(
+      missing_entity: string,existing_entities: Entity[],chunk_text: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "ExtractMissingEntities",
+        {
+          "missing_entity": missing_entity,"existing_entities": existing_entities,"chunk_text": chunk_text
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -220,6 +240,26 @@ export class HttpRequest {
         "SummarizeRelations",
         {
           "relationReferences": relationReferences,"entity_property": entity_property,"central_entity": central_entity,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  VerifyEntities(
+      target_entity: string,existing_entities: Entity[],context: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "VerifyEntities",
+        {
+          "target_entity": target_entity,"existing_entities": existing_entities,"context": context
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -297,6 +337,26 @@ export class HttpStreamRequest {
     }
   }
   
+  ExtractMissingEntities(
+      missing_entity: string,existing_entities: Entity[],chunk_text: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "ExtractMissingEntities",
+        {
+          "missing_entity": missing_entity,"existing_entities": existing_entities,"chunk_text": chunk_text
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   Extract_relations(
       content: string,entities: Entity[],language: string,
       __baml_options__?: BamlCallOptions
@@ -426,6 +486,26 @@ export class HttpStreamRequest {
         "SummarizeRelations",
         {
           "relationReferences": relationReferences,"entity_property": entity_property,"central_entity": central_entity,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  VerifyEntities(
+      target_entity: string,existing_entities: Entity[],context: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "VerifyEntities",
+        {
+          "target_entity": target_entity,"existing_entities": existing_entities,"context": context
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

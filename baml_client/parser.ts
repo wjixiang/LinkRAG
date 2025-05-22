@@ -20,7 +20,7 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
@@ -76,6 +76,24 @@ export class LlmResponseParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as Entity[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractMissingEntities(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): MissingEntityExtractionResult {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractMissingEntities",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as MissingEntityExtractionResult
     } catch (error) {
       throw toBamlError(error);
     }
@@ -207,6 +225,24 @@ export class LlmResponseParser {
     }
   }
   
+  VerifyEntities(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): EntityMatchResult {
+    try {
+      return this.runtime.parseLlmResponse(
+        "VerifyEntities",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as EntityMatchResult
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
 }
 
 export class LlmStreamParser {
@@ -262,6 +298,24 @@ export class LlmStreamParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as (partial_types.Entity | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractMissingEntities(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.MissingEntityExtractionResult {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractMissingEntities",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.MissingEntityExtractionResult
     } catch (error) {
       throw toBamlError(error);
     }
@@ -388,6 +442,24 @@ export class LlmStreamParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  VerifyEntities(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.EntityMatchResult {
+    try {
+      return this.runtime.parseLlmResponse(
+        "VerifyEntities",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.EntityMatchResult
     } catch (error) {
       throw toBamlError(error);
     }

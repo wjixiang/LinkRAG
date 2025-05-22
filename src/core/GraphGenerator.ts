@@ -30,31 +30,8 @@ export class GraphGenerator {
     }
 
     /**
-     * Checks if an entity with the same name exists and merges if it does, otherwise creates a new entity.
-     * @param entity The entity to check and merge or create.
-     * @returns The RecordId of the saved or merged entity.
-     */
-    private async checkAndMergeEntity(entity: Entity, chunkId: RecordId): Promise<RecordId> {
-        this.logger.debug(`Checking and merging entity: ${JSON.stringify(entity)}`);
-        // const existingEntities = await this.entityStorage.findEntityByName(entity.name);
-        this.logger.info(`Entity with name "${entity.name}" not found. Creating new entity.`);
-        const createdEntities = await this.entityStorage.createNode(entity);
-        const referenceDb = await surrealDBClient.getDb();
-        await referenceDb.insertRelation(this.config.reference_table_name, {
-            in: createdEntities[0].id,
-            out: chunkId,
-        });
-        if (createdEntities.length > 0) {
-            this.logger.info(`Created new entity with ID: ${createdEntities[0].id}`);
-            return createdEntities[0].id;
-        } else {
-            throw new Error(`Failed to create entity: ${entity.name}`);
-        }
-
-    }
-
-    /**
      * Generates the knowledge graph for a given chunk.
+     * This function will generate local entity-to-entity graph, without merging behaviour.
      * @param chunkId The RecordId of the chunk to generate the knowledge graph from.
      */
     async generateGraph(chunkId: RecordId): Promise<void> {
@@ -64,90 +41,154 @@ export class GraphGenerator {
             const entities = await this.entityExtractor.extractEntities(chunkId);
             this.logger.info(`Extracted ${entities.length} entities.`);
 
-            // 2. Process entities (check existence and merge/create)
-            // 
-            const entityIdMap = new Map<string, RecordId>();
-            for (const entity of entities) {
-                const entityId = await this.checkAndMergeEntity(entity, chunkId);
-                entityIdMap.set(entity.name, entityId);
-            }
-            this.logger.info(`Processed ${entityIdMap.size} unique entities.`);
-
-            // 3. Extract relations
+            // 2. Extract relations
             const relations = await this.relationExtractor.extractRelations(chunkId, entities);
             this.logger.info(`Extracted ${relations.length} relations.`);
 
-            // 4. Ensure all entities referenced in relations exist and save relations
-            const processedRelationNames = new Set<string>(); // To avoid processing the same relation multiple times
+            // 3. Process extracted entities
+            const allEntities = new Map<string, Entity>();
+            
+            // Store extracted entities
+            for (const entity of entities) {
+                allEntities.set(entity.name, entity);
+            }
 
+            // 4. Verify relation entities exist in extracted entities
+            try {
+                const chunk = await this.chunkStorage.get_by_id(chunkId);
+                const chunkText = chunk?.content || '';
+
+                for (const relation of relations) {
+                    // Verify source entity
+                    if (!allEntities.has(relation.source_entity)) {
+                        const matchResult = await b.VerifyEntities(
+                            relation.source_entity,
+                            Array.from(allEntities.values()),
+                            chunkText
+                        );
+
+                        if (matchResult.is_match && matchResult.matched_entity_name) {
+                            // Rename relation to use matched entity
+                            relation.source_entity = matchResult.matched_entity_name;
+                        } else {
+                            // Extract missing entity from context using specialized prompt
+                            const result = await b.ExtractMissingEntities(
+                                relation.source_entity,
+                                Array.from(allEntities.values()),
+                                chunkText
+                            );
+                            if (result.extracted_entities.length > 0) {
+                                allEntities.set(result.extracted_entities[0].name, result.extracted_entities[0]);
+                                this.logger.debug(`Extracted missing source entity: ${JSON.stringify(result)}`);
+                            } else {
+                                this.logger.error(`Could not resolve source entity: ${relation.source_entity}`);
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Verify target entity
+                    if (!allEntities.has(relation.target_entity)) {
+                        const matchResult = await b.VerifyEntities(
+                            relation.target_entity,
+                            Array.from(allEntities.values()),
+                            chunkText
+                        );
+
+                        if (matchResult.is_match && matchResult.matched_entity_name) {
+                            // Rename relation to use matched entity
+                            relation.target_entity = matchResult.matched_entity_name;
+                        } else {
+                            // Extract missing entity from context using specialized prompt
+                            const result = await b.ExtractMissingEntities(
+                                relation.target_entity,
+                                Array.from(allEntities.values()),
+                                chunkText
+                            );
+                            if (result.extracted_entities.length > 0) {
+                                allEntities.set(result.extracted_entities[0].name, result.extracted_entities[0]);
+                                this.logger.debug(`Extracted missing target entity: ${JSON.stringify(result)}`);
+                            } else {
+                                this.logger.error(`Could not resolve target entity: ${relation.target_entity}`);
+                                continue;
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                this.logger.error('Error during entity verification:', err);
+            }
+
+            // 5. Store all entities
+            this.logger.debug(`Entities in allEntities before storage: ${JSON.stringify(Array.from(allEntities.keys()))}`);
+            const entityIdMap = new Map<string, RecordId>();
+            const db = await surrealDBClient.getDb();
+            for (const [name, entity] of allEntities) {
+                this.logger.debug(`Processing entity: ${name}`);
+                try {
+                    const createdEntities = await this.entityStorage.createNode(entity);
+                    if (createdEntities.length > 0) {
+                        this.logger.debug(`Created entity ${name} with ID: ${createdEntities[0].id}`);
+                        entityIdMap.set(name, createdEntities[0].id);
+                        // Create entity--reference-->chunk
+                        await db.insertRelation(this.config.reference_table_name, {
+                            in: createdEntities[0].id,
+                            out: chunkId
+                        });
+                    } else {
+                        this.logger.error(`Failed to create database record for entity: ${name}`);
+                    }
+                } catch (err) {
+                    this.logger.error(`Error creating entity ${name}:`, err);
+                }
+            }
+
+            // Log the entityIdMap after processing
+            this.logger.debug(`Entity ID Map contents after processing: ${JSON.stringify([...entityIdMap.entries()])}`);
+
+            // 6. Store all relations
+            const processedRelationNames = new Set<string>();
             for (const relation of relations) {
-                 // Generate a unique key for the relation to check if it's already processed
                 const relationKey = `${relation.source_entity}-${relation.relation}-${relation.target_entity}`;
                 if (processedRelationNames.has(relationKey)) {
-                    continue; // Skip if already processed
+                    continue;
                 }
 
-                // Check if source entity exists, create if not
-                if (!entityIdMap.has(relation.source_entity)) {
-                    this.logger.info(`Source entity "${relation.source_entity}" not found. Creating new entity.`);
-                    // Create a basic entity with just the name
-                    const newEntity: Entity = { name: relation.source_entity, description: '', type: 'Unknown' }; // Provide default values
-                    const createdEntities = await this.entityStorage.createNode(newEntity);
-                    // create entity--reference-->chunk
-                    const db = await surrealDBClient.getDb();
-                    await db.insertRelation(this.config.reference_table_name, {
-                        in: createdEntities[0].id,
-                        out: chunkId,
-                        // data: { description: relation.relationship_description } // Include relation properties
-                    });
+                const fromEntityId = entityIdMap.get(relation.source_entity);
+                const toEntityId = entityIdMap.get(relation.target_entity);
 
-                    if (createdEntities.length > 0) {
-                        this.logger.info(`Created new source entity with ID: ${createdEntities[0].id}`);
-                        entityIdMap.set(relation.source_entity, createdEntities[0].id);
-                    } else {
-                        this.logger.error(`Failed to create source entity: ${relation.source_entity}. Skipping relation.`);
-                        continue; // Skip relation if source entity creation fails
-                    }
+                if (!fromEntityId) {
+                    this.logger.error(`Missing source entity ID for relation: ${relation.source_entity} -> ${relation.relation} -> ${relation.target_entity}`);
+                    continue;
                 }
-
-                // Check if target entity exists, create if not
-                if (!entityIdMap.has(relation.target_entity)) {
-                    this.logger.info(`Target entity "${relation.target_entity}" not found. Creating new entity.`);
-                     // Create a basic entity with just the name
-                    const newEntity: Entity = { name: relation.target_entity, description: '', type: 'Unknown' }; // Provide default values
-                    const createdEntities = await this.entityStorage.createNode(newEntity);
-                    if (createdEntities.length > 0) {
-                        this.logger.info(`Created new target entity with ID: ${createdEntities[0].id}`);
-                        entityIdMap.set(relation.target_entity, createdEntities[0].id);
-                    } else {
-                        this.logger.error(`Failed to create target entity: ${relation.target_entity}. Skipping relation.`);
-                        continue; // Skip relation if target entity creation fails
-                    }
+                if (!toEntityId) {
+                     this.logger.error(`Missing target entity ID for relation: ${relation.source_entity} -> ${relation.relation} -> ${relation.target_entity}`);
+                     continue;
                 }
-
-                // Now that both entities are guaranteed to exist in entityIdMap, save the relation
-                const fromEntityId = entityIdMap.get(relation.source_entity)!; // Use non-null assertion as we've ensured existence
-                const toEntityId = entityIdMap.get(relation.target_entity)!; // Use non-null assertion as we've ensured existence
 
                 this.logger.debug(`Creating relation: ${relation.source_entity} -> ${relation.relation} -> ${relation.target_entity}`);
-                const relationDb = await surrealDBClient.getDb();
-                const createdRelation = await relationDb.insertRelation(this.config.relation_table_name, {
-                    in: fromEntityId,
-                    out: toEntityId,
-                    relation: relation.relation,
-                    // data: { description: relation.relationship_description } // Include relation properties
-                });
-                this.logger.debug(`Created relation successfully.`);
+                try {
+                    const createdRelation = await db.insertRelation(this.config.relation_table_name, {
+                        in: fromEntityId,
+                        out: toEntityId,
+                        relation: relation.relation
+                    });
 
-                // create relation--reference-->chunk
-                const db = await surrealDBClient.getDb();
-                await db.insertRelation(this.config.reference_table_name, {
-                    in: createdRelation[0].id,
-                    out: chunkId,
-                    // data: { description: relation.relationship_description } // Include relation properties
-                });
+                    if (!createdRelation?.[0]?.id) {
+                        throw new Error('Failed to create relation');
+                    }
 
-                processedRelationNames.add(relationKey); // Mark as processed
+                    // Create relation--reference-->chunk
+                    await db.insertRelation(this.config.reference_table_name, {
+                        in: createdRelation[0].id,
+                        out: chunkId
+                    });
+                } catch (error) {
+                    this.logger.error(`Failed to create relation: ${relation.source_entity} -> ${relation.relation} -> ${relation.target_entity}`, error);
+                    continue;
+                }
+
+                processedRelationNames.add(relationKey);
             }
 
             this.logger.info(`Finished processing relations. Total unique entities processed: ${entityIdMap.size}`);

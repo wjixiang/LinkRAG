@@ -19,7 +19,7 @@ export class RelationExtractor {
             this.logger.error(`Chunk with ID ${chunkId} not found for relation extraction.`);
             return [];
         }
-        this.logger.debug(`Starting relation extraction for ID: ${chunkId} with entities: ${JSON.stringify(entities)}`);
+        this.logger.debug(`Starting relation extraction for ID: ${chunkId} with entities: ${JSON.stringify(entities.map(e=>e.name))}`);
         const relations = await relations_extract_workflow(chunk_tobe_extracted.content, entities, 'zh');
         this.logger.debug(`Finished relation extraction. Extracted relations: ${JSON.stringify(relations)}`);
         return relations;

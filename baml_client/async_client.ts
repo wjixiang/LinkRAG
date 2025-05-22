@@ -20,7 +20,7 @@ import { toBamlError, BamlStream, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, HyDE_rewrite_query, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { AsyncHttpRequest, AsyncHttpStreamRequest } from "./async_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -147,6 +147,29 @@ export class BamlAsyncClient {
         collector,
       )
       return raw.parsed(false) as Entity[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async ExtractMissingEntities(
+      missing_entity: string,existing_entities: Entity[],chunk_text: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<MissingEntityExtractionResult> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "ExtractMissingEntities",
+        {
+          "missing_entity": missing_entity,"existing_entities": existing_entities,"chunk_text": chunk_text
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as MissingEntityExtractionResult
     } catch (error) {
       throw toBamlError(error);
     }
@@ -313,6 +336,29 @@ export class BamlAsyncClient {
     }
   }
   
+  async VerifyEntities(
+      target_entity: string,existing_entities: Entity[],context: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<EntityMatchResult> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "VerifyEntities",
+        {
+          "target_entity": target_entity,"existing_entities": existing_entities,"context": context
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as EntityMatchResult
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
 }
 
 class BamlStreamClient {
@@ -407,6 +453,35 @@ class BamlStreamClient {
         raw,
         (a): (partial_types.Entity | null)[] => a,
         (a): Entity[] => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractMissingEntities(
+      missing_entity: string,existing_entities: Entity[],chunk_text: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<partial_types.MissingEntityExtractionResult, MissingEntityExtractionResult> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "ExtractMissingEntities",
+        {
+          "missing_entity": missing_entity,"existing_entities": existing_entities,"chunk_text": chunk_text
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<partial_types.MissingEntityExtractionResult, MissingEntityExtractionResult>(
+        raw,
+        (a): partial_types.MissingEntityExtractionResult => a,
+        (a): MissingEntityExtractionResult => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {
@@ -610,6 +685,35 @@ class BamlStreamClient {
         raw,
         (a): string => a,
         (a): string => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  VerifyEntities(
+      target_entity: string,existing_entities: Entity[],context: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<partial_types.EntityMatchResult, EntityMatchResult> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "VerifyEntities",
+        {
+          "target_entity": target_entity,"existing_entities": existing_entities,"context": context
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<partial_types.EntityMatchResult, EntityMatchResult>(
+        raw,
+        (a): partial_types.EntityMatchResult => a,
+        (a): EntityMatchResult => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {

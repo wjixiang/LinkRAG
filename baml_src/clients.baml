@@ -13,6 +13,7 @@ client<llm> GLM4Flash {
     model "glm-4-flash"
     api_key env.GLM_API_KEY
     base_url "https://open.bigmodel.cn/api/paas/v4"
+    retry_policy GLMRetry
   }
 }
 
@@ -49,5 +50,14 @@ client<llm> QWen3 {
     model "qwen-plus-latest"
     api_key env.ALIBABA_API_KEY
     base_url "https://dashscope.aliyuncs.com/compatible-mode/v1/"
+  }
+}
+
+// strategies
+retry_policy GLMRetry {
+  max_retries 3
+  strategy {
+    type exponential_backoff
+    delay_ms 200
   }
 }

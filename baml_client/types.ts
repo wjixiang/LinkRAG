@@ -60,8 +60,22 @@ export interface EntityExtractionExample {
   
 }
 
+export interface EntityMatchResult {
+  entity_name: string
+  is_match: boolean
+  matched_entity_name: string
+  reasoning: string
+  
+}
+
 export interface HyDE_rewrite_query {
   HyDE_answer: string
+  
+}
+
+export interface MissingEntityExtractionResult {
+  extracted_entities: Entity[]
+  reasoning: string
   
 }
 
