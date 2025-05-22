@@ -58,7 +58,7 @@ declare module 'semantic-chunking' {
     /**
      * Options for configuring the semantic chunking process.
      */
-    interface ChunkitOptions {
+    interface SemanticChunkingConfig {
         /**
          * Enables logging of detailed processing steps (optional, default false).
          */
@@ -132,5 +132,5 @@ declare module 'semantic-chunking' {
      * @param options Optional configuration options for chunking.
      * @returns A Promise that resolves to an array of chunk objects.
      */
-    export function chunkit(documents: DocumentInput[], options?: ChunkitOptions): Promise<Chunk[]>;
+    export function chunkit(documents: DocumentInput[], options?: SemanticChunkingConfig): Promise<Chunk[]>;
 }

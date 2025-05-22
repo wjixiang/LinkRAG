@@ -10,7 +10,7 @@ async function testChunking() {
     // Define options to influence chunking behavior
     const chunkingOptions = {
         maxTokenSize: 300, // Increase max token size
-        similarityThreshold: 0.35, // Lower similarity threshold to allow merging less similar sentences
+        similarityThreshold: 0.3, // Lower similarity threshold to allow merging less similar sentences
         // combineChunksSimilarityThreshold: 0.1
     };
 

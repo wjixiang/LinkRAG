@@ -1,18 +1,16 @@
 import { ChunkDocument, default as ChunkStorage } from '../database/chunkStorage';
 import { surrealDBClient } from '../database/surrealdbClient';
-import { semantic_chunking } from '../lib/chunking/semantic_chunking';
+import { semantic_chunking, SemanticChunkingConfig } from '../lib/chunking/semantic_chunking';
 import { embedding } from '../lib/embedding';
 import Logger from '../lib/console/logger';
 import { RecordId } from 'surrealdb';
 import pLimit from 'p-limit';
-import ReferenceDocumentStorage from '../database/referenceDocumentStorage';
-import { ChunkitOptions } from 'semantic-chunking';
 
 
 export interface ChunkProcessorConfig {
     chunkTableName: string;
     embeddingConcurrencyLimit: number;
-    ChunkitOptions: ChunkitOptions;
+    SemanticChunkingConfig: SemanticChunkingConfig;
 }
 
 export class ChunkProcessor {
@@ -42,7 +40,7 @@ export class ChunkProcessor {
         this.logger.debug(`Starting chunking_and_embedding for ID: ${id}`);
         try {
             this.logger.debug(`Starting semantic chunking for document ID: ${id.id}`);
-            const chunks = await semantic_chunking(plainText,this.config.ChunkitOptions);
+            const chunks = await semantic_chunking(plainText,this.config.SemanticChunkingConfig);
             this.logger.info(`Chunked document into ${chunks.length} chunks.`);
             this.logger.debug(`Semantic chunking finished. Generated ${chunks.length} chunks.`);
 

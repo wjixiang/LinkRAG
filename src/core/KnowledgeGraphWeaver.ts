@@ -11,7 +11,7 @@ import { surrealDBClient } from '../database/surrealdbClient';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import { embedding } from '../lib/embedding';
 import pLimit from 'p-limit';
-import { ChunkitOptions } from 'semantic-chunking';
+import { SemanticChunkingConfig } from '@/lib/chunking/semantic_chunking';
 
 
 export interface KnowledgeGraphWeaverConfig {
@@ -20,7 +20,7 @@ export interface KnowledgeGraphWeaverConfig {
     entity_table_name: string;
     relation_table_name: string;
     reference_table_name: string;
-    ChunkitOptions: ChunkitOptions;
+    SemanticChunkingConfig: SemanticChunkingConfig;
     // Add other configuration options as needed, e.g., chunking options
 }
 
@@ -61,7 +61,7 @@ export default class KnowledgeGraphWeaver {
         this.chunkProcessor = new ChunkProcessor( {
             chunkTableName: this.config.chunkTableName,
             embeddingConcurrencyLimit: this.config.embeddingConcurrencyLimit,
-            ChunkitOptions: this.config.ChunkitOptions
+            SemanticChunkingConfig: this.config.SemanticChunkingConfig
         });
         this.graphGenerator = new GraphGenerator(this.entityStorage, chunkStorage, {
             relation_table_name: this.config.relation_table_name,

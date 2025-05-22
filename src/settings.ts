@@ -6,9 +6,9 @@ export const KnowledgeGraphWeaver_config:KnowledgeGraphWeaverConfig = {
     relation_table_name: 'relation',
     reference_table_name: 'references',
     entity_table_name: "nodes",
-    ChunkitOptions: {
+    SemanticChunkingConfig: {
         similarityThreshold: 0.35,
         maxTokenSize: 300,
-
+        
     }
 };
