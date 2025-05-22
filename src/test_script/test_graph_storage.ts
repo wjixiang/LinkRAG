@@ -6,40 +6,40 @@ async function testGraphStorage() {
   try {
     // Connect to test DB
     await surrealDBClient.connect();
-    const db = surrealDBClient.getDb();
-    const EntityStorage = new EntityStorage(db, 'test_nodes');
+    const db = await surrealDBClient.getDb();
+    const entityStorageInstance = new EntityStorage(db, 'test_nodes');
 
     // Test createNode
     console.log('Testing createNode...');
 
-    const node1 = await EntityStorage.createNode({ name: 'Node 1', type: 'test' });
-    const node2 = await EntityStorage.createNode({ name: 'Node 2', type: 'test' });
+    const node1 = await entityStorageInstance.createNode({ name: 'Node 1', type: 'test' });
+    const node2 = await entityStorageInstance.createNode({ name: 'Node 2', type: 'test' });
     console.log('Created nodes:', node1, node2);
 
     // Test createEdge
     console.log('\nTesting createEdge...');
-    const edge = await EntityStorage.createEdge(node1[0].id, 'test_edges', node2[0].id, { relation: 'connected' });
+    const edge = await entityStorageInstance.createEdge(node1[0].id, 'test_edges', node2[0].id, { relation: 'connected' });
     console.log('Created edge:', edge);
 
     // Test getConnectedNodes
     console.log('\nTesting getConnectedNodes...');
-    const connectedNodes = await EntityStorage.getConnectedNodes(node1[0].id, 'test_edges');
+    const connectedNodes = await entityStorageInstance.getConnectedNodes(node1[0].id, 'test_edges');
     console.log('Connected nodes:', connectedNodes);
 
     // Test getEdges
     console.log('\nTesting getEdges...');
-    const edges = await EntityStorage.getEdges(node1[0].id, 'test_edges');
+    const edges = await entityStorageInstance.getEdges(node1[0].id, 'test_edges');
     console.log('Edges:', edges);
 
     // // Test deleteEdge
     // console.log('\nTesting deleteEdge...');
-    // const deletedEdge = await EntityStorage.deleteEdge(edge[0].id);
+    // const deletedEdge = await entityStorageInstance.deleteEdge(edge[0].id);
     // console.log('Deleted edge:', deletedEdge);
 
     // // Test deleteNode
     // console.log('\nTesting deleteNode...');
-    // const deletedNode1 = await EntityStorage.deleteNode(node1[0].id);
-    // const deletedNode2 = await EntityStorage.deleteNode(node2[0].id);
+    // const deletedNode1 = await entityStorageInstance.deleteNode(node1[0].id);
+    // const deletedNode2 = await entityStorageInstance.deleteNode(node2[0].id);
     // console.log('Deleted nodes:', deletedNode1, deletedNode2);
 
     console.log('\nAll tests completed successfully!');

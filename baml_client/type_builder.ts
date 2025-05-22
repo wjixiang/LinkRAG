@@ -22,7 +22,7 @@ import { DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME } from "./
 export default class TypeBuilder {
     private tb: _TypeBuilder;
     
-    Entity: ClassViewer<'Entity', "name" | "description" | "type">;
+    Entity: ClassViewer<'Entity', "name" | "description" | "type" | "aliases">;
     
     EntityExtractionExample: ClassViewer<'EntityExtractionExample', "entity_type" | "example_input" | "extracted_entities">;
     
@@ -56,7 +56,7 @@ export default class TypeBuilder {
         });
         
         this.Entity = this.tb.classViewer("Entity", [
-          "name","description","type",
+          "name","description","type","aliases",
         ]);
         
         this.EntityExtractionExample = this.tb.classViewer("EntityExtractionExample", [

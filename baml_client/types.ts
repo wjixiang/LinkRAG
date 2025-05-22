@@ -50,6 +50,7 @@ export interface Entity {
   name: string
   description: string
   type: string
+  aliases: string[]
   
 }
 

@@ -73,6 +73,7 @@ export class KnowledgeGraphProcessor {
                 name: string
                 description: string
                 type: string
+                aliases: string[]
             }>(entity_id);
             if (!core_entity) {
                 this.logger.warning(`Core entity with ID ${entity_id} not found during relation classification.`);
@@ -163,6 +164,7 @@ export class KnowledgeGraphProcessor {
                 name: string;
                 description: string;
                 type: string;
+                aliases: string[];
             }>(id);
 
             if (!core_entity) {
@@ -249,7 +251,8 @@ export class KnowledgeGraphProcessor {
                     {
                         name: core_entity.name,
                         description: core_entity.description,
-                        type: core_entity.type
+                        type: core_entity.type,
+                        aliases: core_entity.aliases || [] // Include aliases, default to empty array if null/undefined
                     },
                     "中文" // Assuming "中文" is the desired language
                 );

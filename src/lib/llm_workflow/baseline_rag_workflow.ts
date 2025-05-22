@@ -45,12 +45,15 @@ export default async function baseline_rag_workflow(
 
     logger.info(`Retrieving documents for query: ${retrievalQuery}`);
     try {
-        const documents: ChunkDocument[] = await KnowledgeGraphRetriever.chunks_retriver(retrievalQuery, top_k);
+        const searchResults = await KnowledgeGraphRetriever.chunks_retriver(retrievalQuery, top_k);
 
         // Map retrieved documents to the BAML RetrievedDocument type
-        const bamlDocuments: RetrievedDocument[] = documents.map((doc: ChunkDocument) => ({
-            content: doc.content, // Assuming the retrieved document has a 'text' property for content
-            metadata: JSON.stringify(doc.metadata) // Assuming the retrieved document has a 'metadata' property
+        const bamlDocuments: RetrievedDocument[] = searchResults.map(result => ({
+            content: result.document.content,
+            metadata: JSON.stringify({
+                ...result.document,
+                score: result.score // Include score in metadata
+            })
         }));
 
         logger.info(`Retrieved ${bamlDocuments.length} documents. Generating answer.`);

@@ -2,6 +2,7 @@ import Logger from '../lib/console/logger';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { embedding } from '../lib/embedding';
 import ChunkStorage, { ChunkDocument, EmbeddingFunc } from '../database/chunkStorage';
+import { RecordId } from 'surrealdb';
 
 const logger = new Logger('TestChunkStorage');
 
@@ -36,15 +37,15 @@ async function testChunkStorage() {
         // Generate embeddings for test chunks
         const testChunks: Record<string, Omit<ChunkDocument, 'id'>> = {};
         for (const [id, data] of Object.entries(testChunksContent)) {
-            const embedding = await embedding(data.content);
-            if (embedding === null) {
+            const chunkEmbedding = await embedding(data.content);
+            if (chunkEmbedding === null) {
                 logger.error(`Failed to generate embedding for chunk ${id}. Skipping upsert.`);
                 // Depending on requirements, you might want to throw an error or handle this differently
                 continue;
             }
             testChunks[id] = {
                 ...data,
-                embedding: embedding,
+                embedding: chunkEmbedding,
             };
         }
 
@@ -106,7 +107,7 @@ async function testChunkStorage() {
         }
 
         // Test get_by_id
-        const chunk1 = await chunkStorage.get_by_id('chunk1');
+        const chunk1 = await chunkStorage.get_by_id(new RecordId(testTableName, 'chunk1'));
         logger.info('Get chunk1 by id:', JSON.stringify(chunk1?.content, null, 2));
         if (chunk1 && chunk1.content === testChunks.chunk1.content) {
             logger.info('get_by_id test successful.');
@@ -115,7 +116,7 @@ async function testChunkStorage() {
         }
 
         // Test get_by_ids
-        const chunksByIds = await chunkStorage.get_by_ids(['chunk1', 'chunk3']);
+        const chunksByIds = await chunkStorage.get_by_ids([new RecordId(testTableName, 'chunk1'), new RecordId(testTableName, 'chunk3')]);
         logger.info('Get chunks by ids [chunk1, chunk3]:', JSON.stringify(chunksByIds, null, 2));
          if (chunksByIds.length === 2) {
             logger.info('get_by_ids test successful.');

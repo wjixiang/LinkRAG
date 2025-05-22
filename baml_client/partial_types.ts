@@ -38,6 +38,7 @@ export namespace partial_types {
         name?: (string | null)
         description?: (string | null)
         type?: (string | null)
+        aliases?: (string | null)[]
     }
     
     export interface EntityExtractionExample {
