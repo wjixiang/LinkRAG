@@ -66,15 +66,27 @@ export async function semantic_chunking(
     }
 
     const embedderInstance = await getEmbedder();
-    const embeddings = await embedderInstance.embedDocuments(sentences);
-
     const chunks: string[] = [];
     let currentChunkSentences: string[] = [];
     let currentChunkTokenCount = 0;
+    const sentenceTokenCounts: number[] = [];
+    const sentenceEmbeddings: Float32Array[] = [];
+
+    // Process sentences in batches for embedding and token counting
+    const batchSize = 64; // Adjust batch size as needed
+    for (let i = 0; i < sentences.length; i += batchSize) {
+        const sentenceBatch = sentences.slice(i, i + batchSize);
+        const embeddingsBatch = await embedderInstance.embedDocuments(sentenceBatch);
+        sentenceEmbeddings.push(...embeddingsBatch);
+
+        for (const sentence of sentenceBatch) {
+            sentenceTokenCounts.push(await countTokens(sentence));
+        }
+    }
 
     for (let i = 0; i < sentences.length; i++) {
         const sentence = sentences[i];
-        const sentenceTokenCount = await countTokens(sentence);
+        const sentenceTokenCount = sentenceTokenCounts[i];
 
         // Check if adding the current sentence exceeds the max token size
         if (currentChunkTokenCount + sentenceTokenCount > maxTokenSize && currentChunkSentences.length > 0) {
@@ -88,7 +100,7 @@ export async function semantic_chunking(
 
         // Check for split point based on similarity (if not the last sentence)
         if (i < sentences.length - 1) {
-            const similarity = cosineSimilarity(embeddings[i], embeddings[i + 1]);
+            const similarity = cosineSimilarity(sentenceEmbeddings[i], sentenceEmbeddings[i + 1]);
             if (similarity < similarityThreshold) {
                 if (currentChunkSentences.length > 0) {
                     chunks.push(currentChunkSentences.join(' '));
@@ -106,15 +118,20 @@ export async function semantic_chunking(
 
     // --- Merge small chunks ---
     const mergedChunks: string[] = [];
+    // Recalculate token counts for chunks after initial splitting
+    const chunkTokenCounts: number[] = await Promise.all(chunks.map(chunk => countTokens(chunk)));
+
     for (let i = 0; i < chunks.length; i++) {
         const currentChunk = chunks[i];
-        const currentChunkSize = await countTokens(currentChunk);
+        const currentChunkSize = chunkTokenCounts[i];
 
         if (currentChunkSize < minTokenSize && chunks.length > 1) {
             if (i === 0) {
                 // Merge with the next chunk if it's the first chunk
                 if (i + 1 < chunks.length) {
                     chunks[i + 1] = currentChunk + ' ' + chunks[i + 1];
+                    // Update token count for the merged chunk
+                    chunkTokenCounts[i + 1] += currentChunkSize;
                 } else {
                      // If it's the only chunk and smaller than min size, keep it as is
                      mergedChunks.push(currentChunk);
@@ -122,13 +139,40 @@ export async function semantic_chunking(
             } else {
                 // Merge with the previous chunk
                 mergedChunks[mergedChunks.length - 1] += ' ' + currentChunk;
+                // Update token count for the merged chunk (need to find the index in mergedChunks)
+                // This part is tricky with the current merging logic. A simpler approach might be needed.
+                // For now, we'll just push and recalculate later if necessary or simplify merging.
             }
         } else {
             mergedChunks.push(currentChunk);
         }
     }
+    // A simpler merge logic might be better to avoid complex token count tracking
+    // Let's refine the merging logic to be simpler and recalculate token counts after merging
+
+    const finalMergedChunks: string[] = [];
+    let tempChunk = "";
+    let tempChunkTokenCount = 0;
+
+    for (const chunk of mergedChunks) {
+        const chunkSize = await countTokens(chunk);
+        if (tempChunkTokenCount + chunkSize < minTokenSize && tempChunk !== "") {
+            tempChunk += " " + chunk;
+            tempChunkTokenCount += chunkSize;
+        } else {
+            if (tempChunk !== "") {
+                finalMergedChunks.push(tempChunk);
+            }
+            tempChunk = chunk;
+            tempChunkTokenCount = chunkSize;
+        }
+    }
+    if (tempChunk !== "") {
+        finalMergedChunks.push(tempChunk);
+    }
+
     // --- End merge small chunks ---
 
 
-    return mergedChunks;
+    return finalMergedChunks;
 }

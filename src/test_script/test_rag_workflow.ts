@@ -3,6 +3,7 @@ import KnowledgeGraphRetriever from '../core/KnowledgeGraphRetriever';
 import ChunkStorage from '../database/chunkStorage';
 import { surrealDBClient } from '../database/surrealdbClient'; // Use named import for the exported instance
 import { embedding } from '../lib/embedding';
+import { KnowledgeGraphRetriever_Config } from '@/settings';
 
 
 async function runTest() {
@@ -24,11 +25,8 @@ async function runTest() {
     );
 
     // Instantiate KnowledgeGraphRetriever
-    const retrieverConfig = {
-        chunkTableName: chunkTableName,
-        chunkStorage: chunkStorage,
-    };
-    const knowledgeGraphRetriever = new KnowledgeGraphRetriever(retrieverConfig);
+
+    const knowledgeGraphRetriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
 
     const testQuery = "乙型脑炎的病理变化有哪些？"; // Replace with a relevant test query in Chinese
     const testTopK = 5;

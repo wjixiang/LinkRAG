@@ -1,4 +1,6 @@
+import { KnowledgeGraphRetrieverConfig } from "./core/KnowledgeGraphRetriever";
 import { KnowledgeGraphWeaverConfig } from "./core/KnowledgeGraphWeaver";
+
 
 export const KnowledgeGraphWeaver_config:KnowledgeGraphWeaverConfig = {
     chunkTableName: 'test_chunks',
@@ -11,4 +13,13 @@ export const KnowledgeGraphWeaver_config:KnowledgeGraphWeaverConfig = {
         maxTokenSize: 300,
         
     }
+};
+
+
+
+
+export const KnowledgeGraphRetriever_Config: KnowledgeGraphRetrieverConfig = {
+    chunkTableName: KnowledgeGraphWeaver_config.chunkTableName,
+    property_table_name: "property",
+    semantic_search_threshold: 0.33
 };

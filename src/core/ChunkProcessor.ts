@@ -2,7 +2,8 @@ import { ChunkDocument, default as ChunkStorage } from '../database/chunkStorage
 import { surrealDBClient } from '../database/surrealdbClient';
 import { semantic_chunking, SemanticChunkingConfig } from '../lib/chunking/semantic_chunking';
 import { embedding } from '../lib/embedding';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 import { RecordId } from 'surrealdb';
 import pLimit from 'p-limit';
 
@@ -14,14 +15,14 @@ export interface ChunkProcessorConfig {
 }
 
 export class ChunkProcessor {
-    private logger: Logger;
+    private logger: winston.Logger;
     private chunkStorage!: ChunkStorage;
     private config: ChunkProcessorConfig;
 
 
     constructor(config: ChunkProcessorConfig) {
         this.config = config;
-        this.logger = new Logger('ChunkProcessor');
+        this.logger = createLoggerWithPrefix('ChunkProcessor');
         this.initializeStorage().catch(error => {
             this.logger.error("Failed to initialize storage:", error);
         });

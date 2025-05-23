@@ -2,10 +2,12 @@ import { RecordId } from 'surrealdb';
 import { Entity, Relation, RelationExtractResult, b } from 'baml_client';
 import EntityStorage from '../database/EntityStorage';
 import { surrealDBClient } from '../database/surrealdbClient';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 import { EntityExtractor } from './EntityExtractor';
 import { RelationExtractor } from './RelationExtractor';
 import { default as ChunkStorage } from '../database/chunkStorage';
+import { embedding } from '../lib/embedding';
 
 export interface GraphGeneratorConfig {
     relation_table_name: string;
@@ -13,7 +15,7 @@ export interface GraphGeneratorConfig {
 }
 
 export class GraphGenerator {
-    private logger: Logger;
+    private logger: winston.Logger;
     private entityStorage: EntityStorage;
     private chunkStorage: ChunkStorage;
     private entityExtractor: EntityExtractor;
@@ -24,7 +26,7 @@ export class GraphGenerator {
         this.entityStorage = entityStorage;
         this.chunkStorage = chunkStorage;
         this.config = config;
-        this.logger = new Logger('GraphGenerator');
+        this.logger = createLoggerWithPrefix('GraphGenerator');
         this.entityExtractor = new EntityExtractor(chunkStorage);
         this.relationExtractor = new RelationExtractor(chunkStorage);
     }
@@ -158,7 +160,17 @@ export class GraphGenerator {
             for (const [name, entity] of allEntities) {
                 this.logger.debug(`Processing entity: ${name}`);
                 try {
-                    const createdEntities = await this.entityStorage.createNode(entity);
+                    // Combine name and description for embedding
+                    const textToEmbed = `${entity.name} ${entity.description || ''}`;
+                    // Generate embedding
+                    const entityEmbedding = await embedding(textToEmbed);
+
+                    // Store entity with embedding
+                    const createdEntities = await this.entityStorage.createNode({
+                        ...entity,
+                        embedding: entityEmbedding
+                    });
+
                     if (createdEntities.length > 0) {
                         this.logger.debug(`Created entity ${name} with ID: ${createdEntities[0].id}`);
                         entityIdMap.set(name, createdEntities[0].id);

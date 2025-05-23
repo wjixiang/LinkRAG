@@ -4,6 +4,7 @@ import { b } from '../../../baml_client';
 import { RetrievedDocument } from '../../../baml_client';
 import { ChunkDocument } from '../../database/chunkStorage';
 import { language } from '../../type';
+import createLoggerWithPrefix from '../console/logger';
 
 
 /**
@@ -28,7 +29,7 @@ export default async function baseline_rag_workflow(
     HyDE: boolean = true, 
     language: language = "zh"
 ): Promise<string> {
-    const logger = new Logger('baseline_rag_workflow');
+    const logger = createLoggerWithPrefix('baseline_rag_workflow');
     let retrievalQuery = query;
 
     if (HyDE) {

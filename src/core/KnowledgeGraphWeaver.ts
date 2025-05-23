@@ -1,4 +1,5 @@
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 import { DocumentProcessor } from './DocumentProcessor';
 import { ChunkProcessor } from './ChunkProcessor';
 import { GraphGenerator } from './GraphGenerator';
@@ -26,7 +27,7 @@ export interface KnowledgeGraphWeaverConfig {
 
 export default class KnowledgeGraphWeaver {
 
-    private logger: Logger;
+    private logger: winston.Logger;
     private documentProcessor: DocumentProcessor;
     private chunkProcessor!: ChunkProcessor;
     private graphGenerator!: GraphGenerator;
@@ -39,7 +40,7 @@ export default class KnowledgeGraphWeaver {
 
     constructor(config: KnowledgeGraphWeaverConfig) {
         this.config = config;
-        this.logger = new Logger('KnowledgeGraphWeaver');
+        this.logger = createLoggerWithPrefix('KnowledgeGraphWeaver');
         this.documentProcessor = new DocumentProcessor();
         this.referenceDocumentStorage = new ReferenceDocumentStorage();
         this.initializeComponents().catch(error => {
@@ -87,7 +88,7 @@ export default class KnowledgeGraphWeaver {
 
     }
 
-    async generateKgsForReference(referenceId: RecordId,ConcurrencyLimit=50): Promise<void> {
+    async generateKgsForReference(referenceId: RecordId, ConcurrencyLimit=50): Promise<void> {
         try {
             
             const db = await surrealDBClient.getDb();

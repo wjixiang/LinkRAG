@@ -1,5 +1,7 @@
 import { RecordId, Surreal } from 'surrealdb';
 import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 
 // Define the structure for a chunk document, combining document and vector properties
 export interface ChunkDocument {
@@ -42,12 +44,12 @@ export default class ChunkStorage implements BaseChunkStorage {
     cosine_better_than_threshold: number;
     meta_fields: Set<string>;
     private tableName: string;
-    private logger: Logger;
+    private logger: winston.Logger;
 
     constructor(db: Surreal, tableName: string, embedding_func: EmbeddingFunc, cosine_better_than_threshold: number = 0.2, meta_fields: Set<string> = new Set()) {
         this.db = db;
         this.tableName = tableName;
-        this.logger = new Logger('ChunkStorage');
+        this.logger = createLoggerWithPrefix('ChunkStorage');
         this.embedding_func = embedding_func;
         this.cosine_better_than_threshold = cosine_better_than_threshold;
         this.meta_fields = meta_fields;

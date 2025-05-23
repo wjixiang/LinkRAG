@@ -1,27 +1,20 @@
-import chalk from 'chalk';
+import winston from 'winston';
 
-class Logger {
-    private prefix: string;
+const createLoggerWithPrefix = (prefix: string) => {
+  const logger = winston.createLogger({
+    level: 'debug', // Set a base level, transports can override
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.printf(({ level, message }) => {
+        return `[${prefix}:${level}] ${message}`;
+      })
+    ),
+    transports: [
+      new winston.transports.Console()
+    ]
+  });
 
-    constructor(prefix: string) {
-        this.prefix = prefix;
-    }
+  return logger;
+};
 
-    debug(message: string, ...args: any[]): void {
-        console.debug(chalk.blue(`[${this.prefix}:debug] ${message}`), ...args);
-    }
-
-    info(message: string, ...args: any[]): void {
-        console.info(chalk.green(`[${this.prefix}:info] ${message}`), ...args);
-    }
-
-    warning(message: string, ...args: any[]): void {
-        console.warn(chalk.yellow(`[${this.prefix}:warn] ${message}`), ...args);
-    }
-
-    error(message: string, ...args: any[]): void {
-        console.error(chalk.red(`[${this.prefix}:error] ${message}`), ...args);
-    }
-}
-
-export default Logger;
+export default createLoggerWithPrefix;
