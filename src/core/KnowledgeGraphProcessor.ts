@@ -1,4 +1,5 @@
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { embedding } from '../lib/embedding';
@@ -14,7 +15,7 @@ import { KnowledgeGraphWeaverConfig } from './KnowledgeGraphWeaver'; // Assuming
  * entity property extraction, and building entity-property-entity graphs.
  */
 export class KnowledgeGraphProcessor {
-    private logger: Logger;
+    private logger: winston.Logger;
     private config: KnowledgeGraphWeaverConfig;
 
     /**
@@ -22,7 +23,7 @@ export class KnowledgeGraphProcessor {
      * @param config - The configuration for the knowledge graph weaver.
      * @param logger - The logger instance to use for logging.
      */
-    constructor(config: KnowledgeGraphWeaverConfig, logger: Logger) {
+    constructor(config: KnowledgeGraphWeaverConfig, logger: winston.Logger) {
         this.config = config;
         this.logger = logger;
         this.logger.info('KnowledgeGraphProcessor initialized.');
@@ -48,8 +49,10 @@ export class KnowledgeGraphProcessor {
             this.logger.debug(`ChunkStorage initialized with table: ${this.config.chunkTableName}`);
 
             const retriever = new KnowledgeGraphRetriever({
-                chunkStorage: chunkStorage,
-                chunkTableName: this.config.chunkTableName
+                chunkTableName: this.config.chunkTableName,
+                property_table_name: this.config.property_table_name,
+                entity_table_name: this.config.entity_table_name,
+                semantic_search_threshold: this.config.semantic_search_threshold,
             });
             this.logger.debug('KnowledgeGraphRetriever initialized.');
 
@@ -76,7 +79,7 @@ export class KnowledgeGraphProcessor {
                 aliases: string[]
             }>(entity_id);
             if (!core_entity) {
-                this.logger.warning(`Core entity with ID ${entity_id} not found during relation classification.`);
+                this.logger.warn(`Core entity with ID ${entity_id} not found during relation classification.`);
                 return []; // Return empty array if core entity not found
             }
             this.logger.debug(`Core entity data retrieved: ${JSON.stringify(core_entity)}`);
@@ -135,7 +138,7 @@ export class KnowledgeGraphProcessor {
             const entity = await db.query<{ name: string }[][]>(`SELECT name FROM ${this.config.entity_table_name} WHERE id = ${id}`);
 
             if (!entity || entity.length === 0 || entity[0].length === 0 || !entity[0][0].name) {
-                this.logger.warning(`Entity with ID ${id} not found or name is missing.`);
+                this.logger.warn(`Entity with ID ${id} not found or name is missing.`);
                 throw new Error(`Entity with ID ${id} not found or name is missing.`);
             }
 
@@ -176,21 +179,17 @@ export class KnowledgeGraphProcessor {
             // Get relation groups
             const relation_groups = await this.classify_relation(id);
             if (!relation_groups || relation_groups.length === 0) {
-                this.logger.warning(`No relation groups found for entity ${id} during property extraction.`);
+                this.logger.warn(`No relation groups found for entity ${id} during property extraction.`);
                 return;
             }
             this.logger.debug(`Retrieved ${relation_groups.length} relation groups.`);
 
             // Get all relation records first
-            const chunkStorage = new ChunkStorage(
-                db,
-                this.config.chunkTableName,
-                embedding,
-                0.2
-            );
             const retriever = new KnowledgeGraphRetriever({
-                chunkStorage,
-                chunkTableName: this.config.chunkTableName
+                chunkTableName: this.config.chunkTableName,
+                property_table_name: this.config.property_table_name,
+                entity_table_name: this.config.entity_table_name,
+                semantic_search_threshold: this.config.semantic_search_threshold,
             });
             this.logger.debug('KnowledgeGraphRetriever initialized for property extraction.');
 
@@ -217,7 +216,7 @@ export class KnowledgeGraphProcessor {
                     if (idx >= 0 && idx < all_relations.length) {
                         return all_relations[idx];
                     } else {
-                        this.logger.warning(`Invalid relation index ${idx} in group ${group.group_name} for entity ${id}. Index out of bounds.`);
+                        this.logger.warn(`Invalid relation index ${idx} in group ${group.group_name} for entity ${id}. Index out of bounds.`);
                         return null;
                     }
                 }).filter(relation => relation !== null) as { id: RecordId, source_entity: string, target_entity: string, relation: string }[]; // Cast after filtering nulls
@@ -295,7 +294,7 @@ export class KnowledgeGraphProcessor {
 
             const retrieved_docs = await Promise.all(reference_chunks_of_relation[0].map(async (e) => { // Iterate over the inner array
                 if (!e?.out) {
-                    this.logger.warning(`Missing 'out' reference in relation ${relationId} for chunk reference: ${JSON.stringify(e)}`);
+                    this.logger.warn(`Missing 'out' reference in relation ${relationId} for chunk reference: ${JSON.stringify(e)}`);
                     return '';
                 }
                 try {
@@ -413,7 +412,7 @@ export class KnowledgeGraphProcessor {
                             this.logger.debug(`Superset relationship built for out-link entity ${e.in.id}: ${JSON.stringify(result)}`);
                             break;
                         default:
-                            this.logger.warning(`None target entity identified in relationship for property ${propertyId}:`, e, property.core_entity);
+                            this.logger.warn(`None target entity identified in relationship for property ${propertyId}:`, e, property.core_entity);
                             break;
                     }
                     return result;
@@ -447,7 +446,7 @@ export class KnowledgeGraphProcessor {
             );
 
             if (!entities_result || entities_result.length === 0 || entities_result[0].length === 0) {
-                this.logger.warning(`No entities found in the database table: ${this.config.entity_table_name}. Skipping global graph build.`);
+                this.logger.warn(`No entities found in the database table: ${this.config.entity_table_name}. Skipping global graph build.`);
                 return;
             }
 

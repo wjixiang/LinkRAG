@@ -10,6 +10,7 @@ import { embedding } from "@/lib/embedding"; // Assuming this is the correct emb
 export interface KnowledgeGraphRetrieverConfig {
     chunkTableName: string;
     property_table_name: string;
+    entity_table_name: string;
     semantic_search_threshold: number;
 }
 
@@ -58,6 +59,60 @@ export default class KnowledgeGraphRetriever {
         let surrealQL = `
             SELECT  id, core_entity, property_content, property_name , vector::similarity::cosine(embedding_vector, ${JSON.stringify(queryEmbedding)}) AS score
             FROM ${this.config.property_table_name}
+        `;
+
+        // TODO: semantic search with partition
+        // const conditions: string[] = [];
+        // if (ids && ids.length > 0) {
+        //     conditions.push(`id IN [${ids.map(id => `'${this.tableName}:${id}'`).join(', ')}]`);
+        // }
+
+        // if (conditions.length > 0) {
+        //     surrealQL += ` WHERE ${conditions.join(' AND ')}`;
+        // }
+
+        surrealQL += `
+            ORDER BY score DESC
+            LIMIT ${top_k};
+        `;
+
+        try {
+            const db = await surrealDBClient.getDb()
+            const result = await db.query(surrealQL);
+            this.logger.info("query raw result:", JSON.stringify(result, null, 2));
+            if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
+                 // Filter results based on cosine_better_than_threshold if score is available
+                return (result[0] as (ChunkDocument & { score: number })[])
+                    .filter((item: any) => item.score >= this.config.semantic_search_threshold)
+                    .map(item => ({
+                        document: {
+                            id: item.id,
+                            referenceIds: item.referenceIds,
+                            content: item.content,
+                            ...Object.fromEntries(Object.entries(item).filter(([key]) => !['id', 'referenceIds', 'content', 'embedding', 'score'].includes(key))) // Include other properties
+                        },
+                        score: item.score
+                    }));
+            }
+            return [];
+        } catch (error) {
+            this.logger.error("Error during chunk query:", error);
+            throw error;
+        }
+    }
+
+    async entity_retriever(query: string, top_k: number) {
+        const queryEmbedding = await embedding(query);
+        this.logger.debug("queryEmbedding",queryEmbedding)
+
+        if (queryEmbedding === null) {
+            this.logger.error("Failed to generate embedding for query. Cannot perform vector search.");
+            return []; // Return empty array if embedding generation failed
+        }
+
+        let surrealQL = `
+            SELECT  id, name, description , vector::similarity::cosine(embedding, ${JSON.stringify(queryEmbedding)}) AS score
+            FROM ${this.config.entity_table_name}
         `;
 
         // TODO: semantic search with partition

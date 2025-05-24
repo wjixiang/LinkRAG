@@ -70,7 +70,7 @@ export class ChunkProcessor {
                             content: chunkContent,
                         });
                     } else {
-                        this.logger.warning(`Failed to generate embedding for chunk index ${index}.`);
+                        this.logger.warn(`Failed to generate embedding for chunk index ${index}.`);
                     }
                 });
             });

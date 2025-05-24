@@ -22,6 +22,8 @@ export interface KnowledgeGraphWeaverConfig {
     relation_table_name: string;
     reference_table_name: string;
     SemanticChunkingConfig: SemanticChunkingConfig;
+    property_table_name: string; // Add property_table_name
+    semantic_search_threshold: number; // Add semantic_search_threshold
     // Add other configuration options as needed, e.g., chunking options
 }
 

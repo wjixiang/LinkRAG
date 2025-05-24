@@ -3,14 +3,15 @@ import { surrealDBClient } from '../database/surrealdbClient';
 import EntityStorage from '../database/EntityStorage';
 import ChunkStorage from '../database/chunkStorage';
 import { GraphGenerator } from '../core/GraphGenerator';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 
 async function main() {
     // Initialize required components
     const db = await surrealDBClient.getDb();
     const entityStorage = new EntityStorage(db, 'entities_test');
     const chunkStorage = new ChunkStorage(db, 'chunk', async () => [], 0.2);
-    const logger = new Logger('TestGraphGenerator');
+    const logger = createLoggerWithPrefix('TestGraphGenerator');
 
     // GraphGenerator config
     const config = {

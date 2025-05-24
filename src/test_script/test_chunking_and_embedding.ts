@@ -1,10 +1,11 @@
 import KnowledgeGraphWeaver, { KnowledgeGraphWeaverConfig } from '../core/KnowledgeGraphWeaver';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 import { KnowledgeGraphWeaver_config } from '@/settings';
 
-const logger = new Logger('TestChunkingAndEmbedding');
+const logger = createLoggerWithPrefix('TestChunkingAndEmbedding');
 
 async function runTest() {
     try {

@@ -3,15 +3,16 @@ import { Entity } from 'baml_client';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import entities_extraction_workflow from '@/lib/llm_workflow/entities_extraction_workflow';
 import { entity_type } from '@/promp';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 
 export class EntityExtractor {
-    private logger: Logger;
+    private logger: winston.Logger;
     private chunkStorage: ChunkStorage;
 
     constructor(chunkStorage: ChunkStorage) {
         this.chunkStorage = chunkStorage;
-        this.logger = new Logger('EntityExtractor');
+        this.logger = createLoggerWithPrefix('EntityExtractor');
     }
 
     async extractEntities(chunkId: RecordId): Promise<Entity[]> {

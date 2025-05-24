@@ -10,7 +10,7 @@ const ALIBABA_API_KEY = process.env.ALIBABA_API_KEY;
 type EmbeddingProvider = 'openai' | 'alibaba' | 'onnx';
 
 // Current active provider (configurable)
-let activeProvider: EmbeddingProvider = 'onnx'; // Default to ONNX
+let activeProvider: EmbeddingProvider = 'alibaba'; // Default to ONNX
 const onnxEmbedder = new ONNXEmbedder();
 
 // Initialize ONNX embedder
@@ -93,7 +93,7 @@ async function getONNXEmbedding(text: string): Promise<number[] | null> {
  * @param text Input text to embed
  * @returns Promise resolving to embedding vector or null if failed
  */
-export async function embedding(text: string): Promise<number[] | null> {
+export async function embedding(text: string, provider: EmbeddingProvider = activeProvider): Promise<number[] | null> {
   switch (activeProvider) {
     case 'openai':
       return getOpenAIEmbedding(text);
@@ -102,7 +102,7 @@ export async function embedding(text: string): Promise<number[] | null> {
     case 'onnx':
       return getONNXEmbedding(text);
     default:
-      console.error('Unknown embedding provider:', activeProvider);
+      console.error('Unknown embedding provider:', provider);
       return null;
   }
 }

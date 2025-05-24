@@ -1,13 +1,14 @@
 import { ReferenceDocument, default as ReferenceDocumentStorage } from '../database/referenceDocumentStorage';
-import Logger from '../lib/console/logger';
+import createLoggerWithPrefix from '../lib/console/logger';
 import { RecordId } from 'surrealdb';
+import winston from 'winston';
 
 export class DocumentProcessor {
-    private logger: Logger;
+    private logger: winston.Logger;
     private referenceDocumentStorage: ReferenceDocumentStorage;
 
     constructor() {
-        this.logger = new Logger('DocumentProcessor');
+        this.logger = createLoggerWithPrefix('DocumentProcessor');
         this.referenceDocumentStorage = new ReferenceDocumentStorage();
     }
 

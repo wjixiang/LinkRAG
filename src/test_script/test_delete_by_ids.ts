@@ -1,6 +1,7 @@
 import { Surreal } from 'surrealdb';
 import ChunkStorage, { ChunkDocument, EmbeddingFunc } from '../database/chunkStorage';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 
 // Mock SurrealDB client
 // We use 'any' for simplicity in this test script to avoid complex type mocking
@@ -32,7 +33,7 @@ const mockEmbeddingFunc: EmbeddingFunc = async (text: string) => {
     return [0.1, 0.2, 0.3];
 };
 
-const logger = new Logger('TestDeleteByIds');
+const logger = createLoggerWithPrefix('TestDeleteByIds');
 const tableName = 'test_chunks';
 const chunkStorage = new ChunkStorage(mockDb as Surreal, tableName, mockEmbeddingFunc);
 

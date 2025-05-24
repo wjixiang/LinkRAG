@@ -10,14 +10,14 @@ async function main() {
     await retriever.init();
 
     // Sample query and top_k
-    const query = "急性肾小球肾炎的治疗"; // Changed to a simpler query
+    const query = "小动脉玻璃样变"; // Changed to a simpler query
     const top_k = 5;
 
     console.log(`Testing property_retriever with query: "${query}" and top_k: ${top_k}`);
 
     try {
         console.log("Attempting to retrieve properties...");
-        const results = await retriever.property_retriever(query, top_k);
+        const results = await retriever.entity_retriever(query, top_k);
         console.log("Property Retriever Results:", JSON.stringify(results, null, 2));
     } catch (error) {
         console.error("Error during property_retriever test:", error);

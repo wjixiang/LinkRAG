@@ -1,9 +1,10 @@
 import KnowledgeGraphWeaver, { KnowledgeGraphWeaverConfig } from '../core/KnowledgeGraphWeaver';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { KnowledgeGraphWeaver_config } from '@/settings';
 
-const logger = new Logger('TestSaveKnowledgeGraph');
+const logger = createLoggerWithPrefix('TestSaveKnowledgeGraph');
 
 async function runTest() {
     logger.info('Starting test for save_to_reference_document_storage');

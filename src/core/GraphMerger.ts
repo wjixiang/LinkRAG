@@ -2,7 +2,8 @@ import { RecordId } from 'surrealdb';
 import { Entity, b } from 'baml_client';
 import EntityStorage from '../database/EntityStorage';
 import { surrealDBClient } from '../database/surrealdbClient';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 import pLimit from 'p-limit';
 import { EntityRecord } from '@/type';
 
@@ -12,14 +13,14 @@ export interface GraphMergerConfig {
 }
 
 export class GraphMerger {
-    private logger: Logger;
+    private logger: winston.Logger;
     private entityStorage: EntityStorage;
     private config: GraphMergerConfig;
 
     constructor(entityStorage: EntityStorage, config: GraphMergerConfig) {
         this.entityStorage = entityStorage;
         this.config = config;
-        this.logger = new Logger('GraphMerger');
+        this.logger = createLoggerWithPrefix('GraphMerger');
     }
 
     async jointGraph(concurrencyLimit=10) {

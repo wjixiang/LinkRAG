@@ -1,9 +1,10 @@
 import { KnowledgeGraphWeaver_config } from '@/settings';
 import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
 import { surrealDBClient } from '../database/surrealdbClient';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 
-const logger = new Logger('test_build_global_EPE_graph');
+const logger = createLoggerWithPrefix('test_build_global_EPE_graph');
 
 async function main() {
     try {

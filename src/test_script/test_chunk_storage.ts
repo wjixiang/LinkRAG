@@ -1,10 +1,11 @@
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { embedding } from '../lib/embedding';
 import ChunkStorage, { ChunkDocument, EmbeddingFunc } from '../database/chunkStorage';
 import { RecordId } from 'surrealdb';
 
-const logger = new Logger('TestChunkStorage');
+const logger = createLoggerWithPrefix('TestChunkStorage');
 
 async function testChunkStorage() {
     try {

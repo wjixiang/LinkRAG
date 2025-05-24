@@ -2,15 +2,16 @@ import { RecordId } from 'surrealdb';
 import { Entity, Relation, RelationExtractResult } from 'baml_client';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import relations_extract_workflow from '@/lib/llm_workflow/relations_extract_workflow';
-import Logger from '../lib/console/logger';
+import winston from 'winston';
+import createLoggerWithPrefix from '../lib/console/logger';
 
 export class RelationExtractor {
-    private logger: Logger;
+    private logger: winston.Logger;
     private chunkStorage: ChunkStorage;
 
     constructor(chunkStorage: ChunkStorage) {
         this.chunkStorage = chunkStorage;
-        this.logger = new Logger('RelationExtractor');
+        this.logger = createLoggerWithPrefix('RelationExtractor');
     }
 
     async extractRelations(chunkId: RecordId, entities: Entity[]): Promise<RelationExtractResult[]> {
