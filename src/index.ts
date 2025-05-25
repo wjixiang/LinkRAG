@@ -1,3 +1,5 @@
+import './lib/baml_collector'; // Import the BAML collector to activate logging
+
 export { default as KnowledgeGraphRetriever } from './core/KnowledgeGraphRetriever';
 export type { KnowledgeGraphRetrieverConfig } from './core/KnowledgeGraphRetriever';
 

@@ -1,5 +1,6 @@
 import { RecordId } from 'surrealdb';
 import { Entity, Relation, RelationExtractResult, b } from 'baml_client';
+import { Collector } from '@boundaryml/baml';
 import EntityStorage from '../database/EntityStorage';
 import { surrealDBClient } from '../database/surrealdbClient';
 import winston from 'winston';
@@ -17,18 +18,19 @@ export interface GraphGeneratorConfig {
 export class GraphGenerator {
     private logger: winston.Logger;
     private entityStorage: EntityStorage;
-    private chunkStorage: ChunkStorage;
     private entityExtractor: EntityExtractor;
     private relationExtractor: RelationExtractor;
     private config: GraphGeneratorConfig;
 
-    constructor(entityStorage: EntityStorage, chunkStorage: ChunkStorage, config: GraphGeneratorConfig) {
+    private collector?: Collector;
+
+    constructor(entityStorage: EntityStorage, chunkStorage: ChunkStorage, config: GraphGeneratorConfig, collector?: Collector) {
         this.entityStorage = entityStorage;
-        this.chunkStorage = chunkStorage;
         this.config = config;
         this.logger = createLoggerWithPrefix('GraphGenerator');
         this.entityExtractor = new EntityExtractor(chunkStorage);
         this.relationExtractor = new RelationExtractor(chunkStorage);
+        this.collector = collector;
     }
 
     /**
@@ -97,7 +99,8 @@ export class GraphGenerator {
                 //         const matchResult = await b.VerifyEntities(
                 //             relation.source_entity,
                 //             Array.from(allEntities.values()),
-                //             chunkText
+                //             chunkText,
+                //             { baml_options: { collector: this.collector } }
                 //         );
 
                 //         if (matchResult.is_match && matchResult.matched_entity_name) {
@@ -108,7 +111,8 @@ export class GraphGenerator {
                 //             const result = await b.ExtractMissingEntities(
                 //                 relation.source_entity,
                 //                 Array.from(allEntities.values()),
-                //                 chunkText
+                //                 chunkText,
+                //                 { baml_options: { collector: this.collector } }
                 //             );
                 //             if (result.extracted_entities.length > 0) {
                 //                 allEntities.set(result.extracted_entities[0].name, result.extracted_entities[0]);
@@ -125,7 +129,8 @@ export class GraphGenerator {
                 //         const matchResult = await b.VerifyEntities(
                 //             relation.target_entity,
                 //             Array.from(allEntities.values()),
-                //             chunkText
+                //             chunkText,
+                //             { baml_options: { collector: this.collector } }
                 //         );
 
                 //         if (matchResult.is_match && matchResult.matched_entity_name) {
@@ -136,7 +141,8 @@ export class GraphGenerator {
                 //             const result = await b.ExtractMissingEntities(
                 //                 relation.target_entity,
                 //                 Array.from(allEntities.values()),
-                //                 chunkText
+                //                 chunkText,
+                //                 { baml_options: { collector: this.collector } }
                 //             );
                 //             if (result.extracted_entities.length > 0) {
                 //                 allEntities.set(result.extracted_entities[0].name, result.extracted_entities[0]);

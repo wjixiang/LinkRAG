@@ -1,8 +1,6 @@
 import KnowledgeGraphRetriever from '../../core/KnowledgeGraphRetriever';
-import Logger from '../console/logger';
 import { b } from '../../../baml_client';
 import { RetrievedDocument } from '../../../baml_client';
-import { ChunkDocument } from '../../database/chunkStorage';
 import { language } from '../../type';
 import createLoggerWithPrefix from '../console/logger';
 

@@ -10,7 +10,7 @@ async function main() {
     await retriever.init();
 
     // Sample query and top_k
-    const query = "急性肾小球肾炎的治疗"; // Sample query
+    const query = "类风湿性关节炎的发病机制"; // Sample query
     const top_k = 5;
 
     console.log(`Testing chunks_retriver with query: "${query}" and top_k: ${top_k}`);

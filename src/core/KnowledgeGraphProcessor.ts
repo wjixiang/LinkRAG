@@ -321,7 +321,7 @@ export class KnowledgeGraphProcessor {
      * @returns A promise that resolves when the local graph is built.
      */
     async build_local_EPE_graph(property: PropertySummarizeResult) {
-        this.logger.info(`Starting local EPE graph build for property: ${property.property_name} of entity ${property.core_entity.id}`);
+        this.logger.info(`Starting local EPE graph build for property: ${property.property_name} of entity ${property.core_entity.name}`);
         try {
             const db = await surrealDBClient.getDb();
             this.logger.debug('Database client obtained.');
@@ -351,7 +351,7 @@ export class KnowledgeGraphProcessor {
                 in: property.core_entity.id,
                 out: propertyId
             });
-            this.logger.debug(`Entity-Property relationship built: ${JSON.stringify(entity_property_build_result)}`);
+            this.logger.debug(`Entity-Property relationship built: ${entity_property_build_result.length}`);
 
 
             // build property-->relation reference relationship
@@ -361,7 +361,7 @@ export class KnowledgeGraphProcessor {
                         in: propertyId,
                         out: e.id
                     });
-                    this.logger.debug(`Property-Relation reference relationship built for relation ${e.id}: ${JSON.stringify(result)}`);
+                    this.logger.debug(`Property-Relation reference relationship built for relation ${e.id}`);
                     return result;
                 } catch (relationError) {
                     this.logger.error(`Error building property-relation relationship for relation ${e.id}:`, relationError);

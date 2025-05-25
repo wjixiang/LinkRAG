@@ -48,17 +48,19 @@ export default class KnowledgeGraphRetriever {
     }
 
     async property_retriever(query: string, top_k: number ) {
-        const queryEmbedding = await embedding(query);
-        this.logger.debug("queryEmbedding",queryEmbedding)
-
+        const queryEmbedding = await embedding(query, "alibaba");
+        // this.logger.debug("queryEmbedding length:", queryEmbedding?.length);
+        this.logger.debug(`queryEmbedding type: ${typeof queryEmbedding}, length: ${queryEmbedding?.length}`);
+        
         if (queryEmbedding === null) {
             this.logger.error("Failed to generate embedding for query. Cannot perform vector search.");
             return []; // Return empty array if embedding generation failed
         }
 
         let surrealQL = `
-            SELECT  id, core_entity, property_content, property_name , vector::similarity::cosine(embedding_vector, ${JSON.stringify(queryEmbedding)}) AS score
+            SELECT  id, core_entity, property_content, property_name , vector::similarity::cosine(embedding_vector, <array<number>> $queryEmbedding) AS score
             FROM ${this.config.property_table_name}
+            WHERE embedding_vector != NONE
         `;
 
         // TODO: semantic search with partition
@@ -78,7 +80,7 @@ export default class KnowledgeGraphRetriever {
 
         try {
             const db = await surrealDBClient.getDb()
-            const result = await db.query(surrealQL);
+            const result = await db.query(surrealQL, { queryEmbedding: queryEmbedding });
             this.logger.info("query raw result:", JSON.stringify(result, null, 2));
             if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
                  // Filter results based on cosine_better_than_threshold if score is available
@@ -111,8 +113,9 @@ export default class KnowledgeGraphRetriever {
         }
 
         let surrealQL = `
-            SELECT  id, name, description , vector::similarity::cosine(embedding, ${JSON.stringify(queryEmbedding)}) AS score
+            SELECT  id, name, description , vector::similarity::cosine(embedding, $queryEmbedding) AS score
             FROM ${this.config.entity_table_name}
+            WHERE embedding != NONE
         `;
 
         // TODO: semantic search with partition
@@ -132,7 +135,7 @@ export default class KnowledgeGraphRetriever {
 
         try {
             const db = await surrealDBClient.getDb()
-            const result = await db.query(surrealQL);
+            const result = await db.query(surrealQL, { queryEmbedding: queryEmbedding });
             this.logger.info("query raw result:", JSON.stringify(result, null, 2));
             if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
                  // Filter results based on cosine_better_than_threshold if score is available

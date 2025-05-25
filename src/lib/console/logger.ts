@@ -10,7 +10,8 @@ const createLoggerWithPrefix = (prefix: string) => {
       })
     ),
     transports: [
-      new winston.transports.Console()
+      new winston.transports.Console(),
+      new winston.transports.File({ filename: 'error.log', level: 'error' })
     ]
   });
 

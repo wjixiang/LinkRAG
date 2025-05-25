@@ -1,0 +1,400 @@
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 11
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 12
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 13
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 14
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 15
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 16
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 17
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 18
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 19
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 20
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 21
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 22
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: BamlClientHttpError: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:dexyc5nobfpxt4ppeoh5: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:dexyc5nobfpxt4ppeoh5: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 11
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 12
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: BamlClientHttpError: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:t8qkfbu2bl0idihtwlw9: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:t8qkfbu2bl0idihtwlw9: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 1
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 11
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Argument 1 was the wrong type. Expected a array but found NULL
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Argument 1 was the wrong type. Expected a array but found NULL
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Argument 1 was the wrong type. Expected a array but found NULL
+[GraphMerger:[31merror[39m] Failed to merge entities for name 类风湿关节炎: BamlError: BamlClientError: BamlClientHttpError: LLM call failed: LLMErrorResponse { client: "GLM4Flash", model: None, prompt: Chat([RenderedChatMessage { role: "system", allow_duplicate_role: false, parts: [Text("You are a knowledge management assistant for deeply merging and synthesizing entity descriptions.\nUse 中文 as output language.\n---step---\n1. Carefully analyze the current entity description and the new information provided.\n2. Synthesize and integrate the information from both descriptions into a single, cohesive narrative.\n3. Resolve any conflicting or redundant information, prioritizing accuracy and completeness.\n4. Ensure the final merged description is concise, accurate, and flows naturally.\n\n---rules---\n- The output must be a single string containing the deeply merged and synthesized description.\n- Avoid simply concatenating the original descriptions.\n- Focus on creating a unified and comprehensive description.\n- Use precise terminology relevant to the entity's domain.\n\n---output format---\nReturn only the deeply merged and synthesized description of the entity as a single string.")] }, RenderedChatMessage { role: "user", allow_duplicate_role: false, parts: [Text("---task---\n- Current definition:  对称性多关节肿痛、关节变形、晨僵和类风湿结节是类风湿关节炎（RA）的典型临床表现。RA是一种以侵蚀性、对称性多关节炎为主要表现的慢性、全身性自身免疫疾病，确切发病机制尚不明确。患者常经历双侧对称性多关节肿痛和晨僵，并伴随乏力、低热、肌肉酸痛、体重下降等全身症状。基本病理改变为关节滑膜的慢性炎症和血管翳形成，导致关节软骨和骨破坏，可能引发关节畸形和功能丧失。鉴别诊断时需与手和膝OA、银屑病关节炎、痛风、假性痛风等疾病相区分。心包炎和肺受累是其常见的心脏和肺部并发症，约30%的患者会出现肺间质病变。眼受累可能表现为继发干燥综合征所致的干眼症，严重者可导致视力损害。神经系统受压是RA患者出现神经系统病变的常见原因。病因和发病机制复杂，涉及遗传、感染、环境等多因素共同作用，自身免疫反应导致的免疫损伤和修复是RA发生和发展的基础。RA的发病高峰年龄为35～50岁，女性患病率约为男性的2～3倍，我国RA的患病率为0.42%，且呈现逐年递增趋势，平均发病年龄为47岁。后期，RA患者多表现为慢性、对称性多外周关节肿痛，并可出现关节畸形。继发性纤维肌痛症（FMS）可能继发于RA等疾病。早期诊断、早期治疗至关重要。\n- new information ready to be merged: RA 的血管炎可累及中、小动脉和 / 或静脉，受累血管内膜有增生、管壁淋巴细胞浸润、纤维素样坏死，导致血管壁增厚、血管腔狭窄或闭塞。类风湿结节是血管炎的一种典型表现，结节中心为纤维素样坏死组织，周围有上皮样细胞浸润，排列成环状，最外层为肉芽组织。【临床表现】RA 多为慢性起病，以手、腕、足等双侧对称性多关节肿痛为首发表现，常伴有晨僵，可伴有乏力、低热、肌肉酸痛、体重下降等全身症状。少数患者急性起病，在数天内出现典型的关节症状。RA 的临床表现具有一定的个体差异性。（一）关节表现 1. 晨僵（morning stiffness）是指关节部位的僵硬和胶着感。晨起明显，活动后减轻。通常持续超过半小时，常被作为判断疾病活动的指标之一，但主观性很强。可见于多种关节炎，但以 RA 最突出。2. 关节肿胀多因滑膜增生、关节腔积液和关节周围软组织水肿所致，亦多呈对称性，多伴有关节疼痛。最常出现的部位为腕、掌指、近端指间关节，其次是足趾、膝、踝、肘、肩等关节。3. 关节痛与压痛往往是 RA 最早的症状，关节疼痛和压痛部位通常与关节肿胀部位相一致，多为对称性、持续性。疼痛的关节往往伴有压痛。4. 关节畸形见于较晚期患者。关节周围肌肉的萎缩、痉挛使畸形更为加重。\n\n---response---")] }]), request_options: {"model": String("glm-4-flash"), "retry_policy": String("GLMRetry")}, start_time: SystemTime { tv_sec: 1748108565, tv_nsec: 767792000 }, latency: 372.719417ms, message: "Failed to parse JSON: expected value at line 1 column 1", code: Other(502) }
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Argument 1 was the wrong type. Expected a array but found NULL
+[GraphMerger:[31merror[39m] Failed to merge entities for name 肌炎相关抗体: BamlError: BamlClientError: BamlClientHttpError: LLM call failed: LLMErrorResponse { client: "GLM4Flash", model: None, prompt: Chat([RenderedChatMessage { role: "system", allow_duplicate_role: false, parts: [Text("You are a knowledge management assistant for deeply merging and synthesizing entity descriptions.\nUse 中文 as output language.\n---step---\n1. Carefully analyze the current entity description and the new information provided.\n2. Synthesize and integrate the information from both descriptions into a single, cohesive narrative.\n3. Resolve any conflicting or redundant information, prioritizing accuracy and completeness.\n4. Ensure the final merged description is concise, accurate, and flows naturally.\n\n---rules---\n- The output must be a single string containing the deeply merged and synthesized description.\n- Avoid simply concatenating the original descriptions.\n- Focus on creating a unified and comprehensive description.\n- Use precise terminology relevant to the entity's domain.\n\n---output format---\nReturn only the deeply merged and synthesized description of the entity as a single string.")] }, RenderedChatMessage { role: "user", allow_duplicate_role: false, parts: [Text("---task---\n- Current definition:  肌炎相关抗体指在其他可能发生肌炎的情况下出现的自身抗体，包括系统性硬化症和系统性红斑狼疮等。包括抗 SSA（Ro52、Ro60）抗体、抗 SSB（La）抗体、抗 PM-Scl 抗体、抗 Ku 抗体、抗 U1RNP 抗体等。\n- new information ready to be merged: 肌炎相关抗体指在其他可能发生肌炎的情况下出现的自身抗体，包括抗 SSA（Ro52、Ro60）抗体、抗 SSB（La）抗体、抗 PM-Scl 抗体、抗 Ku 抗体、抗 U1RNP 抗体等。\n\n---response---")] }]), request_options: {"model": String("glm-4-flash"), "retry_policy": String("GLMRetry")}, start_time: SystemTime { tv_sec: 1748108593, tv_nsec: 940604000 }, latency: 368.536666ms, message: "Failed to parse JSON: expected value at line 1 column 1", code: Other(502) }
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Expected 2 arguments.
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Expected 2 arguments.
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Expected 2 arguments.
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Argument 1 was the wrong type. Expected a array but found NULL
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Argument 1 was the wrong type. Expected a array but found NULL
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 相关抗体 of entity 抗 SAE 抗体: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:05bbkxmyemm857k4nssu: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 疾病定义与特征 of entity 复发性多软骨炎: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0355sqrgjunrsaxee295: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 排除标准 of entity 冷球蛋白血症: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0em7inzq1uvzvt2rfwiy: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 并发症 of entity 类风湿关节炎: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:07en03ugdloiuhh96g9c: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 表现相关 of entity 皮肤类风湿结节: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0gfat3da75kmr6qzkf8b: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 其他 of entity 风湿免疫病: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0aob5h4xduzq3xr71sqb: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 其他 of entity 免疫抑制剂: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0qah8dcz2vcy814syk8m: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 适用疾病 of entity 免疫抑制剂: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 其他 of entity 系统性红斑狼疮: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:02df7z0iojgliln9u5vz: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 临床表现 of entity 系统性红斑狼疮: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 并发症 of entity 链球菌感染: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0q6fxstqnpidqjgzijzz: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 抗体性质 of entity 抗 HMGCR 抗体: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0vtishbs5bec0h2pe3b8: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 细胞因子分泌 of entity TLR: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:1c4y8esriiop3muwmliz: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 治疗与药物 of entity SLE: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0djn5vibmq78f3lcmz59: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 病理变化 of entity 血管炎: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:19mxadslio56esyx24x9: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 并发症 of entity 血管炎: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 疾病特征 of entity 大动脉炎: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:1dvykuyua89v3zn8g1wr: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 疾病预后 of entity 巨细胞动脉炎: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:26lxgq4krz7pgve1849u: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 疾病分期 of entity 痛风: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:1ibnbh71fs0mf58f1mqq: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 鉴别诊断 of entity 淋巴瘤: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:29fyn3t906smpdt9fb5y: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 危险因素 of entity 淋巴瘤: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 相关症状 of entity 颈痛: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:2q8f3no4jqbnv7kdhg7p: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphRetriever:[31merror[39m] Error during chunk query: Incorrect arguments for function vector::similarity::cosine(). Argument 1 was the wrong type. Expected a array but found NULL
+[KnowledgeGraphWeaver:[31merror[39m] Failed to build local EPE graph for property 诊断方法 of entity 贝赫切特病: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:2aohbu08hk1y9ingbnzo: There was a problem with the database: The query was not executed due to a failed transaction. Failed to commit transaction due to a read or write conflict. This transaction can be retried
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: BamlClientHttpError: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:14d103629mxxt0geclus: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:14d103629mxxt0geclus: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: BamlClientHttpError: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:o92mlks48hmmqz3crg8u: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:o92mlks48hmmqz3crg8u: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 11
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 12
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 13
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 14
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 15
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 11
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 12
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 13
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 14
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 15
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 16
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 17
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 11
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: Error: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:paybxca9rk1lqoaeqlj9: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:paybxca9rk1lqoaeqlj9: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:nmi8gq7b7du5yxbnsm24: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:nmi8gq7b7du5yxbnsm24: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:orq1031yj9gvg3j0jqsh: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:orq1031yj9gvg3j0jqsh: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: Error: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:r011sg2fvbwk2ln6q04y: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:r011sg2fvbwk2ln6q04y: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:jlyzmd4yxq9hublmyk3b: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, Error { code: -9806, message: "connection closed via error" }) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:jlyzmd4yxq9hublmyk3b: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, Error { code: -9806, message: "connection closed via error" }) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:p2vj2r7dock3z0zjhzot: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:p2vj2r7dock3z0zjhzot: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: Error: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, Error { code: -9806, message: "connection closed via error" }) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:rn1u20gefyoidliw979q: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, Error { code: -9806, message: "connection closed via error" }) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:rn1u20gefyoidliw979q: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, Error { code: -9806, message: "connection closed via error" }) }
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: Error: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:ri7c007mp76jccjsipxl: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:ri7c007mp76jccjsipxl: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:o6aksoolixzfr8hrmbia: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:o6aksoolixzfr8hrmbia: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:l7b1j6bci1lecae9uib4: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:l7b1j6bci1lecae9uib4: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:qejvgts9dmzw9z74403z: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:qejvgts9dmzw9z74403z: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:r25t3szgpsrwi064m6zm: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:r25t3szgpsrwi064m6zm: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: Error: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(Http2, KeepAliveTimedOut)) }
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:pbiu9kwv4e94k8z9nmhi: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(Http2, KeepAliveTimedOut)) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:pbiu9kwv4e94k8z9nmhi: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(SendRequest, hyper::Error(Http2, KeepAliveTimedOut)) }
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: BamlClientHttpError: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:tlud51wl1hr8yogut7xa: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:tlud51wl1hr8yogut7xa: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 8
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 9
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 7
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[entities_extraction_workflow:[31merror[39m] Error during entities extraction workflow: BamlClientHttpError: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Error during knowledge graph generation for chunk ID test_chunks:y8uddv19lr80mxg8zncn: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[KnowledgeGraphWeaver:[31merror[39m] Error processing chunk test_chunks:y8uddv19lr80mxg8zncn: BamlError: BamlClientError: BamlClientHttpError: Request failed with status code: 400 Bad Request. {"contentFilter":[{"level":1,"role":"assistant"}],"error":{"code":"1301","message":"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。"}}
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 10
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 4
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 5
+[GraphGenerator:[31merror[39m] Invalid target entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 1
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 2
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 3
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 6
+[GraphGenerator:[31merror[39m] Invalid source entity index (out of range): 12
+[GraphMerger:[31merror[39m] Failed to merge entities for name 淋巴结肿大: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Failed to extract entity properties for nodes:0ur1lwvurbcd5xz1wri4: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0ur1lwvurbcd5xz1wri4: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }

@@ -14,7 +14,7 @@ export interface ChunkDocument {
 
 // Define types based on the Python abstract class
 
-export type EmbeddingFunc = (text: string) => Promise<number[] | null>;
+export type EmbeddingFunc = (text: string | string[]) => Promise<number[] | number[][] | null>;
 
 interface BaseChunkStorage {
     embedding_func: EmbeddingFunc;
