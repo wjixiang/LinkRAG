@@ -2,8 +2,7 @@ import { KeywordExtractor } from '../core/KeywordExtractor';
 
 // Sample Chinese text to analyze
 const sampleText = `
-自然语言处理是人工智能的一个重要领域，它研究能实现人与计算机之间用自然语言进行有效通信的各种理论和方法。
-自然语言处理是一门融语言学、计算机科学、数学于一体的科学。
+类风湿性关节炎的发病机制
 `;
 
 // Create extractor instance

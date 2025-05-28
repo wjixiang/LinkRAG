@@ -398,3 +398,433 @@
 [GraphMerger:[31merror[39m] Failed to merge entities for name 淋巴结肿大: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
 [KnowledgeGraphWeaver:[31merror[39m] Failed to extract entity properties for nodes:0ur1lwvurbcd5xz1wri4: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
 [KnowledgeGraphWeaver:[31merror[39m] Error processing entity nodes:0ur1lwvurbcd5xz1wri4: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Unexpected token `WHEN`, expected FROM
+ --> [8:25]
+  |
+8 | WHEN name IN $keywords OR array::contains(aliases, $keywords) THEN 1.0 // Exa...
+  | ^^^^ 
+
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Unexpected token `WHEN`, expected FROM
+ --> [8:25]
+  |
+8 | WHEN name IN $keywords OR array::contains(aliases, $keywords) THEN 1.0 // Exa...
+  | ^^^^ 
+
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Unexpected token `WHEN`, expected FROM
+ --> [8:25]
+  |
+8 | WHEN name IN $keywords OR array::contains(aliases, $keywords) THEN 1.0 // Exa...
+  | ^^^^ 
+
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Invalid function/constant path
+ --> [8:45]
+  |
+8 | WHERE (name IN $keywords OR array::contains(aliases, $keywords) OR string::co...
+  |                             ^^^^^^^^^^^^^^^ 
+
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Invalid function/constant path
+ --> [8:45]
+  |
+8 | WHERE (name IN $keywords OR array::contains(aliases, $keywords) OR string::co...
+  |                             ^^^^^^^^^^^^^^^ 
+
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Invalid function/constant path
+ --> [8:45]
+  |
+8 | WHERE (name IN $keywords OR array::contains(aliases, $keywords) OR string::co...
+  |                             ^^^^^^^^^^^^^^^ 
+
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Invalid function/constant path
+ --> [8:45]
+  |
+8 | WHERE (name IN $keywords OR array::contains(aliases, $keywords) OR array::any...
+  |                             ^^^^^^^^^^^^^^^ 
+
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Invalid function/constant path
+ --> [8:45]
+  |
+8 | WHERE (name IN $keywords OR array::contains(aliases, $keywords) OR string::co...
+  |                             ^^^^^^^^^^^^^^^ 
+
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: Incorrect arguments for function array::any(). Argument 1 was the wrong type. Expected a array but found NONE
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: Incorrect arguments for function array::any(). Argument 1 was the wrong type. Expected a array but found NONE
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: Incorrect arguments for function array::any(). Argument 1 was the wrong type. Expected a array but found NONE
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: Incorrect arguments for function array::any(). Argument 1 was the wrong type. Expected a array but found NONE
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: Incorrect arguments for function string::similarity::jaro(). Argument 1 was the wrong type. Expected a string but found NONE
+[KnowledgeGraphRetriever:[31merror[39m] Error during keyword search: There was a problem with the database: Parse error: Invalid token `类`
+ --> [1:40]
+  |
+1 | SELECT name, (string::similarity::jaro(类风湿性关节炎, name)) AS score FROM nodes WH...
+  |                                        ^ 
+
+[DocumentProcessor:[31merror[39m] Failed to save knowledge graph to reference document storage: length limit exceeded
+[DocumentProcessor:[31merror[39m] Failed to save knowledge graph to reference document storage: length limit exceeded
+[KnowledgeGraphWeaver:[31merror[39m] Failed to save reference document for file: /Users/a123/Documents/GitHub/LinkRAG/textbook/internal.txt
+[KnowledgeGraphWeaver:[31merror[39m] Error during chunking and embedding from file path /Users/a123/Documents/GitHub/LinkRAG/textbook/internal.txt: Cannot read properties of undefined (reading 'processDocument')
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400

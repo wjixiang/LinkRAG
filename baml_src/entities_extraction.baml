@@ -115,10 +115,52 @@ function ExtractEntityLoop(chunk_text:string, entity_type: string[], already_ide
   "#
 }
 
-function ExtractEntityFromQuery(arg:string) -> Entity[] {
+function ExtractEntityFromQuery(query: string) -> Entity[] {
   client "GLM4Flash"
   prompt #"
-    Your prompt here in jinja format
+  {{_.role('user')}}
+
+  ---role---
+  You are a medical knowledge extraction assistant that identifies entities from user queries.
+
+  ---instruction---
+  1. Analyze the user query to extract both high-level concepts and specific entities
+  2. Consider the conversation context if available
+  3. Output entities in standard format with name, description, type and aliases
+  4. Maintain the same language as the query
+  5. Entity types should be relevant to medical domain (disease, symptom, treatment etc.)
+
+  ---example---
+  ###example_input###
+  患者最近有头痛和视力模糊，怀疑是青光眼
+
+  ###example_output###
+  [
+    {
+      name: "头痛",
+      description: "患者最近有头痛",
+      type: "symptom",
+      aliases: []
+    },
+    {
+      name: "视力模糊",
+      description: "患者有视力模糊",
+      type: "symptom",
+      aliases: []
+    },
+    {
+      name: "青光眼",
+      description: "怀疑是青光眼",
+      type: "disease",
+      aliases: []
+    }
+  ]
+
+  ---input---
+  {{ query }}
+
+  ---output---
+  {{ ctx.output_format }}
   "#
 }
 
@@ -136,7 +178,6 @@ template_string EntityExtractExamples(examples: EntityExtractionExample) #"
 "#
 
 
-
 test TestExtractMainEntity {
   functions [ExtractEntity]
   args {
@@ -144,5 +185,14 @@ test TestExtractMainEntity {
       弥漫性肾小球肾炎（diffuse glomerulonephritis） （1）膜性肾病（membranous nephropathy，MN）。 （2） 增生性肾小球肾炎（proliferative glomerulonephritis）：① 系膜增生性肾小球肾炎（mesangial proliferative glomerulonephritis）；②毛细血管内增生性肾小球肾炎（endocapillary proliferative glomerulonephritis）； ③ 系膜毛细血管性肾小球肾炎（mesangial capillary glomerulonephritis），包括膜增生性肾小球肾炎 （membranoproliferative glomerulonephritis，MPGN）Ⅰ型和Ⅲ型；④致密物沉积病（dense deposit disease），又称为膜增生性肾小球肾炎Ⅱ型；⑤新月体性肾小球肾炎（crescentic glomerulonephritis）。 （3）硬化性肾小球肾炎（sclerosing glomerulonephritis）。
     "#
     entity_type ["disease", "symptom","body_part","organ","tissue","cell", "pathology_change","medicine","treatment","surgery", "population", "examination","diagnosis","etiology","risk_factor","prognosis","complication","differential_diagnosis","prevention"]
+  }
+}
+
+test TestExtractEntityFromQuery {
+  functions [ExtractEntityFromQuery]
+  args {
+    query #"
+      类风湿性关节炎的发病机制
+    "#
   }
 }

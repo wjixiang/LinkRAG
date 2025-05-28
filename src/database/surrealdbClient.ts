@@ -12,7 +12,7 @@ class SurrealDBClient {
     try {
       this.db = new Surreal();
       await this.authenticate(url);
-      console.log('Connected to SurrealDB');
+      // console.log('Connected to SurrealDB');
     } catch (error) {
       console.error('Failed to connect to SurrealDB:', error);
       this.db = null;

@@ -22,5 +22,6 @@ export const KnowledgeGraphRetriever_Config: KnowledgeGraphRetrieverConfig = {
     chunkTableName: KnowledgeGraphWeaver_config.chunkTableName,
     property_table_name: "property",
     entity_table_name: KnowledgeGraphWeaver_config.entity_table_name,
-    semantic_search_threshold: 0.33
+    semantic_search_threshold: 0.33,
+    language: "zh"
 };

@@ -1,30 +1,42 @@
-import { KnowledgeGraphRetriever_Config } from "@/settings";
-import KnowledgeGraphRetriever from "../core/KnowledgeGraphRetriever";
 import { surrealDBClient } from "@/database/surrealdbClient";
+import KnowledgeGraphRetriever from "@/core/KnowledgeGraphRetriever";
+import { KnowledgeGraphRetriever_Config } from "@/settings"; // Import config from settings
 
-async function main() {
-    // Mock configuration for testing
-    const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
-
-    // Initialize the retriever
-    await retriever.init();
-
-    // Sample query and top_k
-    const query = "小动脉玻璃样变"; // Changed to a simpler query
-    const top_k = 5;
-
-    console.log(`Testing property_retriever with query: "${query}" and top_k: ${top_k}`);
-
+async function testEntityRetriever() {
     try {
-        console.log("Attempting to retrieve properties...");
-        const results = await retriever.entity_retriever(query, top_k);
-        console.log("Property Retriever Results:", JSON.stringify(results, null, 2));
+        // Use the configuration from settings
+        const config = KnowledgeGraphRetriever_Config;
+
+        // Create and initialize the retriever
+        const retriever = new KnowledgeGraphRetriever(config);
+        await retriever.init();
+
+        // Define a test query
+        const testQuery = "糖尿病的发病机制"; // Replace with a relevant test query
+
+        console.log(`Testing entity_retriever with query: "${testQuery}"`);
+
+        // Call the entity_retriever method
+        const results = await retriever.entity_retriever(testQuery, 5); // Get top 5 results
+
+        console.log("\nRetrieved Entities:");
+        if (results.length > 0) {
+            results.forEach((entity, index) => {
+                console.log(`\n${index + 1}. Name: ${entity.name}`);
+                console.log(`   Description: ${entity.description}`);
+                console.log(`   Score: ${entity.score}`);
+                console.log(`   ID: ${entity.id}`);
+            });
+        } else {
+            console.log("No entities found.");
+        }
+
     } catch (error) {
-        console.error("Error during property_retriever test:", error);
+        console.error("An error occurred:", error);
     } finally {
-        // Close the SurrealDB connection if it was opened
-        await surrealDBClient.close();
+        // Close the SurrealDB connection
+        await surrealDBClient.close(); // Use .close()
     }
 }
 
-main();
+testEntityRetriever();

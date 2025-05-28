@@ -15,6 +15,10 @@ export interface EntityRecord extends Entity  {
     id: RecordId;
 }
 
+export interface RetrievedEntityRecord extends EntityRecord {
+    score: number;
+}
+
 export interface RelationRecord  {
     id: RecordId;
     in: RecordId;
@@ -31,4 +35,13 @@ export interface PropertySummarizeResult {
     relation_set: RelationWithId[];
     property_name: string;
     property_content: string;
+}
+
+
+export interface RetrievedProperty{
+    id: RecordId;
+    core_entity: RecordId;
+    property_name: string;
+    property_content: string;
+    score: number;
 }

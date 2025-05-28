@@ -107,7 +107,7 @@ export class BamlAsyncClient {
   }
   
   async ExtractEntityFromQuery(
-      arg: string,
+      query: string,
       __baml_options__?: BamlCallOptions
   ): Promise<Entity[]> {
     try {
@@ -116,7 +116,7 @@ export class BamlAsyncClient {
       const raw = await this.runtime.callFunction(
         "ExtractEntityFromQuery",
         {
-          "arg": arg
+          "query": query
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
@@ -403,7 +403,7 @@ class BamlStreamClient {
   }
   
   ExtractEntityFromQuery(
-      arg: string,
+      query: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
   ): BamlStream<(partial_types.Entity | null)[], Entity[]> {
     try {
@@ -412,7 +412,7 @@ class BamlStreamClient {
       const raw = this.runtime.streamFunction(
         "ExtractEntityFromQuery",
         {
-          "arg": arg
+          "query": query
         },
         undefined,
         this.ctxManager.cloneContext(),

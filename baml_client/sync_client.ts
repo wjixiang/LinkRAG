@@ -109,7 +109,7 @@ export class BamlSyncClient {
   }
   
   ExtractEntityFromQuery(
-      arg: string,
+      query: string,
       __baml_options__?: BamlCallOptions
   ): Entity[] {
     try {
@@ -118,7 +118,7 @@ export class BamlSyncClient {
       const raw = this.runtime.callFunctionSync(
         "ExtractEntityFromQuery",
         {
-          "arg": arg
+          "query": query
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),

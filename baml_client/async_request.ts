@@ -52,14 +52,14 @@ export class AsyncHttpRequest {
   }
   
   async ExtractEntityFromQuery(
-      arg: string,
+      query: string,
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
         "ExtractEntityFromQuery",
         {
-          "arg": arg
+          "query": query
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -298,14 +298,14 @@ export class AsyncHttpStreamRequest {
   }
   
   async ExtractEntityFromQuery(
-      arg: string,
+      query: string,
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
         "ExtractEntityFromQuery",
         {
-          "arg": arg
+          "query": query
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

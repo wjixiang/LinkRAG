@@ -52,14 +52,14 @@ export class HttpRequest {
   }
   
   ExtractEntityFromQuery(
-      arg: string,
+      query: string,
       __baml_options__?: BamlCallOptions
   ): HTTPRequest {
     try {
       return this.runtime.buildRequestSync(
         "ExtractEntityFromQuery",
         {
-          "arg": arg
+          "query": query
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -298,14 +298,14 @@ export class HttpStreamRequest {
   }
   
   ExtractEntityFromQuery(
-      arg: string,
+      query: string,
       __baml_options__?: BamlCallOptions
   ): HTTPRequest {
     try {
       return this.runtime.buildRequestSync(
         "ExtractEntityFromQuery",
         {
-          "arg": arg
+          "query": query
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

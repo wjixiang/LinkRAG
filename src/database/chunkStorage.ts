@@ -180,9 +180,10 @@ export default class ChunkStorage implements BaseChunkStorage {
         try {
             for (const record of recordsToInsert) {
                 const { id, ...dataWithoutId } = record;
-                this.logger.info(`Attempting to create/update record with id: ${id}`, dataWithoutId);
                 await this.db.create(id, dataWithoutId);
             }
+
+            this.logger.info(`Create/Update ${recordsToInsert.length} records`);
         } catch (error) {
             this.logger.error("Error during chunk upsert:", error);
             throw error;

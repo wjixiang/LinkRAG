@@ -12,7 +12,8 @@ import { surrealDBClient } from '../database/surrealdbClient';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import { embedding } from '../lib/embedding';
 import pLimit from 'p-limit';
-import { SemanticChunkingConfig } from '@/lib/chunking/semantic_chunking';
+import { SemanticChunkingConfig, semantic_chunking } from '@/lib/chunking/semantic_chunking'; // Import semantic_chunking
+import { createAlibabaBatchEmbeddingJob } from '@/lib/embedding/AlibabaBatchEmbedder'; // Import batch embedder
 
 
 export interface KnowledgeGraphWeaverConfig {
@@ -45,9 +46,10 @@ export default class KnowledgeGraphWeaver {
         this.logger = createLoggerWithPrefix('KnowledgeGraphWeaver');
         this.documentProcessor = new DocumentProcessor();
         this.referenceDocumentStorage = new ReferenceDocumentStorage();
-        this.initializeComponents().catch(error => {
-            this.logger.error("Failed to initialize components:", error);
-        });
+    }
+
+    async init() {
+        await this.initializeComponents();
     }
 
     private async initializeComponents() {
@@ -131,6 +133,23 @@ export default class KnowledgeGraphWeaver {
         return this.documentProcessor.saveToReferenceDocumentStorage(file_path);
     }
 
+    async chunking_and_embedding_from_path(file_path: string): Promise<void> {
+        this.logger.debug(`Starting chunking_and_embedding from file path: ${file_path} without saving to reference storage.`);
+        try {
+            const content = await require('fs').promises.readFile(file_path, 'utf-8');
+            const plainText = content; // For now, plain text is the same as content
+
+            // Generate a temporary RecordId for processing
+            const tempId = new RecordId('temp_document', Date.now().toString());
+            this.logger.debug(`Generated temporary ID ${tempId.id} for file ${file_path}`);
+
+            await this.chunkProcessor.processDocument(tempId, plainText);
+            this.logger.debug(`Finished chunking_and_embedding from file path: ${file_path}`);
+        } catch (error) {
+            this.logger.error(`Error during chunking and embedding from file path ${file_path}:`, error);
+            throw error;
+        }
+    }
     async chunking_and_embedding(id: RecordId) {
         const referenceDocument = await this.referenceDocumentStorage.getReferenceDocument(id);
         if (!referenceDocument) {
@@ -139,6 +158,48 @@ export default class KnowledgeGraphWeaver {
         }
         
         await this.chunkProcessor.processDocument(id, referenceDocument.plainText);
+    }
+
+    async chunking_and_embedding_batch(id: RecordId): Promise<string | null> {
+        this.logger.debug(`Starting batch chunking and embedding for ID: ${id}`);
+        try {
+            const referenceDocument = await this.referenceDocumentStorage.getReferenceDocument(id);
+            if (!referenceDocument) {
+                this.logger.error(`Reference document with ID ${id.id} not found for batch processing.`);
+                return null;
+            }
+
+            // Perform chunking
+            const chunks = await semantic_chunking(referenceDocument.plainText, this.config.SemanticChunkingConfig);
+            this.logger.info(`Chunked document into ${chunks.length} chunks for batch embedding.`);
+
+            // Combine adjacent chunks (optional, based on original logic)
+            const combinedChunks: string[] = [];
+            for (let i = 0; i < chunks.length - 1; i++) {
+                combinedChunks.push(chunks[i] + ' ' + chunks[i + 1]);
+            }
+            const allChunks = [...chunks, ...combinedChunks]; // Include original chunks and combined
+            this.logger.info(`Total chunks for batch embedding: ${allChunks.length}`);
+
+
+            if (allChunks.length === 0) {
+                this.logger.warn(`No chunks generated for batch embedding for ID: ${id}`);
+                return null;
+            }
+
+            // Initiate the asynchronous batch embedding job
+            const batchJobId = await createAlibabaBatchEmbeddingJob(allChunks);
+            this.logger.info(`Alibaba batch embedding job initiated for ID ${id}. Job ID: ${batchJobId}`);
+
+            // Note: The results of this batch job will need to be retrieved and processed separately
+            // based on the batchJobId. This function only initiates the job.
+
+            return batchJobId;
+
+        } catch (error) {
+            this.logger.error(`Error during batch chunking and embedding for ID ${id}:`, error);
+            throw error;
+        }
     }
 
     async generate_kg(chunkId: RecordId): Promise<void> {
