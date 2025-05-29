@@ -1,6 +1,6 @@
 import { ChunkDocument, default as ChunkStorage } from '../database/chunkStorage';
 import { surrealDBClient } from '../database/surrealdbClient';
-import { semantic_chunking, SemanticChunkingConfig } from '../lib/chunking/semantic_chunking';
+import { semantic_chunking, SemanticChunkingConfig, countTokens } from '../lib/chunking/semantic_chunking';
 import { embedding } from '../lib/embedding';
 import winston from 'winston';
 import createLoggerWithPrefix from '../lib/console/logger';
@@ -45,14 +45,37 @@ export class ChunkProcessor {
             this.logger.info(`Chunked document into ${chunks.length} chunks.`);
             this.logger.debug(`Semantic chunking finished. Generated ${chunks.length} chunks.`);
 
-            // Combine adjacent chunks
-            const combinedChunks: string[] = [];
-            for (let i = 0; i < chunks.length - 1; i++) {
-                combinedChunks.push(chunks[i] + ' ' + chunks[i + 1]);
-            }
-            this.logger.info(`Combined adjacent chunks, resulting in ${combinedChunks.length} new chunks.`);
+            // Merge consecutive short chunks until minimum length is reached
+            const minTokenSize = this.config.SemanticChunkingConfig.minTokenSize ?? 50;
+            const mergedChunks: string[] = [];
+            let currentMergedChunk = '';
+            let currentTokenCount = 0;
 
-            const allChunks = [ ...combinedChunks];
+            for (const chunk of chunks) {
+                const chunkTokenCount = await countTokens(chunk);
+                
+                if (currentTokenCount + chunkTokenCount < minTokenSize && currentMergedChunk !== '') {
+                    // Merge with previous chunk if still below minimum size
+                    currentMergedChunk += ' ' + chunk;
+                    currentTokenCount += chunkTokenCount;
+                } else {
+                    // Push previous merged chunk if exists
+                    if (currentMergedChunk !== '') {
+                        mergedChunks.push(currentMergedChunk);
+                    }
+                    // Start new merged chunk
+                    currentMergedChunk = chunk;
+                    currentTokenCount = chunkTokenCount;
+                }
+            }
+
+            // Push the last merged chunk
+            if (currentMergedChunk !== '') {
+                mergedChunks.push(currentMergedChunk);
+            }
+
+            this.logger.info(`Merged short chunks, resulting in ${mergedChunks.length} chunks.`);
+            const allChunks = [...mergedChunks];
             this.logger.info(`Total chunks for embedding: ${allChunks.length}`);
 
             this.logger.debug(`Starting embedding process with concurrency limit: ${this.config.embeddingConcurrencyLimit}`);

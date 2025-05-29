@@ -30,7 +30,7 @@ async function getEmbedder(): Promise<ONNXEmbedder> {
 }
 
 // Simple token counting function (can be replaced with a more accurate one if needed)
-async function countTokens(text: string): Promise<number> {
+export async function countTokens(text: string): Promise<number> {
     const embedderInstance = await getEmbedder();
     // Ensure tokenizer is available before using it
     if (!embedderInstance['tokenizer']) {
