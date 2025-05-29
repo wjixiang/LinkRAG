@@ -9,8 +9,11 @@
     "baml_client/**/*"
   ],
   "scripts": {
-    "build": "tsc",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "keywords": [
     "rag",
@@ -24,6 +27,8 @@
     "@types/node": "^22.15.17",
     "@types/node-fetch": "^2.6.12",
     "@types/progress": "^2.0.7",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"

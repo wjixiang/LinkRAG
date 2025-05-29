@@ -12,7 +12,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "jsx": "preserve",
+    "jsxImportSource": "react"
   },
   "include": ["src/**/*", "baml_client/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]
