@@ -117,7 +117,7 @@ export default class KnowledgeGraphRetriever {
         try {
             const db = await surrealDBClient.getDb()
             const result = await db.query<RetrievedProperty[][]>(surrealQL, { queryEmbedding: queryEmbedding });
-            this.logger.info("query raw result:", JSON.stringify(result, null, 2));
+            this.logger.debug("query raw result:", JSON.stringify(result, null, 2));
             if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
                  // Filter results based on cosine_better_than_threshold if score is available
                 return result[0]
@@ -128,6 +128,101 @@ export default class KnowledgeGraphRetriever {
             this.logger.error("Error during chunk query:", error);
             throw error;
         }
+    }
+
+    async keyword_retriever(query: string) {
+        const entity_property_pairs = await b.ExtractEP(query)
+        this.logger.debug(`extracted EPs: ${JSON.stringify(entity_property_pairs)}`)
+    }
+
+    async entity_keyword_retriever(entities: string[]) {
+        const db = await surrealDBClient.getDb()
+        const hit_entities_raw = await Promise.all(entities.map(async (e) => {
+            const hit_res = await db.query<RetrievedEntityRecord[][]>(`
+                SELECT 
+                    id, 
+                    name, 
+                    aliases,
+                    description, 
+                    type, 
+                    (string::similarity::jaro($keyword, name)) AS score 
+                FROM 
+                    ${this.config.entity_table_name} 
+                WHERE 
+                    string::similarity::jaro($keyword, name) > 0.8`, { keyword: e })
+            return hit_res[0]
+        }))
+
+        // Flatten the array of arrays and merge entities with the same ID
+        const flattened_entities = hit_entities_raw.flat();
+        const mergedPropertiesMap = new Map<string, RetrievedEntityRecord>();
+
+        flattened_entities.forEach(entity => {
+            const entityId = entity.id.toString();
+            if (mergedPropertiesMap.has(entityId)) {
+                const existingProperty = mergedPropertiesMap.get(entityId)!;
+                // Keep the property with the higher score
+                if (entity.score > existingProperty.score) {
+                    mergedPropertiesMap.set(entityId, entity);
+                }
+            } else {
+                mergedPropertiesMap.set(entityId, entity);
+            }
+        });
+
+        const hit_properties = Array.from(mergedPropertiesMap.values());
+        this.logger.debug(`Matched entities: ${JSON.stringify(hit_properties, null, "\t")}`)
+
+        return hit_properties
+    }
+
+    /**
+     * Retrieve property documents based on keywords
+     * @param query 
+     */
+    async property_keyword_retriever(query: string) {
+        const entity_property_pairs = await b.ExtractEP(query)
+        this.logger.debug("extracted EPs:", entity_property_pairs)
+
+        const hit_entities = await this.entity_keyword_retriever(entity_property_pairs.map(e=>e.entity))
+
+        const db = await surrealDBClient.getDb()
+        const hit_properties_raw = await Promise.all(entity_property_pairs.map(async (e) => {
+            const hit_res = await db.query<RetrievedProperty[][]>(`
+                SELECT id, core_entity.id ,core_entity.name, property_name, property_content, (string::similarity::jaro($keyword, property_name)) AS score 
+                FROM ${this.config.property_table_name} 
+                WHERE 
+                    string::similarity::jaro($keyword, property_name) > 0.6
+                    AND
+                    core_entity.name INSIDE $entities
+                FETCH core_entity
+                    `, { 
+                        keyword: e.property ,
+                        entities: hit_entities.map(e=>e.name)
+                    })
+            return hit_res[0]
+        }))
+
+        // Flatten the array of arrays and merge properties with the same ID
+        const flattened_properties = hit_properties_raw.flat();
+        const mergedPropertiesMap = new Map<string, RetrievedProperty>();
+
+        flattened_properties.forEach(property => {
+            const propertyId = property.id.toString();
+            if (mergedPropertiesMap.has(propertyId)) {
+                const existingProperty = mergedPropertiesMap.get(propertyId)!;
+                // Keep the property with the higher score
+                if (property.score > existingProperty.score) {
+                    mergedPropertiesMap.set(propertyId, property);
+                }
+            } else {
+                mergedPropertiesMap.set(propertyId, property);
+            }
+        });
+
+        const hit_properties = Array.from(mergedPropertiesMap.values());
+        this.logger.debug(JSON.stringify(hit_properties, null, "\t"))
+
     }
 
     /**

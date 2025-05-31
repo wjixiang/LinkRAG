@@ -828,3 +828,7 @@
 [Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
 [Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
 [Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 1 was the wrong type. Expected a string but found ['系统性红斑狼疮']
+[test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 2 was the wrong type. Expected a string but found NONE
+[test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 2 was the wrong type. Expected a string but found NONE
+[test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 2 was the wrong type. Expected a string but found NONE

@@ -22,6 +22,8 @@ import { DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME } from "./
 export default class TypeBuilder {
     private tb: _TypeBuilder;
     
+    EPpair: ClassViewer<'EPpair', "entity" | "property">;
+    
     Entity: ClassViewer<'Entity', "name" | "description" | "type" | "aliases">;
     
     EntityExtractionExample: ClassViewer<'EntityExtractionExample', "entity_type" | "example_input" | "extracted_entities">;
@@ -49,13 +51,17 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "Entity","EntityExtractionExample","EntityMatchResult","HyDE_rewrite_query","MissingEntityExtractionResult","Property","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument",
+            "EPpair","Entity","EntityExtractionExample","EntityMatchResult","HyDE_rewrite_query","MissingEntityExtractionResult","Property","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument",
           ]),
           enums: new Set([
             
           ]),
           runtime: DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME
         });
+        
+        this.EPpair = this.tb.classViewer("EPpair", [
+          "entity","property",
+        ]);
         
         this.Entity = this.tb.classViewer("Entity", [
           "name","description","type","aliases",

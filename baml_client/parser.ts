@@ -20,12 +20,48 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
+  
+  ConvertQueryToEP(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): string[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ConvertQueryToEP",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as string[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEP(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): EPpair[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractEP",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as EPpair[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
   
   ExtractEntity(
       llmResponse: string,
@@ -248,6 +284,42 @@ export class LlmResponseParser {
 export class LlmStreamParser {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
+  
+  ConvertQueryToEP(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): (string | null)[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ConvertQueryToEP",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as (string | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEP(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): (partial_types.EPpair | null)[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractEP",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as (partial_types.EPpair | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
   
   ExtractEntity(
       llmResponse: string,

@@ -46,6 +46,12 @@ export function all_succeeded<CheckName extends string>(checks: Record<CheckName
 export function get_checks<CheckName extends string>(checks: Record<CheckName, Check>): Check[] {
     return Object.values(checks)
 }
+export interface EPpair {
+  entity: string
+  property: string
+  
+}
+
 export interface Entity {
   name: string
   description: string
