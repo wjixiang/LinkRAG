@@ -20,7 +20,7 @@ import { toBamlError, BamlStream, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { AsyncHttpRequest, AsyncHttpStreamRequest } from "./async_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -101,6 +101,29 @@ export class BamlAsyncClient {
         collector,
       )
       return raw.parsed(false) as string[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async DefineEntityWithReferences(
+      entity_name: string,reference_documents: string[],language: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<EntityWithRef> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "DefineEntityWithReferences",
+        {
+          "entity_name": entity_name,"reference_documents": reference_documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as EntityWithRef
     } catch (error) {
       throw toBamlError(error);
     }
@@ -313,6 +336,29 @@ export class BamlAsyncClient {
     }
   }
   
+  async HyDEDefineEntity(
+      entity_name: string,language: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<Entity> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "HyDEDefineEntity",
+        {
+          "entity_name": entity_name,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as Entity
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async HyDE_rewrite(
       query: string,language: string,
       __baml_options__?: BamlCallOptions
@@ -441,6 +487,35 @@ class BamlStreamClient {
         raw,
         (a): (string | null)[] => a,
         (a): string[] => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DefineEntityWithReferences(
+      entity_name: string,reference_documents: string[],language: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<partial_types.EntityWithRef, EntityWithRef> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "DefineEntityWithReferences",
+        {
+          "entity_name": entity_name,"reference_documents": reference_documents,"language": language
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<partial_types.EntityWithRef, EntityWithRef>(
+        raw,
+        (a): partial_types.EntityWithRef => a,
+        (a): EntityWithRef => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {
@@ -702,6 +777,35 @@ class BamlStreamClient {
         raw,
         (a): (partial_types.RelationGroup | null)[] => a,
         (a): RelationGroup[] => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  HyDEDefineEntity(
+      entity_name: string,language: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<partial_types.Entity, Entity> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "HyDEDefineEntity",
+        {
+          "entity_name": entity_name,"language": language
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<partial_types.Entity, Entity>(
+        raw,
+        (a): partial_types.Entity => a,
+        (a): Entity => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {

@@ -1,4 +1,4 @@
-import { Library, LibraryReference } from './Library';
+import { Library, LibraryReference } from '../Library';
 import fs from 'fs/promises';
 import path from 'path';
 

@@ -19,7 +19,7 @@ import type { BamlRuntime, FunctionResult, BamlCtxManager, Image, Audio, ClientR
 import { toBamlError, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type * as types from "./types"
-import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 import { HttpRequest, HttpStreamRequest } from "./sync_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -103,6 +103,29 @@ export class BamlSyncClient {
         collector,
       )
       return raw.parsed(false) as string[]
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DefineEntityWithReferences(
+      entity_name: string,reference_documents: string[],language: string,
+      __baml_options__?: BamlCallOptions
+  ): EntityWithRef {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "DefineEntityWithReferences",
+        {
+          "entity_name": entity_name,"reference_documents": reference_documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as EntityWithRef
     } catch (error: any) {
       throw toBamlError(error);
     }
@@ -310,6 +333,29 @@ export class BamlSyncClient {
         collector,
       )
       return raw.parsed(false) as RelationGroup[]
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  HyDEDefineEntity(
+      entity_name: string,language: string,
+      __baml_options__?: BamlCallOptions
+  ): Entity {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "HyDEDefineEntity",
+        {
+          "entity_name": entity_name,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as Entity
     } catch (error: any) {
       throw toBamlError(error);
     }

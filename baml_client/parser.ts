@@ -20,7 +20,7 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
@@ -40,6 +40,24 @@ export class LlmResponseParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as string[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DefineEntityWithReferences(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): EntityWithRef {
+    try {
+      return this.runtime.parseLlmResponse(
+        "DefineEntityWithReferences",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as EntityWithRef
     } catch (error) {
       throw toBamlError(error);
     }
@@ -207,6 +225,24 @@ export class LlmResponseParser {
     }
   }
   
+  HyDEDefineEntity(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): Entity {
+    try {
+      return this.runtime.parseLlmResponse(
+        "HyDEDefineEntity",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as Entity
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   HyDE_rewrite(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -298,6 +334,24 @@ export class LlmStreamParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as (string | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DefineEntityWithReferences(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.EntityWithRef {
+    try {
+      return this.runtime.parseLlmResponse(
+        "DefineEntityWithReferences",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.EntityWithRef
     } catch (error) {
       throw toBamlError(error);
     }
@@ -460,6 +514,24 @@ export class LlmStreamParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as (partial_types.RelationGroup | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  HyDEDefineEntity(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.Entity {
+    try {
+      return this.runtime.parseLlmResponse(
+        "HyDEDefineEntity",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.Entity
     } catch (error) {
       throw toBamlError(error);
     }

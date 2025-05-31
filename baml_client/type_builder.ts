@@ -30,6 +30,8 @@ export default class TypeBuilder {
     
     EntityMatchResult: ClassViewer<'EntityMatchResult', "entity_name" | "is_match" | "matched_entity_name" | "reasoning">;
     
+    EntityWithRef: ClassViewer<'EntityWithRef', "name" | "description" | "type" | "aliases" | "reference">;
+    
     HyDE_rewrite_query: ClassViewer<'HyDE_rewrite_query', "HyDE_answer">;
     
     MissingEntityExtractionResult: ClassViewer<'MissingEntityExtractionResult', "extracted_entities" | "reasoning">;
@@ -51,7 +53,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "EPpair","Entity","EntityExtractionExample","EntityMatchResult","HyDE_rewrite_query","MissingEntityExtractionResult","Property","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument",
+            "EPpair","Entity","EntityExtractionExample","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","MissingEntityExtractionResult","Property","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument",
           ]),
           enums: new Set([
             
@@ -73,6 +75,10 @@ export default class TypeBuilder {
         
         this.EntityMatchResult = this.tb.classViewer("EntityMatchResult", [
           "entity_name","is_match","matched_entity_name","reasoning",
+        ]);
+        
+        this.EntityWithRef = this.tb.classViewer("EntityWithRef", [
+          "name","description","type","aliases","reference",
         ]);
         
         this.HyDE_rewrite_query = this.tb.classViewer("HyDE_rewrite_query", [

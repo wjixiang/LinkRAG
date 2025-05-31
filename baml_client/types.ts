@@ -75,6 +75,15 @@ export interface EntityMatchResult {
   
 }
 
+export interface EntityWithRef {
+  name: string
+  description: string
+  type: string
+  aliases: string[]
+  reference: number[]
+  
+}
+
 export interface HyDE_rewrite_query {
   HyDE_answer: string
   

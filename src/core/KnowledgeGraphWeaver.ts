@@ -5,7 +5,7 @@ import { ChunkProcessor } from './ChunkProcessor';
 import { GraphGenerator } from './GraphGenerator';
 import { GraphMerger } from './GraphMerger';
 import EntityStorage from '../database/EntityStorage';
-import ReferenceDocumentStorage from '../database/referenceDocumentStorage';
+import SourceManager from './SourceManager';
 import { KnowledgeGraphProcessor } from './KnowledgeGraphProcessor';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
@@ -31,21 +31,21 @@ export interface KnowledgeGraphWeaverConfig {
 export default class KnowledgeGraphWeaver {
 
     private logger: winston.Logger;
-    private documentProcessor: DocumentProcessor;
-    private chunkProcessor!: ChunkProcessor;
-    private graphGenerator!: GraphGenerator;
-    private graphMerger!: GraphMerger;
-    private entityStorage!: EntityStorage;
-    private config: KnowledgeGraphWeaverConfig;
-    private referenceDocumentStorage: ReferenceDocumentStorage;
-    private knowledgeGraphProcessor!: KnowledgeGraphProcessor;
+    documentProcessor: DocumentProcessor;
+    chunkProcessor!: ChunkProcessor;
+    graphGenerator!: GraphGenerator;
+    graphMerger!: GraphMerger;
+    entityStorage!: EntityStorage;
+    config: KnowledgeGraphWeaverConfig;
+    sourceManager: SourceManager;
+    knowledgeGraphProcessor!: KnowledgeGraphProcessor;
 
 
     constructor(config: KnowledgeGraphWeaverConfig) {
         this.config = config;
         this.logger = createLoggerWithPrefix('KnowledgeGraphWeaver');
         this.documentProcessor = new DocumentProcessor();
-        this.referenceDocumentStorage = new ReferenceDocumentStorage();
+        this.sourceManager = new SourceManager();
     }
 
     async init() {
@@ -113,7 +113,7 @@ export default class KnowledgeGraphWeaver {
                 limit(async () => {
                     try {
                         this.logger.info(`Starting knowledge graph generation for chunk ID: ${recordId}`);
-                        await this.generate_kg(recordId);
+                        await this.graphGenerator.generateGraph(recordId);
                         this.logger.info(`Knowledge graph generation completed for chunk ID: ${recordId}`);
                     } catch (error) {
                         this.logger.error(`Error processing chunk ${recordId}:`, error);
@@ -151,26 +151,26 @@ export default class KnowledgeGraphWeaver {
         }
     }
     async chunking_and_embedding(id: RecordId) {
-        const referenceDocument = await this.referenceDocumentStorage.getReferenceDocument(id);
-        if (!referenceDocument) {
-            this.logger.error(`Reference document with ID ${id.id} not found.`);
+        const content = await this.sourceManager.getSourceContent(id);
+        if (!content) {
+            this.logger.error(`Source content with ID ${id.id} not found.`);
             return;
         }
         
-        await this.chunkProcessor.processDocument(id, referenceDocument.plainText);
+        await this.chunkProcessor.processDocument(id, content);
     }
 
     async chunking_and_embedding_batch(id: RecordId): Promise<string | null> {
         this.logger.debug(`Starting batch chunking and embedding for ID: ${id}`);
         try {
-            const referenceDocument = await this.referenceDocumentStorage.getReferenceDocument(id);
-            if (!referenceDocument) {
-                this.logger.error(`Reference document with ID ${id.id} not found for batch processing.`);
+            const content = await this.sourceManager.getSourceContent(id);
+            if (!content) {
+                this.logger.error(`Source content with ID ${id.id} not found for batch processing.`);
                 return null;
             }
 
             // Perform chunking
-            const chunks = await semantic_chunking(referenceDocument.plainText, this.config.SemanticChunkingConfig);
+            const chunks = await semantic_chunking(content, this.config.SemanticChunkingConfig);
             this.logger.info(`Chunked document into ${chunks.length} chunks for batch embedding.`);
 
             // Combine adjacent chunks (optional, based on original logic)
@@ -202,9 +202,6 @@ export default class KnowledgeGraphWeaver {
         }
     }
 
-    async generate_kg(chunkId: RecordId): Promise<void> {
-        await this.graphGenerator.generateGraph(chunkId);
-    }
 
     async joint_graph(concurrencyLimit=10) {
         await this.graphMerger.jointGraph(concurrencyLimit);

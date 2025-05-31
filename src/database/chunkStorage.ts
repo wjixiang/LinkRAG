@@ -37,6 +37,7 @@ interface BaseChunkStorage {
 
 /**
  * test script: src/test_script/test_chunk_storage.ts
+ * @deprecated
  */
 export default class ChunkStorage implements BaseChunkStorage {
     private db: Surreal;

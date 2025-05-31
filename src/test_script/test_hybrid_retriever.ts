@@ -22,12 +22,12 @@ async function main() {
             console.log("Hybrid Retrieval Results:", JSON.stringify(results, null, 2));
             
             // Print formatted results
-            console.log("\nFormatted Results:");
-            results.forEach((result: RetrievalResult, index: number) => { // Explicitly type parameters
-                console.log(`\n[${index + 1}] Type: ${result.type}, Score: ${result.score.toFixed(4)}`);
-                console.log(result.content);
-                console.log(`Source: ${result.source}`);
-            });
+            console.log("\nFormatted Results:", results);
+            // results.forEach((result: RetrievalResult, index: number) => { // Explicitly type parameters
+            //     console.log(`\n[${index + 1}] Type: ${result.type}, Score: ${result.score.toFixed(4)}`);
+            //     console.log(result.content);
+            //     console.log(`Source: ${result.source}`);
+            // });
         } catch (error) {
             console.error(`Error during hybridRetrieve for query "${query}":`, error);
         }

@@ -1,6 +1,5 @@
 import { RecordId, Surreal } from "surrealdb";
 import ChunkStorage, { ChunkDocument, semanticSearchResult } from "../database/chunkStorage";
-import ReferenceDocumentStorage from "../database/referenceDocumentStorage";
 import winston from 'winston';
 import createLoggerWithPrefix from "../lib/console/logger";
 import { surrealDBClient } from "@/database/surrealdbClient";
@@ -82,14 +81,48 @@ export default class KnowledgeGraphRetriever {
     }
 
     async chunks_retriver(query: string, top_k: number): Promise<semanticSearchResult[]> {
-        // Ensure chunkStorage is initialized (though init should be called after constructor)
-        if (!this.chunkStorage) {
-            throw new Error("KnowledgeGraphRetriever not initialized. Call init() first.");
+        
+        const queryEmbedding = await embedding(query);
+
+        if (queryEmbedding === null) {
+            this.logger.error("Failed to generate embedding for query. Cannot perform vector search.");
+            return []; // Return empty array if embedding generation failed
         }
-        // Use the query method from ChunkStorage which handles embedding and vector search
-        const retrievedChunks = await this.chunkStorage.query(query, top_k);
-        this.logger.info(`Retrieved ${retrievedChunks.length} chunks`)
-        return retrievedChunks;
+
+        let surrealQL = `
+            SELECT id, referenceIds, content, vector::similarity::cosine(embedding, ${JSON.stringify(queryEmbedding)}) AS score
+            FROM ${this.config.chunkTableName}
+        `;
+
+        surrealQL += `
+            ORDER BY score DESC
+            LIMIT ${top_k};
+        `;
+
+        const db = await surrealDBClient.getDb()
+
+        try {
+            const result = await db.query<[][]>(surrealQL);
+            this.logger.info(`Retrieved ${result[0].length} chunks`);
+            if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
+                 // Filter results based on cosine_better_than_threshold if score is available
+                return (result[0] as (ChunkDocument & { score: number })[])
+                    .filter((item: any) => item.score >= this.config.semantic_search_threshold)
+                    .map(item => ({
+                        document: {
+                            id: item.id,
+                            referenceIds: item.referenceIds,
+                            content: item.content,
+                            ...Object.fromEntries(Object.entries(item).filter(([key]) => !['id', 'referenceIds', 'content', 'embedding', 'score'].includes(key))) // Include other properties
+                        },
+                        score: item.score
+                    }));
+            }
+            return [];
+        } catch (error) {
+            this.logger.error("Error during chunk query:", error);
+            throw error;
+        }
     }
 
     async property_retriever(query: string, top_k: number ) {
@@ -149,7 +182,7 @@ export default class KnowledgeGraphRetriever {
                 FROM 
                     ${this.config.entity_table_name} 
                 WHERE 
-                    string::similarity::jaro($keyword, name) > 0.8`, { keyword: e })
+                    string::similarity::jaro($keyword, name) > 0.9`, { keyword: e })
             return hit_res[0]
         }))
 
@@ -192,7 +225,7 @@ export default class KnowledgeGraphRetriever {
                 SELECT id, core_entity.id ,core_entity.name, property_name, property_content, (string::similarity::jaro($keyword, property_name)) AS score 
                 FROM ${this.config.property_table_name} 
                 WHERE 
-                    string::similarity::jaro($keyword, property_name) > 0.6
+                    string::similarity::jaro($keyword, property_name) > 0.9
                     AND
                     core_entity.name INSIDE $entities
                 FETCH core_entity

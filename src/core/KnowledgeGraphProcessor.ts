@@ -9,6 +9,7 @@ import KnowledgeGraphRetriever from './KnowledgeGraphRetriever';
 import { b, Entity, Property, Relation, RelationReference } from 'baml_client';
 import pLimit from 'p-limit';
 import { KnowledgeGraphWeaverConfig } from './KnowledgeGraphWeaver'; // Assuming config is the same
+import { KnowledgeGraphRetriever_Config } from '@/settings';
 
 /**
  * Processes knowledge graph related operations, including relation classification,
@@ -48,12 +49,7 @@ export class KnowledgeGraphProcessor {
             );
             this.logger.debug(`ChunkStorage initialized with table: ${this.config.chunkTableName}`);
 
-            const retriever = new KnowledgeGraphRetriever({
-                chunkTableName: this.config.chunkTableName,
-                property_table_name: this.config.property_table_name,
-                entity_table_name: this.config.entity_table_name,
-                semantic_search_threshold: this.config.semantic_search_threshold,
-            });
+            const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
             this.logger.debug('KnowledgeGraphRetriever initialized.');
 
             const relationRecords = await retriever.get_relations_of_entity(entity_id);
@@ -185,12 +181,7 @@ export class KnowledgeGraphProcessor {
             this.logger.debug(`Retrieved ${relation_groups.length} relation groups.`);
 
             // Get all relation records first
-            const retriever = new KnowledgeGraphRetriever({
-                chunkTableName: this.config.chunkTableName,
-                property_table_name: this.config.property_table_name,
-                entity_table_name: this.config.entity_table_name,
-                semantic_search_threshold: this.config.semantic_search_threshold,
-            });
+            const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
             this.logger.debug('KnowledgeGraphRetriever initialized for property extraction.');
 
             const relationRecords = await retriever.get_relations_of_entity(id);

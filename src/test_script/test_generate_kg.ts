@@ -44,7 +44,7 @@ async function main() {
             limit(async () => {
                 try {
                     console.log(`Starting knowledge graph generation for chunk ID: ${recordId}`);
-                    await kgWeaver.generate_kg(recordId);
+                    await kgWeaver.graphGenerator.generateGraph(recordId);
                     console.log(`Knowledge graph generation completed for chunk ID: ${recordId}`);
                 } catch (error) {
                     console.error(`Error processing chunk ${recordId}:`, error);
