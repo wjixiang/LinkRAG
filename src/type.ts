@@ -11,6 +11,15 @@ export interface embeddingInstance {
 
 export type language = 'zh' | 'en' | 'ja' | 'ko' | 'es' | 'fr' | 'de' | 'it' | 'pt' | 'ru' | 'ar' | 'hi' | 'bn' | 'pa' | 'jv' | 'tr' | 'vi' | 'th' | 'pl' | 'uk' | 'ro' | 'nl' | 'el';
 
+export interface EntityWithRefDoc{
+  id: RecordId;
+  name: string
+  description: string
+  type: string
+  aliases: string[]
+  referenceDoc: RecordId[]
+}
+
 export interface EntityRecord extends Entity  {
     id: RecordId;
 }

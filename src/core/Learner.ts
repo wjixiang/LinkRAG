@@ -2,6 +2,37 @@ import KnowledgeGraphRetriever from "./KnowledgeGraphRetriever";
 import createLoggerWithPrefix from "../lib/console/logger";
 import { b } from 'baml_client/async_client';
 import KnowledgeGraphWeaver from './KnowledgeGraphWeaver';
+import { RecordId } from "surrealdb";
+import type EntityStorage from "../database/EntityStorage";
+import type PropertyStorage from "../core/PropertyStorage";
+import { EntityWithRefDoc } from "@/type";
+
+interface Entity {
+    id: RecordId;
+    name: string;
+    description: string;
+    type: string;
+    aliases: string[];
+}
+
+interface EntityMatch {
+    entity: string;
+    confidence: number;
+}
+
+interface HypothesizedProperty {
+    hypothesis: string;
+}
+
+interface RetrievedPropertyInfo {
+    information: string;
+    sources: string[];
+}
+
+interface PropertySummary {
+    summary: string;
+}
+
 
 
 export default class Learner {
@@ -21,31 +52,164 @@ export default class Learner {
     ): Promise<string> {
         this.logger.debug(`Starting property summarization for entity ${entityName}, property ${propertyName}`);
         
-        // First try to retrieve the entity
+        // Step B: Retrieve entity
         const entities = await this.retriever.entity_keyword_retriever([entityName]);
         
-        if (entities.length > 0) {
-            // Entity exists - summarize based on existing properties
-            const entity = entities[0];
-            this.logger.info(`Found existing entity ${entity.name}, summarizing property`);
-            return `Summarized property "${propertyName}" for existing entity "${entity.name}"`;
+        if (entities.length === 0) {
+            // Step C2: Entity doesn't exist
+            return this.handleNewEntityFlow(entityName, propertyName);
+        } else if (entities.length === 1) {
+            // Step C4: Single entity found
+            return this.handleSingleEntityFlow(entities[0], entityName, propertyName);
         } else {
-            this.logger.info(`Entity ${entityName} not found, starting HyDE+RAG flow`);
-            const entity_definition = await this.create_new_entity(entityName)  
-            // TODO: Store the new entity and property in the knowledge graph
-            
-            
-
-            return entity_definition.description
+            // Step C5: Multiple entities found
+            return this.handleMultipleEntitiesFlow(entities, entityName, propertyName);
         }
     }
 
-    async create_new_entity(entityName: string) {
-        const HydeEntity = await b.HyDEDefineEntity(entityName, "zh")
+    private async handleNewEntityFlow(entityName: string, propertyName: string): Promise<string> {
+        this.logger.info(`Entity ${entityName} not found, starting HyDE+RAG flow`);
         
-        const retrieved_chunks = await this.retriever.chunks_retriver(HydeEntity.name+HydeEntity, 10)
-        const entity_definition = await b.DefineEntityWithReferences(entityName, retrieved_chunks.map(e=>e.document.content), "中文")
-        return entity_definition
+        // Step D1-D4: Create new entity
+        const entity = await this.create_new_entity(entityName);
+        
+        // Step G2-G4: Handle property for new entity
+        const hydeResult = await b.HyDEHypothesizeProperty(entityName, propertyName);
+        const chunks = await this.retriever.chunks_retriver(hydeResult.hypothesis, 10);
+        const property = await b.GenerateAnswer(
+            `What is ${propertyName} of ${entityName} ?`,
+            chunks.map(e=>{
+                return {
+                    content: e.document.content,
+                    metadata: String(e.score)
+                }
+            }),
+            "zh"
+        );
+        
+        await this.weaver.propertyStorage.storeProperty(entity.id, {
+            name: propertyName,
+            summary: property,
+            references: chunks.map((c: any) => c.document.id)
+        });
+        
+        return property;
+    }
+
+    private async handleSingleEntityFlow(entity: Entity, entityName: string, propertyName: string): Promise<string> {
+        this.logger.info(`Found single entity ${entity.name}, checking consistency`);
+        
+        // Step f1: Check entity consistency
+        if (entity.name.toLowerCase() !== entityName.toLowerCase()) {
+            // Step f12: Inconsistent entity name
+            const selected = await b.SelectMostMatchingEntity(
+                [entity.name],
+                entityName
+            );
+            if (!selected) {
+                return this.handleNewEntityFlow(entityName, propertyName);
+            }
+            // Convert EntityMatch to Entity
+            const matchedEntity: Entity = {
+                ...entity,
+                name: selected.entity
+            };
+            return this.handlePropertyFlow(matchedEntity, propertyName);
+        }
+        
+        return this.handlePropertyFlow(entity, propertyName);
+    }
+
+    private async handleMultipleEntitiesFlow(entities: Entity[], entityName: string, propertyName: string): Promise<string> {
+        this.logger.info(`Found multiple entities (${entities.length}), selecting best match`);
+        
+        // Step j1: Select most matching entity
+        const selected = await b.SelectMostMatchingEntity(
+            entities.map(e => e.name),
+            entityName
+        );
+        if (!selected) {
+            return this.handleNewEntityFlow(entityName, propertyName);
+        }
+        
+        // Find the full entity from the selected name
+        const matchedEntity = entities.find(e => e.name === selected.entity);
+        if (!matchedEntity) {
+            return this.handleNewEntityFlow(entityName, propertyName);
+        }
+        
+        return this.handlePropertyFlow(matchedEntity, propertyName);
+    }
+
+    private async handlePropertyFlow(entity: Entity, propertyName: string): Promise<string> {
+        // Step f2: Check if property exists
+        const existingProperty = await this.weaver.propertyStorage.getProperty(entity.id, propertyName);
+        
+        if (existingProperty) {
+            // Step g11: Property exists - summarize and update
+            this.logger.info(`Property ${propertyName} exists, updating summary`);
+            
+            const chunks = await this.retriever.chunks_retriver(propertyName, 10);
+            const context = chunks.map((c: any) => c.document.content).join('\n\n');
+            const newSummary = await b.SummarizeProperty(
+                entity.name,
+                propertyName,
+                context
+            );
+            
+            const updatedSummary = await b.UpdateSummary(
+                existingProperty.summary,
+                newSummary.summary,
+                entity.name,
+                propertyName
+            );
+            
+            await this.weaver.propertyStorage.updateProperty(
+                entity.id,
+                { name: propertyName, summary: updatedSummary.summary }
+            );
+            
+            return updatedSummary.summary;
+        } else {
+            // Step g12: Property doesn't exist - create new
+            this.logger.info(`Property ${propertyName} doesn't exist, creating new`);
+            
+            const hydeResult = await b.HyDEHypothesizeProperty(entity.name, propertyName);
+            const chunks = await this.retriever.chunks_retriver(hydeResult.hypothesis, 10);
+            const property = await b.BaselineRAGRetrieveProperty(
+                `${entity.name} ${propertyName}`
+            );
+            
+            await (this.weaver.propertyStorage as any).storeProperty(entity.id, {
+                name: propertyName,
+                summary: property.information,
+                references: chunks.map((c: any) => c.document.id)
+            });
+            
+            return property.information;
+        }
+    }
+
+    async create_new_entity(entityName: string): Promise<EntityWithRefDoc> {
+        const HydeEntity = await b.HyDEDefineEntity(entityName, "zh");
+        
+        const retrieved_chunks = await this.retriever.chunks_retriver(`${HydeEntity.name} ${HydeEntity.description}`, 10);
+        const entity_definition = await b.DefineEntityWithReferences(
+            entityName,
+            retrieved_chunks.map((e: any) => e.document.content),
+            "中文"
+        );
+        const {reference, ...entity} = entity_definition;
+
+        // Convert EntityWithRef to EntityWithRefDoc by transforming reference to referenceDoc
+        const entity_with_ref_doc = {
+            ...entity,
+            referenceDoc: retrieved_chunks.filter((e: any, index: number) => {
+                return (index + 1) in entity_definition.reference
+            }).map((e: any) => e.document.id)
+        };
+
+        const entity_create_result = await this.weaver.entityStorage.createEntity(entity_with_ref_doc);
+        return {id: entity_create_result[0].id, ...entity_with_ref_doc};
     }
 }
-

@@ -28,11 +28,15 @@ export default class TypeBuilder {
     
     EntityExtractionExample: ClassViewer<'EntityExtractionExample', "entity_type" | "example_input" | "extracted_entities">;
     
+    EntityMatch: ClassViewer<'EntityMatch', "entity" | "confidence">;
+    
     EntityMatchResult: ClassViewer<'EntityMatchResult', "entity_name" | "is_match" | "matched_entity_name" | "reasoning">;
     
     EntityWithRef: ClassViewer<'EntityWithRef', "name" | "description" | "type" | "aliases" | "reference">;
     
     HyDE_rewrite_query: ClassViewer<'HyDE_rewrite_query', "HyDE_answer">;
+    
+    HypothesizedProperty: ClassViewer<'HypothesizedProperty', "hypothesis">;
     
     MissingEntityExtractionResult: ClassViewer<'MissingEntityExtractionResult', "extracted_entities" | "reasoning">;
     
@@ -48,12 +52,18 @@ export default class TypeBuilder {
     
     RetrievedDocument: ClassViewer<'RetrievedDocument', "content" | "metadata">;
     
+    RetrievedPropertyInfo: ClassViewer<'RetrievedPropertyInfo', "information" | "sources">;
+    
+    SummarizedProperty: ClassViewer<'SummarizedProperty', "summary">;
+    
+    UpdatedSummary: ClassViewer<'UpdatedSummary', "summary" | "changes">;
+    
     
 
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "EPpair","Entity","EntityExtractionExample","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","MissingEntityExtractionResult","Property","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument",
+            "EPpair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SummarizedProperty","UpdatedSummary",
           ]),
           enums: new Set([
             
@@ -73,6 +83,10 @@ export default class TypeBuilder {
           "entity_type","example_input","extracted_entities",
         ]);
         
+        this.EntityMatch = this.tb.classViewer("EntityMatch", [
+          "entity","confidence",
+        ]);
+        
         this.EntityMatchResult = this.tb.classViewer("EntityMatchResult", [
           "entity_name","is_match","matched_entity_name","reasoning",
         ]);
@@ -83,6 +97,10 @@ export default class TypeBuilder {
         
         this.HyDE_rewrite_query = this.tb.classViewer("HyDE_rewrite_query", [
           "HyDE_answer",
+        ]);
+        
+        this.HypothesizedProperty = this.tb.classViewer("HypothesizedProperty", [
+          "hypothesis",
         ]);
         
         this.MissingEntityExtractionResult = this.tb.classViewer("MissingEntityExtractionResult", [
@@ -111,6 +129,18 @@ export default class TypeBuilder {
         
         this.RetrievedDocument = this.tb.classViewer("RetrievedDocument", [
           "content","metadata",
+        ]);
+        
+        this.RetrievedPropertyInfo = this.tb.classViewer("RetrievedPropertyInfo", [
+          "information","sources",
+        ]);
+        
+        this.SummarizedProperty = this.tb.classViewer("SummarizedProperty", [
+          "summary",
+        ]);
+        
+        this.UpdatedSummary = this.tb.classViewer("UpdatedSummary", [
+          "summary","changes",
         ]);
         
         

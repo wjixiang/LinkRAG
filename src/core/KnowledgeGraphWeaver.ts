@@ -14,6 +14,7 @@ import { embedding } from '../lib/embedding';
 import pLimit from 'p-limit';
 import { SemanticChunkingConfig, semantic_chunking } from '@/lib/chunking/semantic_chunking'; // Import semantic_chunking
 import { createAlibabaBatchEmbeddingJob } from '@/lib/embedding/AlibabaBatchEmbedder'; // Import batch embedder
+import PropertyStorage from './PropertyStorage';
 
 
 export interface KnowledgeGraphWeaverConfig {
@@ -31,11 +32,12 @@ export interface KnowledgeGraphWeaverConfig {
 export default class KnowledgeGraphWeaver {
 
     private logger: winston.Logger;
-    documentProcessor: DocumentProcessor;
-    chunkProcessor!: ChunkProcessor;
+    documentProcessor: DocumentProcessor = new DocumentProcessor();
+    chunkProcessor!: ChunkProcessor ;
     graphGenerator!: GraphGenerator;
     graphMerger!: GraphMerger;
     entityStorage!: EntityStorage;
+    propertyStorage: PropertyStorage;
     config: KnowledgeGraphWeaverConfig;
     sourceManager: SourceManager;
     knowledgeGraphProcessor!: KnowledgeGraphProcessor;
@@ -46,6 +48,8 @@ export default class KnowledgeGraphWeaver {
         this.logger = createLoggerWithPrefix('KnowledgeGraphWeaver');
         this.documentProcessor = new DocumentProcessor();
         this.sourceManager = new SourceManager();
+        this.entityStorage = new EntityStorage(this.config.entity_table_name, this.config.reference_table_name);
+        this.propertyStorage = new PropertyStorage(this.config.property_table_name)
     }
 
     async init() {
@@ -60,7 +64,7 @@ export default class KnowledgeGraphWeaver {
             this.config.chunkTableName,
             embedding
         );
-        this.entityStorage = new EntityStorage(db, this.config.entity_table_name);
+        
         
 
         this.chunkProcessor = new ChunkProcessor( {

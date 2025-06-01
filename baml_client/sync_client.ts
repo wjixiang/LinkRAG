@@ -19,7 +19,7 @@ import type { BamlRuntime, FunctionResult, BamlCtxManager, Image, Audio, ClientR
 import { toBamlError, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type * as types from "./types"
-import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SummarizedProperty, UpdatedSummary} from "./types"
 import type TypeBuilder from "./type_builder"
 import { HttpRequest, HttpStreamRequest } from "./sync_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -84,6 +84,29 @@ export class BamlSyncClient {
     return this.llmStreamParser
   }
 
+  
+  BaselineRAGRetrieveProperty(
+      query: string,
+      __baml_options__?: BamlCallOptions
+  ): RetrievedPropertyInfo {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "BaselineRAGRetrieveProperty",
+        {
+          "query": query
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as RetrievedPropertyInfo
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
   
   ConvertQueryToEP(
       query: string,
@@ -361,6 +384,29 @@ export class BamlSyncClient {
     }
   }
   
+  HyDEHypothesizeProperty(
+      entity: string,property: string,
+      __baml_options__?: BamlCallOptions
+  ): HypothesizedProperty {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "HyDEHypothesizeProperty",
+        {
+          "entity": entity,"property": property
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as HypothesizedProperty
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
   HyDE_rewrite(
       query: string,language: string,
       __baml_options__?: BamlCallOptions
@@ -407,6 +453,52 @@ export class BamlSyncClient {
     }
   }
   
+  SelectMostMatchingEntity(
+      entities: string[],query: string,
+      __baml_options__?: BamlCallOptions
+  ): EntityMatch {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "SelectMostMatchingEntity",
+        {
+          "entities": entities,"query": query
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as EntityMatch
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  SummarizeProperty(
+      entity: string,property: string,context: string,
+      __baml_options__?: BamlCallOptions
+  ): SummarizedProperty {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "SummarizeProperty",
+        {
+          "entity": entity,"property": property,"context": context
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as SummarizedProperty
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
   SummarizeRelations(
       relationReferences: RelationReference[],entity_property: string,central_entity: Entity,language: string,
       __baml_options__?: BamlCallOptions
@@ -425,6 +517,29 @@ export class BamlSyncClient {
         collector,
       )
       return raw.parsed(false) as string
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  UpdateSummary(
+      current_summary: string,new_information: string,entity: string,property: string,
+      __baml_options__?: BamlCallOptions
+  ): UpdatedSummary {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "UpdateSummary",
+        {
+          "current_summary": current_summary,"new_information": new_information,"entity": entity,"property": property
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as UpdatedSummary
     } catch (error: any) {
       throw toBamlError(error);
     }

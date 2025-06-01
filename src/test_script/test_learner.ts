@@ -12,18 +12,18 @@ async function main() {
     const learner = new Learner(retriever, weaver);
 
     // Test with existing entity
-    logger.info("Testing with existing entity...");
-    const existingResult = await learner.summarize_new_property(
-        "系统性红斑狼疮",
-        "治疗"
-    );
-    console.log("Existing entity result:", existingResult);
+    // logger.info("Testing with existing entity...");
+    // const existingResult = await learner.summarize_new_property(
+    //     "系统性红斑狼疮",
+    //     "治疗"
+    // );
+    // console.log("Existing entity result:", existingResult);
 
     // Test with new entity
     logger.info("\nTesting with new entity...");
     const newResult = await learner.summarize_new_property(
-        "风湿性心内膜炎",
-        "治疗"
+        "功能性消化不良",
+        "临床表现"
     );
     console.log("New entity result:", newResult);
 }

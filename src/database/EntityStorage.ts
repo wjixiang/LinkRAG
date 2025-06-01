@@ -1,5 +1,8 @@
-import { d, Surreal } from 'surrealdb';
+import { Entity, EntityWithRef } from 'baml_client';
 import { RecordId } from 'surrealdb';
+import { surrealDBClient } from './surrealdbClient';
+import createLoggerWithPrefix from '@/lib/console/logger';
+import { EntityRecord, EntityWithRefDoc } from '@/type';
 
 type Any = any; // Using 'any' for simplicity, can be refined later
 
@@ -13,12 +16,41 @@ interface BaseEntityStorage {
 }
 
 export default class EntityStorage implements BaseEntityStorage {
-    private db: Surreal;
+    
     private nodeTableName: string; // namespace for nodes
+    private referenceTableName: string // namespace for references
+    private logger =  createLoggerWithPrefix('EntityStorage');
 
-    constructor(db: Surreal, nodeTableName: string ) {
-        this.db = db;
+    constructor( nodeTableName: string, referenceTableName: string ) {
         this.nodeTableName = nodeTableName;
+        this.referenceTableName = referenceTableName
+    }
+
+    async createEntity(entityWithRefDoc: Omit<EntityWithRefDoc,"id">) {
+        try {
+            const db = await surrealDBClient.getDb()
+
+            const {referenceDoc, ...entity} = entityWithRefDoc
+
+            // Create new entity
+            const result = await db.create(this.nodeTableName, {...entity});
+            this.logger.debug(`New entity created: ${JSON.stringify(result[0])}`)
+
+            // Create references for created entity
+            entityWithRefDoc.referenceDoc.map(async(e)=>{
+                const refInsertRes = await db.insertRelation(this.referenceTableName, {
+                    in: result[0].id,
+                    out: e
+                })
+                return refInsertRes
+            })
+            
+
+            return result;
+        } catch (error: any) {
+            console.error(`Error creating node in table ${this.nodeTableName}:`, error);
+            throw error;
+        }
     }
 
     /**
@@ -26,7 +58,8 @@ export default class EntityStorage implements BaseEntityStorage {
      */
     async createNode(data: Record<string, Any>): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
-            const result = await this.db.create(this.nodeTableName, data);
+            const db = await surrealDBClient.getDb()
+            const result = await db.create(this.nodeTableName, data);
             return result;
         } catch (error: any) {
             console.error(`Error creating node in table ${this.nodeTableName}:`, error);
@@ -39,7 +72,8 @@ export default class EntityStorage implements BaseEntityStorage {
      */
     async createEdge(fromNodeId: RecordId, edgeTable: string, toNodeId: RecordId, data: Record<string, Any> = {}): Promise<Record<string, Any>[]> {
         try {
-            const result = await this.db.insertRelation(edgeTable,{
+            const db = await surrealDBClient.getDb()
+            const result = await db.insertRelation(edgeTable,{
                 in: fromNodeId,
                 out: toNodeId,
                 data: data
@@ -56,8 +90,9 @@ export default class EntityStorage implements BaseEntityStorage {
      */
     async getConnectedNodes(fromNodeId: RecordId, edgeTable: string): Promise<Record<string, Any>[]> {
         try {
+            const db = await surrealDBClient.getDb()
             // Perform a graph traversal to get the connected 'out' nodes
-            const result = await this.db.query(`SELECT out FROM ${fromNodeId}->${edgeTable}`);
+            const result = await db.query(`SELECT out FROM ${fromNodeId}->${edgeTable}`);
             // The result of a graph traversal is typically an array of records
             // We expect the connected nodes to be directly in the result array
             if (result && result.length > 0) {
@@ -76,8 +111,9 @@ export default class EntityStorage implements BaseEntityStorage {
      */
     async getEdges(fromNodeId: RecordId, edgeTable: string): Promise<Record<string, Any>[]> {
         try {
+            const db = await surrealDBClient.getDb()
             // Select all edges originating from the node via the specified edge table
-            const result = await this.db.query(`SELECT * FROM ${fromNodeId}->${edgeTable}`);
+            const result = await db.query(`SELECT * FROM ${fromNodeId}->${edgeTable}`);
             // The result of a SELECT query is typically an array of records
             // We expect the edge records to be directly in the result array
              if (result && result.length > 0) {
@@ -97,7 +133,8 @@ export default class EntityStorage implements BaseEntityStorage {
      */
     async deleteNode(nodeId: RecordId): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
-            const result = await this.db.delete(nodeId);
+            const db = await surrealDBClient.getDb()
+            const result = await db.delete(nodeId);
             // Use a double assertion to bypass potential incorrect type definitions
             return result as unknown as Array<Record<string, Any> & { id: RecordId }>;
         } catch (error: any) {
@@ -111,7 +148,8 @@ export default class EntityStorage implements BaseEntityStorage {
      */
     async deleteEdge(edgeId: RecordId): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
-            const result = await this.db.delete(edgeId);
+            const db = await surrealDBClient.getDb()
+            const result = await db.delete(edgeId);
             // Use a double assertion to bypass potential incorrect type definitions
             return result as unknown as Array<Record<string, Any> & { id: RecordId }>;
         } catch (error: any) {
@@ -125,8 +163,9 @@ export default class EntityStorage implements BaseEntityStorage {
       */
     async updateNode(nodeId: RecordId, data: Record<string, Any>): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
+            const db = await surrealDBClient.getDb()
             // Use the MERGE statement to merge data into the existing record
-            const result = await this.db.merge(nodeId, data);
+            const result = await db.merge(nodeId, data);
             // Use a double assertion to bypass potential incorrect type definitions
             return result as unknown as Array<Record<string, Any> & { id: RecordId }>;
         } catch (error: any) {
@@ -140,7 +179,8 @@ export default class EntityStorage implements BaseEntityStorage {
       */
     async findEntityByName(name: string): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
-            const result = await this.db.query(`SELECT * FROM ${this.nodeTableName} WHERE name = "${name}"`);
+            const db = await surrealDBClient.getDb()
+            const result = await db.query(`SELECT * FROM ${this.nodeTableName} WHERE name = "${name}"`);
             // The result of db.query is an array of results, one for each statement.
             // For a single SELECT statement, the actual data is in result[0].result
             if (result && result.length > 0) {

@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SummarizedProperty, UpdatedSummary} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -30,6 +30,26 @@ type BamlCallOptions = {
 export class AsyncHttpRequest {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
+  
+  async BaselineRAGRetrieveProperty(
+      query: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "BaselineRAGRetrieveProperty",
+        {
+          "query": query
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
   
   async ConvertQueryToEP(
       query: string,
@@ -271,6 +291,26 @@ export class AsyncHttpRequest {
     }
   }
   
+  async HyDEHypothesizeProperty(
+      entity: string,property: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "HyDEHypothesizeProperty",
+        {
+          "entity": entity,"property": property
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async HyDE_rewrite(
       query: string,language: string,
       __baml_options__?: BamlCallOptions
@@ -311,6 +351,46 @@ export class AsyncHttpRequest {
     }
   }
   
+  async SelectMostMatchingEntity(
+      entities: string[],query: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "SelectMostMatchingEntity",
+        {
+          "entities": entities,"query": query
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async SummarizeProperty(
+      entity: string,property: string,context: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "SummarizeProperty",
+        {
+          "entity": entity,"property": property,"context": context
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async SummarizeRelations(
       relationReferences: RelationReference[],entity_property: string,central_entity: Entity,language: string,
       __baml_options__?: BamlCallOptions
@@ -320,6 +400,26 @@ export class AsyncHttpRequest {
         "SummarizeRelations",
         {
           "relationReferences": relationReferences,"entity_property": entity_property,"central_entity": central_entity,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async UpdateSummary(
+      current_summary: string,new_information: string,entity: string,property: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "UpdateSummary",
+        {
+          "current_summary": current_summary,"new_information": new_information,"entity": entity,"property": property
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -357,6 +457,26 @@ export class AsyncHttpStreamRequest {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
   
+  async BaselineRAGRetrieveProperty(
+      query: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "BaselineRAGRetrieveProperty",
+        {
+          "query": query
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async ConvertQueryToEP(
       query: string,
       __baml_options__?: BamlCallOptions
@@ -597,6 +717,26 @@ export class AsyncHttpStreamRequest {
     }
   }
   
+  async HyDEHypothesizeProperty(
+      entity: string,property: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "HyDEHypothesizeProperty",
+        {
+          "entity": entity,"property": property
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async HyDE_rewrite(
       query: string,language: string,
       __baml_options__?: BamlCallOptions
@@ -637,6 +777,46 @@ export class AsyncHttpStreamRequest {
     }
   }
   
+  async SelectMostMatchingEntity(
+      entities: string[],query: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "SelectMostMatchingEntity",
+        {
+          "entities": entities,"query": query
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async SummarizeProperty(
+      entity: string,property: string,context: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "SummarizeProperty",
+        {
+          "entity": entity,"property": property,"context": context
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async SummarizeRelations(
       relationReferences: RelationReference[],entity_property: string,central_entity: Entity,language: string,
       __baml_options__?: BamlCallOptions
@@ -646,6 +826,26 @@ export class AsyncHttpStreamRequest {
         "SummarizeRelations",
         {
           "relationReferences": relationReferences,"entity_property": entity_property,"central_entity": central_entity,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async UpdateSummary(
+      current_summary: string,new_information: string,entity: string,property: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "UpdateSummary",
+        {
+          "current_summary": current_summary,"new_information": new_information,"entity": entity,"property": property
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

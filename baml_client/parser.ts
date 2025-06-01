@@ -20,12 +20,30 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {EPpair, Entity, EntityExtractionExample, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument} from "./types"
+import type {EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SummarizedProperty, UpdatedSummary} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
+  
+  BaselineRAGRetrieveProperty(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): RetrievedPropertyInfo {
+    try {
+      return this.runtime.parseLlmResponse(
+        "BaselineRAGRetrieveProperty",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as RetrievedPropertyInfo
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
   
   ConvertQueryToEP(
       llmResponse: string,
@@ -243,6 +261,24 @@ export class LlmResponseParser {
     }
   }
   
+  HyDEHypothesizeProperty(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): HypothesizedProperty {
+    try {
+      return this.runtime.parseLlmResponse(
+        "HyDEHypothesizeProperty",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as HypothesizedProperty
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   HyDE_rewrite(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -279,6 +315,42 @@ export class LlmResponseParser {
     }
   }
   
+  SelectMostMatchingEntity(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): EntityMatch {
+    try {
+      return this.runtime.parseLlmResponse(
+        "SelectMostMatchingEntity",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as EntityMatch
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  SummarizeProperty(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): SummarizedProperty {
+    try {
+      return this.runtime.parseLlmResponse(
+        "SummarizeProperty",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as SummarizedProperty
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   SummarizeRelations(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -292,6 +364,24 @@ export class LlmResponseParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  UpdateSummary(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): UpdatedSummary {
+    try {
+      return this.runtime.parseLlmResponse(
+        "UpdateSummary",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as UpdatedSummary
     } catch (error) {
       throw toBamlError(error);
     }
@@ -320,6 +410,24 @@ export class LlmResponseParser {
 export class LlmStreamParser {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
+  
+  BaselineRAGRetrieveProperty(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.RetrievedPropertyInfo {
+    try {
+      return this.runtime.parseLlmResponse(
+        "BaselineRAGRetrieveProperty",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.RetrievedPropertyInfo
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
   
   ConvertQueryToEP(
       llmResponse: string,
@@ -537,6 +645,24 @@ export class LlmStreamParser {
     }
   }
   
+  HyDEHypothesizeProperty(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.HypothesizedProperty {
+    try {
+      return this.runtime.parseLlmResponse(
+        "HyDEHypothesizeProperty",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.HypothesizedProperty
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   HyDE_rewrite(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -573,6 +699,42 @@ export class LlmStreamParser {
     }
   }
   
+  SelectMostMatchingEntity(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.EntityMatch {
+    try {
+      return this.runtime.parseLlmResponse(
+        "SelectMostMatchingEntity",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.EntityMatch
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  SummarizeProperty(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.SummarizedProperty {
+    try {
+      return this.runtime.parseLlmResponse(
+        "SummarizeProperty",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.SummarizedProperty
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   SummarizeRelations(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -586,6 +748,24 @@ export class LlmStreamParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  UpdateSummary(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): partial_types.UpdatedSummary {
+    try {
+      return this.runtime.parseLlmResponse(
+        "UpdateSummary",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as partial_types.UpdatedSummary
     } catch (error) {
       throw toBamlError(error);
     }

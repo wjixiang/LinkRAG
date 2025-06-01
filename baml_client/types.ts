@@ -67,6 +67,12 @@ export interface EntityExtractionExample {
   
 }
 
+export interface EntityMatch {
+  entity: string
+  confidence: number
+  
+}
+
 export interface EntityMatchResult {
   entity_name: string
   is_match: boolean
@@ -86,6 +92,11 @@ export interface EntityWithRef {
 
 export interface HyDE_rewrite_query {
   HyDE_answer: string
+  
+}
+
+export interface HypothesizedProperty {
+  hypothesis: string
   
 }
 
@@ -131,5 +142,22 @@ export interface RelationReference {
 export interface RetrievedDocument {
   content: string
   metadata: string
+  
+}
+
+export interface RetrievedPropertyInfo {
+  information: string
+  sources: string[]
+  
+}
+
+export interface SummarizedProperty {
+  summary: string
+  
+}
+
+export interface UpdatedSummary {
+  summary: string
+  changes: string[]
   
 }
