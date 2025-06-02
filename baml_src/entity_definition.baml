@@ -3,7 +3,7 @@ function HyDEDefineEntity(
     entity_name: string,
     language: string
 ) -> Entity {
-    client "GLM4Flash"
+    client "QWen3"
     prompt #"
         {{_.role('system')}}
         You are a medical knowledge assistant that generates comprehensive definitions for medical entities.

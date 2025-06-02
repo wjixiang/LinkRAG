@@ -7,7 +7,7 @@ async function testGraphStorage() {
     // Connect to test DB
     await surrealDBClient.connect();
     const db = await surrealDBClient.getDb();
-    const entityStorageInstance = new EntityStorage(db, 'test_nodes');
+    const entityStorageInstance = new EntityStorage('test_nodes',"reference");
 
     // Test createNode
     console.log('Testing createNode...');

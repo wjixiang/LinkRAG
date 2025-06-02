@@ -14,7 +14,6 @@ async function testPropertyKeywordRetriever() {
 
 
         const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
-        await retriever.init();
         logger.info('KnowledgeGraphRetriever initialized.');
 
         // Test query

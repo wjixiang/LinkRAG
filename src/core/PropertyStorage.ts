@@ -1,6 +1,8 @@
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '@/database/surrealdbClient';
 import createLoggerWithPrefix from '@/lib/console/logger';
+import { Property } from 'baml_client';
+import { PropertyRecord } from '@/type';
 
 type Any = any; // Using 'any' for simplicity, can be refined later
 
@@ -18,14 +20,34 @@ export default class PropertyStorage {
      * @param propertyData The property data to store
      * @returns The created property record
      */
-    async storeProperty(entityId: RecordId, propertyData: Record<string, Any>): Promise<Array<Record<string, Any> & { id: RecordId }>> {
+    async storeProperty(entityId: RecordId, propertyData: Property, references: RecordId[]): Promise<Array<Record<string, Any> & { id: RecordId }>> {
         try {
             const db = await surrealDBClient.getDb();
+            // Save new property
+            const property: Omit<PropertyRecord,"id"> = {
+                core_entity: entityId,
+                prop_name: propertyData.prop_name,
+                content: propertyData.content
+            }
+
             const results = await db.create(this.propertyTableName, {
-                ...propertyData,
-                entity: entityId
+                ...property,
             });
             this.logger.debug(`New property stored: ${JSON.stringify(results[0])}`);
+
+            // Create SUBSET relationship with core entity
+            db.insertRelation("subset", {
+                in: entityId,
+                out: results[0].id
+            })
+            //
+            references.map(async(e)=>{
+                db.insertRelation("references", {
+                    in: entityId,
+                    out: e
+                })
+            })
+
             // Use double assertion to match EntityStorage pattern
             return results as unknown as Array<Record<string, Any> & { id: RecordId }>;
         } catch (error: any) {

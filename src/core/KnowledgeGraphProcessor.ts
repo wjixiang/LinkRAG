@@ -42,7 +42,6 @@ export class KnowledgeGraphProcessor {
             this.logger.debug('Database client obtained.');
 
             const chunkStorage = new ChunkStorage(
-                db,
                 this.config.chunkTableName,
                 embedding,
                 0.2 // cosine_better_than_threshold

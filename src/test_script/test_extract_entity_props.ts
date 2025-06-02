@@ -24,7 +24,7 @@ async function testExtractEntityProps() {
 
     try {
         console.log(`Testing extract_entity_props for entity ID: ${entityId}`);
-        const summaries = await weaver.extract_entity_props(entityId);
+        const summaries = await weaver.knowledgeGraphProcessor.extract_entity_props(entityId);
         
         if (summaries) {
             console.log('Extracted Entity Property Summaries:');

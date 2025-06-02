@@ -36,6 +36,7 @@ export default class KnowledgeGraphWeaver {
     chunkProcessor!: ChunkProcessor ;
     graphGenerator!: GraphGenerator;
     graphMerger!: GraphMerger;
+    chunkStorage: ChunkStorage;
     entityStorage!: EntityStorage;
     propertyStorage: PropertyStorage;
     config: KnowledgeGraphWeaverConfig;
@@ -50,31 +51,19 @@ export default class KnowledgeGraphWeaver {
         this.sourceManager = new SourceManager();
         this.entityStorage = new EntityStorage(this.config.entity_table_name, this.config.reference_table_name);
         this.propertyStorage = new PropertyStorage(this.config.property_table_name)
-    }
-
-    async init() {
-        await this.initializeComponents();
-    }
-
-    private async initializeComponents() {
-        // await surrealDBClient.connect()
-        const db = await surrealDBClient.getDb();
-        const chunkStorage = new ChunkStorage(
-            db,
+        this.chunkStorage = new ChunkStorage(
             this.config.chunkTableName,
             embedding
         );
-        
-        
+        this.graphGenerator = new GraphGenerator(this.entityStorage, this.chunkStorage, {
+            relation_table_name: this.config.relation_table_name,
+            reference_table_name: this.config.reference_table_name
+        });
 
         this.chunkProcessor = new ChunkProcessor( {
             chunkTableName: this.config.chunkTableName,
             embeddingConcurrencyLimit: this.config.embeddingConcurrencyLimit,
             SemanticChunkingConfig: this.config.SemanticChunkingConfig
-        });
-        this.graphGenerator = new GraphGenerator(this.entityStorage, chunkStorage, {
-            relation_table_name: this.config.relation_table_name,
-            reference_table_name: this.config.reference_table_name
         });
         this.graphMerger = new GraphMerger(this.entityStorage, {
             relation_table_name: this.config.relation_table_name,
@@ -91,7 +80,7 @@ export default class KnowledgeGraphWeaver {
 
         await this.chunking_and_embedding(reference_document_id)
         await this.generateKgsForReference(reference_document_id)
-        await this.joint_graph(20)
+        await this.graphMerger.jointGraph(20)
         await this.build_global_EPE_graph(20)
 
     }
@@ -140,14 +129,29 @@ export default class KnowledgeGraphWeaver {
     async chunking_and_embedding_from_path(file_path: string): Promise<void> {
         this.logger.debug(`Starting chunking_and_embedding from file path: ${file_path} without saving to reference storage.`);
         try {
+            // First read the file content
             const content = await require('fs').promises.readFile(file_path, 'utf-8');
-            const plainText = content; // For now, plain text is the same as content
-
+            
             // Generate a temporary RecordId for processing
             const tempId = new RecordId('temp_document', Date.now().toString());
             this.logger.debug(`Generated temporary ID ${tempId.id} for file ${file_path}`);
 
-            await this.chunkProcessor.processDocument(tempId, plainText);
+            // Add source with metadata
+            await this.sourceManager.addSource(content, {
+                name: file_path.split('/').pop() || file_path,
+                type: file_path.endsWith('.pdf') ? 'pdf' :
+                      file_path.endsWith('.md') ? 'markdown' : 'txt',
+                origin: file_path,
+                description: 'Temporary source for chunking and embedding'
+            });
+
+            // Get content through source manager (now properly registered)
+            const storedContent = await this.sourceManager.getSourceContent(tempId);
+            if (!storedContent) {
+                throw new Error(`Failed to get content for file ${file_path}`);
+            }
+
+            await this.chunkProcessor.processDocument(tempId, storedContent);
             this.logger.debug(`Finished chunking_and_embedding from file path: ${file_path}`);
         } catch (error) {
             this.logger.error(`Error during chunking and embedding from file path ${file_path}:`, error);
@@ -204,19 +208,6 @@ export default class KnowledgeGraphWeaver {
             this.logger.error(`Error during batch chunking and embedding for ID ${id}:`, error);
             throw error;
         }
-    }
-
-
-    async joint_graph(concurrencyLimit=10) {
-        await this.graphMerger.jointGraph(concurrencyLimit);
-    }
-
-    async classify_relation(entity_id: RecordId) {
-        return this.knowledgeGraphProcessor.classify_relation(entity_id);
-    }
-
-    async extract_entity_props(id: RecordId) {
-        return this.knowledgeGraphProcessor.extract_entity_props(id);
     }
 
     async build_global_EPE_graph(concurrencyLimit = 100) {

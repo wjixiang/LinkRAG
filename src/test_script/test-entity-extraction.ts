@@ -11,11 +11,9 @@ async function main() {
         
         // Initialize ChunkStorage with required dependencies
         const chunkStorage = new ChunkStorage(
-            db,
             'chunk', // table name
             embedding, // embedding function
             0.2, // cosine threshold
-            new Set() // meta fields
         );
         
         const entityExtractor = new EntityExtractor(chunkStorage);

@@ -18,7 +18,6 @@ async function runTest() {
     // Instantiate ChunkStorage
     const chunkTableName = 'chunks_test'; // Replace with your actual chunk table name
     const chunkStorage = new ChunkStorage(
-        await surrealDBClient.getDb(),
         chunkTableName,
         embedding,
         0.2 // cosine_better_than_threshold

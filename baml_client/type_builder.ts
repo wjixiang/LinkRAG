@@ -42,6 +42,8 @@ export default class TypeBuilder {
     
     Property: ClassViewer<'Property', "prop_name" | "content">;
     
+    PropertyGenerateRes: ClassViewer<'PropertyGenerateRes', "content" | "referenceIndex">;
+    
     Relation: ClassViewer<'Relation', "source_entity" | "target_entity" | "relation">;
     
     RelationExtractResult: ClassViewer<'RelationExtractResult', "source_entity" | "target_entity" | "relation">;
@@ -63,7 +65,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "EPpair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SummarizedProperty","UpdatedSummary",
+            "EPpair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","PropertyGenerateRes","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SummarizedProperty","UpdatedSummary",
           ]),
           enums: new Set([
             
@@ -109,6 +111,10 @@ export default class TypeBuilder {
         
         this.Property = this.tb.classViewer("Property", [
           "prop_name","content",
+        ]);
+        
+        this.PropertyGenerateRes = this.tb.classViewer("PropertyGenerateRes", [
+          "content","referenceIndex",
         ]);
         
         this.Relation = this.tb.classViewer("Relation", [

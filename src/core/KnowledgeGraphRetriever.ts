@@ -69,16 +69,6 @@ export default class KnowledgeGraphRetriever {
         this.keywordExtractor = new KeywordExtractor(); // Initialize KeywordExtractor
     }
 
-    async init(): Promise<void> {
-        const db = await surrealDBClient.getDb();
-        // Instantiate ChunkStorage internally with required arguments
-        this.chunkStorage = new ChunkStorage(
-            db, // Provide the Surreal instance
-            this.config.chunkTableName,
-            embedding, // Provide the embedding function
-            this.config.semantic_search_threshold // Provide the semantic search threshold
-        );
-    }
 
     async chunks_retriver(query: string, top_k: number): Promise<semanticSearchResult[]> {
         

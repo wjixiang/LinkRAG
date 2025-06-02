@@ -7,7 +7,7 @@ async function main() {
     const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
 
     // Initialize the retriever
-    await retriever.init();
+    
 
     // Sample query and top_k
     const query = "类风湿性关节炎的发病机制"; // Sample query

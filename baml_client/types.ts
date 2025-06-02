@@ -112,6 +112,12 @@ export interface Property {
   
 }
 
+export interface PropertyGenerateRes {
+  content: string
+  referenceIndex: number[]
+  
+}
+
 export interface Relation {
   source_entity: string
   target_entity: string

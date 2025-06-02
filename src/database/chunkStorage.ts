@@ -2,6 +2,7 @@ import { RecordId, Surreal } from 'surrealdb';
 import Logger from '../lib/console/logger';
 import winston from 'winston';
 import createLoggerWithPrefix from '../lib/console/logger';
+import { surrealDBClient } from './surrealdbClient';
 
 // Define the structure for a chunk document, combining document and vector properties
 export interface ChunkDocument {
@@ -37,18 +38,16 @@ interface BaseChunkStorage {
 
 /**
  * test script: src/test_script/test_chunk_storage.ts
- * @deprecated
  */
 export default class ChunkStorage implements BaseChunkStorage {
-    private db: Surreal;
     embedding_func: EmbeddingFunc;
     cosine_better_than_threshold: number;
     meta_fields: Set<string>;
     private tableName: string;
     private logger: winston.Logger;
 
-    constructor(db: Surreal, tableName: string, embedding_func: EmbeddingFunc, cosine_better_than_threshold: number = 0.2, meta_fields: Set<string> = new Set()) {
-        this.db = db;
+    constructor(tableName: string, embedding_func: EmbeddingFunc, cosine_better_than_threshold: number = 0.2, meta_fields: Set<string> = new Set()) {
+        
         this.tableName = tableName;
         this.logger = createLoggerWithPrefix('ChunkStorage');
         this.embedding_func = embedding_func;
@@ -61,7 +60,8 @@ export default class ChunkStorage implements BaseChunkStorage {
      */
     async create(data: Omit<ChunkDocument, 'id'>): Promise<ChunkDocument[]> {
         try {
-            const result = await this.db.create(this.tableName, data);
+            const db = await surrealDBClient.getDb()
+            const result = await db.create(this.tableName, data);
             return result as unknown as ChunkDocument[];
         } catch (error) {
             this.logger.error(`Error creating chunk in table ${this.tableName}:`, error);
@@ -75,11 +75,12 @@ export default class ChunkStorage implements BaseChunkStorage {
      */
     async read(id?: string): Promise<ChunkDocument[]> {
         try {
+            const db = await surrealDBClient.getDb();
             if (id) {
-                const result = await this.db.select(`${this.tableName}:${id}`);
+                const result = await db.select(`${this.tableName}:${id}`);
                 return result as unknown as ChunkDocument[];
             } else {
-                const result = await this.db.select(this.tableName);
+                const result = await db.select(this.tableName);
                 return result as unknown as ChunkDocument[];
             }
         } catch (error) {
@@ -93,7 +94,8 @@ export default class ChunkStorage implements BaseChunkStorage {
      */
     async update(id: string, data: Partial<ChunkDocument>): Promise<ChunkDocument[]> {
         try {
-            const result = await this.db.merge(`${this.tableName}:${id}`, data);
+            const db = await surrealDBClient.getDb();
+            const result = await db.merge(`${this.tableName}:${id}`, data);
             return result as unknown as ChunkDocument[];
         } catch (error) {
             this.logger.error(`Error updating chunk with id ${id} in table ${this.tableName}:`, error);
@@ -106,7 +108,8 @@ export default class ChunkStorage implements BaseChunkStorage {
      */
     async delete(id: string): Promise<ChunkDocument[]> {
         try {
-            const result = await this.db.delete(`${this.tableName}:${id}`);
+            const db = await surrealDBClient.getDb();
+            const result = await db.delete(`${this.tableName}:${id}`);
             return result as unknown as ChunkDocument[];
         } catch (error) {
             this.logger.error(`Error deleting chunk with id ${id} from table ${this.tableName}:`, error);
@@ -145,7 +148,8 @@ export default class ChunkStorage implements BaseChunkStorage {
         `;
 
         try {
-            const result = await this.db.query(surrealQL);
+            const db = await surrealDBClient.getDb();
+            const result = await db.query(surrealQL);
             this.logger.info("query raw result:", JSON.stringify(result, null, 2));
             if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
                  // Filter results based on cosine_better_than_threshold if score is available
@@ -179,9 +183,10 @@ export default class ChunkStorage implements BaseChunkStorage {
         }));
 
         try {
+            const db = await surrealDBClient.getDb();
             for (const record of recordsToInsert) {
                 const { id, ...dataWithoutId } = record;
-                await this.db.create(id, dataWithoutId);
+                await db.create(id, dataWithoutId);
             }
 
             this.logger.info(`Create/Update ${recordsToInsert.length} records`);
@@ -197,7 +202,8 @@ export default class ChunkStorage implements BaseChunkStorage {
      */
     async get_by_id(id: RecordId): Promise<Omit<ChunkDocument, 'embedding'> | null> {
         try {
-            const result = await this.db.select(id);
+            const db = await surrealDBClient.getDb();
+            const result = await db.select(id);
             // this.logger.info(`Result from select for id ${id}:`, JSON.stringify(result, null, 2));
             if (result) { // select for a specific id should return a single object or null
                 const chunk = result as unknown as ChunkDocument;
@@ -221,7 +227,8 @@ export default class ChunkStorage implements BaseChunkStorage {
         }
         const surrealQL = `SELECT * FROM ${this.tableName} WHERE id IN [${ids.map(id => `'${this.tableName}:${id.id}'`).join(', ')}];`;
         try {
-            const result = await this.db.query(surrealQL);
+            const db = await surrealDBClient.getDb();
+            const result = await db.query(surrealQL);
             // this.logger.info("get_by_ids raw result:", JSON.stringify(result, null, 2));
             if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
                 // Omit the embedding field from each chunk
@@ -246,8 +253,9 @@ export default class ChunkStorage implements BaseChunkStorage {
         }
         const recordIdsToDelete = ids.map(id => `${this.tableName}:${id}`);
         try {
+            const db = await surrealDBClient.getDb();
             const surrealQL = `DELETE ${this.tableName} WHERE id IN [${recordIdsToDelete.map(id => `'${id}'`).join(', ')}];`;
-            const result = await this.db.query(surrealQL);
+            const result = await db.query(surrealQL);
             // this.logger.info("delete_by_ids raw result:", JSON.stringify(result, null, 2));
         } catch (error) {
             this.logger.error("Error deleting chunks:", error);

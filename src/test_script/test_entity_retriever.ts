@@ -9,7 +9,6 @@ async function testEntityRetriever() {
 
         // Create and initialize the retriever
         const retriever = new KnowledgeGraphRetriever(config);
-        await retriever.init();
 
         // Define a test query
         const testQuery = "糖尿病的发病机制"; // Replace with a relevant test query

@@ -9,8 +9,8 @@ import createLoggerWithPrefix from '../lib/console/logger';
 async function main() {
     // Initialize required components
     const db = await surrealDBClient.getDb();
-    const entityStorage = new EntityStorage(db, 'entities_test');
-    const chunkStorage = new ChunkStorage(db, 'chunk', async () => [], 0.2);
+    const entityStorage = new EntityStorage( 'entities_test', 'reference');
+    const chunkStorage = new ChunkStorage( 'chunk', async () => [], 0.2);
     const logger = createLoggerWithPrefix('TestGraphGenerator');
 
     // GraphGenerator config

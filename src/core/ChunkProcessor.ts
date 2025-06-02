@@ -31,7 +31,6 @@ export class ChunkProcessor {
     private async initializeStorage() {
         const db = await surrealDBClient.getDb();
         this.chunkStorage = new ChunkStorage(
-            db,
             this.config.chunkTableName,
             embedding
         );

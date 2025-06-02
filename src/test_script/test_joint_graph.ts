@@ -18,7 +18,7 @@ async function main() {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         console.log("Testing joint_graph function...");
-        await kgWeaver.joint_graph();
+        await kgWeaver.graphMerger.jointGraph();
         console.log("joint_graph test completed");
     } catch (error) {
         console.error("Error during joint_graph test:", error);

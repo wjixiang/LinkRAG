@@ -1,10 +1,10 @@
-class RetrievedDocument {
-  content string
-  metadata string // Assuming metadata is a string, adjust if needed
+class PropertyGenerateRes {
+    content string
+    referenceIndex int[]
 }
 
-function GenerateAnswer(query: string, documents: RetrievedDocument[], language: string) -> string {
-  client "QiniuDeepseekV3" // Using GLM4Flash as an example client
+function GenerateProperty(query: string, documents: RetrievedDocument[], language: string) -> PropertyGenerateRes {
+  client "QWen3" // Using GLM4Flash as an example client
   prompt #"
   {{_.role('system')}}
   You are a helpful assistant that answers questions in "{{language}}" language based on the provided documents.
@@ -18,6 +18,7 @@ function GenerateAnswer(query: string, documents: RetrievedDocument[], language:
   Summarize the relevant information from the documents to answer the question. Make full use of the information in the documents.
   Provide a clear and concise answer to the question. Prefer to use table/list format if applicable.
   Annotate the answer with the document index at the format given below to support your answer.
+  List the index of documents you referenced.
   
 
   ---example---
@@ -51,4 +52,3 @@ function GenerateAnswer(query: string, documents: RetrievedDocument[], language:
     {{ ctx.output_format }}
   "#
 }
-

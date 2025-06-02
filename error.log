@@ -832,3 +832,4 @@
 [test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 2 was the wrong type. Expected a string but found NONE
 [test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 2 was the wrong type. Expected a string but found NONE
 [test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 2 was the wrong type. Expected a string but found NONE
+[test_property_keyword_retriever:[31merror[39m] Error during test: Failed to retrieve remote version. If the server is behind a proxy, make sure it's configured correctly.

@@ -4,8 +4,7 @@ import { surrealDBClient } from "@/database/surrealdbClient";
 
 async function main() {
     // Initialize retriever with config
-    const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
-    await retriever.init();
+    const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config); 
 
     // Test queries
     const queries = [

@@ -22,8 +22,8 @@ async function main() {
     // Test with new entity
     logger.info("\nTesting with new entity...");
     const newResult = await learner.summarize_new_property(
-        "功能性消化不良",
-        "临床表现"
+        "克罗恩病",
+        "手术指征"
     );
     console.log("New entity result:", newResult);
 }

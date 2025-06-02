@@ -22,7 +22,7 @@ async function testClassifyRelation() {
     const entityId = new RecordId('nodes', '04d4j27vfzjfw4fill8v'); // 04d4j27vfzjfw4fill8v bvtu2fugdthiug3p5wem
 
     try {
-        await weaver.classify_relation(entityId);
+        await weaver.knowledgeGraphProcessor.classify_relation(entityId);
         console.log('classify_relation test completed');
     } catch (error) {
         console.error('Error during classify_relation test:', error);

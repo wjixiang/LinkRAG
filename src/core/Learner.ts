@@ -5,7 +5,8 @@ import KnowledgeGraphWeaver from './KnowledgeGraphWeaver';
 import { RecordId } from "surrealdb";
 import type EntityStorage from "../database/EntityStorage";
 import type PropertyStorage from "../core/PropertyStorage";
-import { EntityWithRefDoc } from "@/type";
+import { EntityRecord, EntityWithRefDoc } from "@/type";
+import { Collector } from "@boundaryml/baml";
 
 interface Entity {
     id: RecordId;
@@ -39,6 +40,7 @@ export default class Learner {
     private logger: ReturnType<typeof createLoggerWithPrefix>;
     private retriever: KnowledgeGraphRetriever;
     private weaver: KnowledgeGraphWeaver
+    collector = new Collector()
 
     constructor(retriever: KnowledgeGraphRetriever, weaver: KnowledgeGraphWeaver) {
         this.retriever = retriever;
@@ -67,33 +69,46 @@ export default class Learner {
         }
     }
 
-    private async handleNewEntityFlow(entityName: string, propertyName: string): Promise<string> {
-        this.logger.info(`Entity ${entityName} not found, starting HyDE+RAG flow`);
-        
-        // Step D1-D4: Create new entity
-        const entity = await this.create_new_entity(entityName);
-        
-        // Step G2-G4: Handle property for new entity
-        const hydeResult = await b.HyDEHypothesizeProperty(entityName, propertyName);
+    /**
+     * generate new property summary
+     * @param entity 
+     * @param propertyName 
+     * @returns 
+     */
+    async generate_new_property(entity: EntityWithRefDoc | EntityRecord, propertyName: string ) {
+        const collector = this.collector
+        const hydeResult = await b.HyDEHypothesizeProperty(entity.name, propertyName, {collector});
         const chunks = await this.retriever.chunks_retriver(hydeResult.hypothesis, 10);
-        const property = await b.GenerateAnswer(
-            `What is ${propertyName} of ${entityName} ?`,
+        const property = await b.GenerateProperty(
+            `What is ${propertyName} of ${entity.name} ?`,
             chunks.map(e=>{
                 return {
                     content: e.document.content,
                     metadata: String(e.score)
                 }
             }),
-            "zh"
+            "zh", {collector}
         );
         
-        await this.weaver.propertyStorage.storeProperty(entity.id, {
-            name: propertyName,
-            summary: property,
-            references: chunks.map((c: any) => c.document.id)
-        });
+        await this.weaver.propertyStorage.storeProperty(
+            entity.id, 
+            {
+                prop_name: propertyName,
+                content: property.content,
+            }, chunks.map((c: any) => c.document.id).filter((e,index)=>(index+1) in property.referenceIndex));
+
+        return property
+    }
+
+    private async handleNewEntityFlow(entityName: string, propertyName: string): Promise<string> {
+        this.logger.info(`Entity ${entityName} not found, starting HyDE+RAG flow`);
         
-        return property;
+        // Step D1-D4: Create new entity
+        const entity = await this.create_new_entity(entityName);
+        
+        const property = await this.generate_new_property(entity, propertyName)
+        
+        return property.content;
     }
 
     private async handleSingleEntityFlow(entity: Entity, entityName: string, propertyName: string): Promise<string> {
@@ -173,20 +188,9 @@ export default class Learner {
         } else {
             // Step g12: Property doesn't exist - create new
             this.logger.info(`Property ${propertyName} doesn't exist, creating new`);
+            const property = await this.generate_new_property(entity, propertyName)
             
-            const hydeResult = await b.HyDEHypothesizeProperty(entity.name, propertyName);
-            const chunks = await this.retriever.chunks_retriver(hydeResult.hypothesis, 10);
-            const property = await b.BaselineRAGRetrieveProperty(
-                `${entity.name} ${propertyName}`
-            );
-            
-            await (this.weaver.propertyStorage as any).storeProperty(entity.id, {
-                name: propertyName,
-                summary: property.information,
-                references: chunks.map((c: any) => c.document.id)
-            });
-            
-            return property.information;
+            return property.content;
         }
     }
 

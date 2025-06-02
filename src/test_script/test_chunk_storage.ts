@@ -14,7 +14,7 @@ async function testChunkStorage() {
         const db = await surrealDBClient.getDb();
 
         const testTableName = 'chunks_test_verify';
-        const chunkStorage = new ChunkStorage(db, testTableName, embedding, 0.1); // Use actual embedding function
+        const chunkStorage = new ChunkStorage( testTableName, embedding, 0.1); // Use actual embedding function
 
         // Define test data
         const testChunksContent = {

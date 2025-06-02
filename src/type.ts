@@ -1,5 +1,5 @@
 import { Embeddings } from "@langchain/core/embeddings";
-import { Entity, Relation } from "baml_client";
+import { Entity, Property, Relation } from "baml_client";
 import { RecordId } from "surrealdb";
 
 export interface embeddingInstance {
@@ -46,6 +46,10 @@ export interface PropertySummarizeResult {
     property_content: string;
 }
 
+export interface PropertyRecord extends Property {
+    id: RecordId;
+    core_entity: RecordId;
+}  
 
 export interface RetrievedProperty{
     id: RecordId;

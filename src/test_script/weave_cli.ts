@@ -13,7 +13,7 @@ async function processFile(filePath: string) {
     // await surrealDBClient.connect()
     try {
         const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
-        await weaver.init(); // Initialize the weaver
+        
         console.log(`Processing file: ${filePath}`);
         await weaver.weave(filePath);
         console.log('Successfully processed file');
@@ -31,7 +31,7 @@ async function chunkAndEmbedFile(filePath: string, chunkTable: string, concurren
             embeddingConcurrencyLimit: concurrency
         };
         const weaver = new KnowledgeGraphWeaver(config);
-        await weaver.init(); // Initialize the weaver
+        
         console.log(`Chunking and embedding file: ${filePath}`);
         await weaver.chunking_and_embedding_from_path(filePath);
         console.log('Successfully chunked and embedded file');

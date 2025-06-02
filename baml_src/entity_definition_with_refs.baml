@@ -13,7 +13,7 @@ function DefineEntityWithReferences(
     reference_documents:string[],
     language:string // "English" or "中文"
 ) -> EntityWithRef {
-    client "GLM4Flash"
+    client "QWen3"
     prompt #"
     {{_.role("system")}}
     You are a medical knowledge expert. Given an entity name and reference documents,
