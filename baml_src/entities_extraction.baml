@@ -23,7 +23,7 @@ function ExtractEntity(chunk_text:string, entity_type: string[], ) -> Entity[] {
   1. Given a piece of text, extract the main entity and its attributes. The main entity is usually a disease or a medical condition.
   2. The output should be a list of entities, each with a name, description, type and aliases.
   3. The name should be the canonical name of the entity.
-  4. The aliases should include all alternative names found in text (e.g. after "亦称", "又称", "也叫" etc).
+  4. The aliases should include all alternative names found in text.
   5. The type should be one of the following: {{entity_type}}
   6. The description should strictly follow the text, without additional interpretation. Prioritize using the original text.
   
@@ -158,6 +158,57 @@ function ExtractEntityFromQuery(query: string) -> Entity[] {
 
   ---input---
   {{ query }}
+
+  ---output---
+  {{ ctx.output_format }}
+  "#
+}
+
+function ExtractEntityFromProperty(core_entity_name: string,property_name: string, property_content: string, entity_type: string[]) -> Entity[] {
+  client "GLM4Flash"
+  prompt #"
+  {{_.role('system')}}
+  You are a medical knowledge extraction assistant that identifies subset entities from given content.
+  {{_.role('user')}}
+  ---instruction---
+  1. Given a piece of text, extract the main entity and its attributes. 
+  2. The output should be a list of entities, each with a name, description, type and aliases.
+  3. The name should be the canonical name of the entity.
+  4. The aliases should include all alternative names found in text.
+  5. The type should be one of the following: {{entity_type}}
+  6. The description should strictly follow the text, without additional interpretation. Prioritize using the original text.
+  7. The type of extracted entities must belong to "{{property_name}} of {{core_entity_name}}". If one entity exist in given content but being descripted not belong to  "{{property_name}} of {{core_entity_name}}", don't output it.
+
+  ---example---
+  ###example_input###
+  青光眼的临床表现包括：
+  1. 头痛
+  2. 视物模糊
+
+  ###example_output###
+  [
+    {
+      name: "头痛",
+      description: "患者最近有头痛",
+      type: "symptom",
+      aliases: []
+    },
+    {
+      name: "视力模糊",
+      description: "患者有视力模糊",
+      type: "symptom",
+      aliases: []
+    },
+    {
+      name: "青光眼",
+      description: "怀疑是青光眼",
+      type: "disease",
+      aliases: []
+    }
+  ]
+
+  ---input---
+  {{ property_content }}
 
   ---output---
   {{ ctx.output_format }}

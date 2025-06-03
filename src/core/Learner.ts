@@ -3,11 +3,9 @@ import createLoggerWithPrefix from "../lib/console/logger";
 import { b } from 'baml_client/async_client';
 import KnowledgeGraphWeaver from './KnowledgeGraphWeaver';
 import { RecordId } from "surrealdb";
-import type EntityStorage from "../database/EntityStorage";
-import type PropertyStorage from "../core/PropertyStorage";
 import { EntityRecord, EntityWithRefDoc } from "@/type";
 import { Collector } from "@boundaryml/baml";
-import { PropertyGenerateRes } from "baml_client";
+import { Property, PropertyGenerateRes } from "baml_client";
 import { surrealDBClient } from "@/database/surrealdbClient";
 
 interface Entity {
@@ -99,12 +97,15 @@ export default class Learner {
                 content: property.content,
             }, chunks.map((c: any) => c.document.id).filter((e,index)=>(index+1) in property.referenceIndex));
 
-        await this.extract_entity_from_property({...property, id: property_save_res[0].id})
+        await this.extract_entity_from_property({
+            prop_name: propertyName, 
+            content: property.content,
+            id: property_save_res[0].id}, entity)
         return property
     }
 
-    async extract_entity_from_property(property: PropertyGenerateRes & {id: RecordId}) {
-        const entities = await this.weaver.entity_extractor.extract_entities_from_content(property.content)
+    async extract_entity_from_property(property: Property & {id: RecordId}, core_entity: Entity) {
+        const entities = await this.weaver.entity_extractor.extract_entities_from_property(core_entity, property)
         this.logger.info(`Extract ${entities.length} entities from property`)
 
         const entities_validate_res = await this.weaver.entityStorage.validate_entities_existance(entities)

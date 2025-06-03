@@ -117,6 +117,24 @@ export class LlmResponseParser {
     }
   }
   
+  ExtractEntityFromProperty(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): Entity[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractEntityFromProperty",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as Entity[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   ExtractEntityFromQuery(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -508,6 +526,24 @@ export class LlmStreamParser {
     try {
       return this.runtime.parseLlmResponse(
         "ExtractEntity",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as (partial_types.Entity | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityFromProperty(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): (partial_types.Entity | null)[] {
+    try {
+      return this.runtime.parseLlmResponse(
+        "ExtractEntityFromProperty",
         llmResponse,
         true,
         this.ctxManager.cloneContext(),

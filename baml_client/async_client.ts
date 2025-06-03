@@ -198,6 +198,29 @@ export class BamlAsyncClient {
     }
   }
   
+  async ExtractEntityFromProperty(
+      core_entity_name: string,property_name: string,property_content: string,entity_type: string[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<Entity[]> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "ExtractEntityFromProperty",
+        {
+          "core_entity_name": core_entity_name,"property_name": property_name,"property_content": property_content,"entity_type": entity_type
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as Entity[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async ExtractEntityFromQuery(
       query: string,
       __baml_options__?: BamlCallOptions
@@ -730,6 +753,35 @@ class BamlStreamClient {
         "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<(partial_types.Entity | null)[], Entity[]>(
+        raw,
+        (a): (partial_types.Entity | null)[] => a,
+        (a): Entity[] => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractEntityFromProperty(
+      core_entity_name: string,property_name: string,property_content: string,entity_type: string[],
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<(partial_types.Entity | null)[], Entity[]> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "ExtractEntityFromProperty",
+        {
+          "core_entity_name": core_entity_name,"property_name": property_name,"property_content": property_content,"entity_type": entity_type
         },
         undefined,
         this.ctxManager.cloneContext(),

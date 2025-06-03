@@ -131,6 +131,26 @@ export class AsyncHttpRequest {
     }
   }
   
+  async ExtractEntityFromProperty(
+      core_entity_name: string,property_name: string,property_content: string,entity_type: string[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "ExtractEntityFromProperty",
+        {
+          "core_entity_name": core_entity_name,"property_name": property_name,"property_content": property_content,"entity_type": entity_type
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async ExtractEntityFromQuery(
       query: string,
       __baml_options__?: BamlCallOptions
@@ -566,6 +586,26 @@ export class AsyncHttpStreamRequest {
         "ExtractEntity",
         {
           "chunk_text": chunk_text,"entity_type": entity_type
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async ExtractEntityFromProperty(
+      core_entity_name: string,property_name: string,property_content: string,entity_type: string[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "ExtractEntityFromProperty",
+        {
+          "core_entity_name": core_entity_name,"property_name": property_name,"property_content": property_content,"entity_type": entity_type
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

@@ -1,5 +1,5 @@
 import { RecordId } from 'surrealdb';
-import { Entity, b } from 'baml_client';
+import { Entity, Property, b } from 'baml_client';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import { entity_type } from '@/promp';
 import winston from 'winston';
@@ -17,6 +17,17 @@ export class EntityExtractor {
     async extract_entities_from_content(content: string) {
         try {
             const result = await b.ExtractEntity(content, entity_type);
+            this.logger.info(`Extracted ${result.length} entities`)
+            return result
+        } catch (error) {
+            this.logger.error(`Error during entities extraction: ${error}`);
+            throw error;
+        }
+    }
+
+    async extract_entities_from_property(core_entity:Entity, property: Property) {
+        try {
+            const result = await b.ExtractEntityFromProperty(core_entity.name,property.prop_name, property.content, entity_type);
             this.logger.info(`Extracted ${result.length} entities`)
             return result
         } catch (error) {
