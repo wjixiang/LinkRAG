@@ -137,7 +137,7 @@ export class Library {
     
     // For filesystem storage, reconstruct path from content hash
     const storagePath = ref.storageType === 'fs'
-      ? path.join('./storage/library', ref.contentHash)
+      ? path.join('storage/library', ref.contentHash)
       : ref.storagePath;
       
     return backend.retrieve(storagePath);
@@ -174,7 +174,7 @@ class LocalFileSystemBackend implements StorageBackend {
    * Creates a new filesystem backend
    * @param storagePath Base path for storing files (default: './storage/library')
    */
-  constructor(storagePath: string = './storage/library') {
+  constructor(storagePath: string = 'storage/library') {
     this.storagePath = storagePath;
   }
 

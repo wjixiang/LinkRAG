@@ -1,7 +1,6 @@
 import { RecordId } from 'surrealdb';
-import { Entity } from 'baml_client';
+import { Entity, b } from 'baml_client';
 import { default as ChunkStorage } from '../database/chunkStorage';
-import entities_extraction_workflow from '@/lib/llm_workflow/entities_extraction_workflow';
 import { entity_type } from '@/promp';
 import winston from 'winston';
 import createLoggerWithPrefix from '../lib/console/logger';
@@ -15,11 +14,28 @@ export class EntityExtractor {
         this.logger = createLoggerWithPrefix('EntityExtractor');
     }
 
-    async extractEntities(chunkId: RecordId): Promise<Entity[]> {
+    async extract_entities_from_content(content: string) {
+        try {
+            const result = await b.ExtractEntity(content, entity_type);
+            this.logger.info(`Extracted ${result.length} entities`)
+            return result
+        } catch (error) {
+            this.logger.error(`Error during entities extraction: ${error}`);
+            throw error;
+        }
+    }
+
+    async extract_entities_from_chunk(chunkId: RecordId): Promise<Entity[]> {
         const chunk_tobe_extracted = await this.chunkStorage.get_by_id(chunkId);
         if (chunk_tobe_extracted) {
-            const extractedEntities = await entities_extraction_workflow(chunk_tobe_extracted.content, entity_type);
-            return extractedEntities;
+            try {
+                this.logger.info(`Starting entities extraction for chunk: ${chunkId}`);
+                const result = await b.ExtractEntity(chunk_tobe_extracted.content, entity_type);
+                return result;
+            } catch (error) {
+                this.logger.error(`Error during entities extraction: ${error}`);
+                throw error;
+            }
         } else {
             this.logger.error(`Chunk with ID ${chunkId} not found for entity extraction.`);
             throw new Error(`Chunk with ID ${chunkId} not found for entity extraction.`);

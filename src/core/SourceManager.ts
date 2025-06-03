@@ -1,6 +1,10 @@
+import crypto from 'crypto';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { RecordId } from 'surrealdb';
 import { Library, LibraryReference } from './Library';
+import createLogger from '../lib/console/logger';
+
+const logger = createLogger('SourceManager');
 
 /**
  * Configuration options for SourceManager
@@ -38,6 +42,10 @@ export interface SourceMetadata {
    * Whether the source has been processed (chunked & embedded)
    */
   processed?: boolean;
+  /**
+   * Content hash for deduplication
+   */
+  hash?: string;
   [key: string]: any; // Allow additional properties
 }
 
@@ -63,8 +71,22 @@ export default class SourceManager {
    * @returns Promise resolving to the stored source metadata
    */
   async addSource(content: string, metadata: Omit<SourceMetadata, 'id'|'createdAt'|'updatedAt'>): Promise<SourceMetadata> {
-    // Store content in library
-    const contentRef = await this.library.storeContent(content);
+    // Calculate content hash
+    const hash = crypto.createHash('sha256').update(content).digest('hex');
+    
+    // Check if source with same hash exists
+    const existing = await this.searchSources({ hash });
+    let contentRef: LibraryReference;
+    
+    if (existing.length > 0) {
+      // Reuse existing content reference
+      contentRef = LibraryReference.fromString(existing[0].contentRef);
+      logger.debug(`Reusing existing content for hash ${hash} (ref: ${contentRef})`);
+    } else {
+      // Store new content in library
+      contentRef = await this.library.storeContent(content);
+      logger.debug(`Stored new content with hash ${hash} (ref: ${contentRef})`);
+    }
     
     // Prepare full metadata
     const now = new Date();
@@ -74,10 +96,13 @@ export default class SourceManager {
       origin: metadata.origin,
       ...metadata,
       contentRef: contentRef.toString(),
+      hash,
       createdAt: now,
       updatedAt: now,
       processed: false
     };
+    
+    logger.info(`Creating source metadata for ${metadata.name} (type: ${metadata.type})`);
 
     // Store metadata in SurrealDB
     const db = await surrealDBClient.getDb();

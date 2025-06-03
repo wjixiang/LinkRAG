@@ -7,6 +7,8 @@ import type EntityStorage from "../database/EntityStorage";
 import type PropertyStorage from "../core/PropertyStorage";
 import { EntityRecord, EntityWithRefDoc } from "@/type";
 import { Collector } from "@boundaryml/baml";
+import { PropertyGenerateRes } from "baml_client";
+import { surrealDBClient } from "@/database/surrealdbClient";
 
 interface Entity {
     id: RecordId;
@@ -90,14 +92,36 @@ export default class Learner {
             "zh", {collector}
         );
         
-        await this.weaver.propertyStorage.storeProperty(
+        const property_save_res = await this.weaver.propertyStorage.storeProperty(
             entity.id, 
             {
                 prop_name: propertyName,
                 content: property.content,
             }, chunks.map((c: any) => c.document.id).filter((e,index)=>(index+1) in property.referenceIndex));
 
+        await this.extract_entity_from_property({...property, id: property_save_res[0].id})
         return property
+    }
+
+    async extract_entity_from_property(property: PropertyGenerateRes & {id: RecordId}) {
+        const entities = await this.weaver.entity_extractor.extract_entities_from_content(property.content)
+        this.logger.info(`Extract ${entities.length} entities from property`)
+
+        const entities_validate_res = await this.weaver.entityStorage.validate_entities_existance(entities)
+        this.logger.info(`Entities validation result: ${JSON.stringify(entities_validate_res)}`)
+
+        // Create new entities for those not existed
+        const entities_create_res = await Promise.all(entities_validate_res.nonExisting.map(async(e)=>await this.create_new_entity(e.name)))
+
+        // Create superset connect between entities and property (backlink)
+        const db = await surrealDBClient.getDb()
+        const superset_link_creat_res = await Promise.all([...entities_create_res,...entities_validate_res.existing].map(async(e)=>{
+            return (await db.insertRelation("superset", {
+                in: property.id,
+                out: e.id
+            }))[0]
+        }))
+        this.logger.info(`Create ${superset_link_creat_res.length} new property-->entity connection`)
     }
 
     private async handleNewEntityFlow(entityName: string, propertyName: string): Promise<string> {

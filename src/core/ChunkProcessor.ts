@@ -87,7 +87,7 @@ export class ChunkProcessor {
                     const Embedding = await embedding(chunkContent);
                     if (Embedding) {
                         chunkDocuments.push({
-                            referenceIds: [id], // Link chunk to the reference document
+                            referenceId: id, // Link chunk to the reference document
                             embedding: Embedding,
                             content: chunkContent,
                         });

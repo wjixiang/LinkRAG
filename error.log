@@ -833,3 +833,7 @@
 [test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 2 was the wrong type. Expected a string but found NONE
 [test_property_keyword_retriever:[31merror[39m] Error during test: Incorrect arguments for function string::similarity::jaro(). Argument 2 was the wrong type. Expected a string but found NONE
 [test_property_keyword_retriever:[31merror[39m] Error during test: Failed to retrieve remote version. If the server is behind a proxy, make sure it's configured correctly.
+[KnowledgeGraphWeaver:[31merror[39m] Error during chunking and embedding from file path /Users/a123/Documents/GitHub/LinkRAG/textbook/test.txt: Failed to get content for file /Users/a123/Documents/GitHub/LinkRAG/textbook/test.txt
+[KnowledgeGraphWeaver:[31merror[39m] Error during chunking and embedding from file path /Users/a123/Documents/GitHub/LinkRAG/textbook/test.txt: Failed to get content for file /Users/a123/Documents/GitHub/LinkRAG/textbook/test.txt
+[KnowledgeGraphWeaver:[31merror[39m] Error during chunking and embedding from file path textbook/test.txt: Failed to get content for file textbook/test.txt
+[KnowledgeGraphWeaver:[31merror[39m] Error during chunking and embedding from file path textbook/test.txt: Failed to get content for file textbook/test.txt

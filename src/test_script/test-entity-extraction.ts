@@ -22,7 +22,7 @@ async function main() {
         const testChunkId = new RecordId("chunk","0qq2ykjxo8y40b7mflql");
         
         console.log('Testing entity extraction with chunk ID:', testChunkId);
-        const entities = await entityExtractor.extractEntities(testChunkId);
+        const entities = await entityExtractor.extract_entities_from_chunk(testChunkId);
         console.log('Successfully extracted entities:', entities);
     } catch (error) {
         console.error('Error in entity extraction test:', error);

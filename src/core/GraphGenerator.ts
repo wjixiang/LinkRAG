@@ -42,7 +42,7 @@ export class GraphGenerator {
         this.logger.info(`Starting knowledge graph generation for chunk ID: ${chunkId}`);
         try {
             // 1. Extract entities
-            const entities = await this.entityExtractor.extractEntities(chunkId);
+            const entities = await this.entityExtractor.extract_entities_from_chunk(chunkId);
             this.logger.info(`Extracted ${entities.length} entities.`);
 
             // 2. Extract relations

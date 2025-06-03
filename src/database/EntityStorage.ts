@@ -6,6 +6,18 @@ import { EntityRecord, EntityWithRefDoc } from '@/type';
 
 type Any = any; // Using 'any' for simplicity, can be refined later
 
+interface EntityInput {
+    name: string;
+    aliases?: string[];
+    description?: string;
+    type?: string;
+}
+
+interface EntityValidationResult {
+    existing: EntityRecord[];
+    nonExisting: EntityInput[];
+}
+
 interface BaseEntityStorage {
     createNode(data: Record<string, Any>): Promise<Record<string, Any>[]>;
     createEdge(fromNodeId: RecordId, edgeTable: string, toNodeId: RecordId, data?: Record<string, Any>): Promise<Record<string, Any>[]>;
@@ -34,7 +46,7 @@ export default class EntityStorage implements BaseEntityStorage {
 
             // Create new entity
             const result = await db.create(this.nodeTableName, {...entity});
-            this.logger.debug(`New entity created: ${JSON.stringify(result[0])}`)
+            this.logger.debug(`New entity created: ${JSON.stringify(result[0].name)}`)
 
             // Create references for created entity
             entityWithRefDoc.referenceDoc.map(async(e)=>{
@@ -177,22 +189,93 @@ export default class EntityStorage implements BaseEntityStorage {
      /**
       * Find an entity by its name.
       */
-    async findEntityByName(name: string): Promise<Array<Record<string, Any> & { id: RecordId }>> {
+    async findEntityByName(name: string): Promise<EntityRecord[]> {
         try {
             const db = await surrealDBClient.getDb()
-            const result = await db.query(`SELECT * FROM ${this.nodeTableName} WHERE name = "${name}"`);
+            const query = `SELECT id, name, type, aliases FROM ${this.nodeTableName} WHERE name == "${name}"`;
+            const result = await db.query<EntityRecord[][]>(query);
             // The result of db.query is an array of results, one for each statement.
             // For a single SELECT statement, the actual data is in result[0].result
-            if (result && result.length > 0) {
-                const queryResult = result[0] as { status: string; result: Array<Record<string, Any> & { id: RecordId }> };
-                if (queryResult.status === 'OK' && Array.isArray(queryResult.result)) {
-                    return queryResult.result;
-                }
-            }
-            return [];
+            
+            return result[0];
         } catch (error: any) {
             console.error(`Error finding entity with name "${name}" in table ${this.nodeTableName}:`, error);
             throw error;
+        }
+    }
+
+    /**
+     * Validates whether the given entities already exist in the database.
+     * Checks for existence by either:
+     * - Exact name match
+     * - Any alias overlap (if aliases are provided)
+     *
+     * @param entities - Array of entities to validate
+     * @returns Promise resolving to {@link EntityValidationResult} containing:
+     *          - `existing`: Array of entities that already exist in the database
+     *          - `nonExisting`: Array of entities that don't exist in the database
+     * @throws {Error} If there's any database query error
+     *
+     * @example
+     * ```typescript
+     * const result = await storage.validate_entities_existance(entities);
+     * if (result.existing.length > 0) {
+     *   console.log('Existing entities:', result.existing);
+     * }
+     * ```
+     */
+    async validate_entities_existance(entities: EntityInput[]): Promise<EntityValidationResult> {
+        try {
+            const db = await surrealDBClient.getDb()
+            const result: EntityValidationResult = {
+                existing: [],
+                nonExisting: []
+            }
+
+            for (const entity of entities) {
+                let exists = false
+                
+                // Check by name
+                const byName = await this.findEntityByName(entity.name)
+                if (byName.length > 0) {
+                    result.existing.push(byName[0] as EntityRecord)
+                    exists = true
+                    continue
+                }
+
+                // Check by aliases if they exist
+                if (entity.aliases && entity.aliases.length > 0) {
+                    // Build OR condition for all aliases
+                    const aliasConditions = entity.aliases
+                        .map(alias => `aliases CONTAINS "${alias}"`)
+                        .join(' OR ') + `OR aliases CONTAINS "${entity.name}"`
+
+                    const query = `SELECT * FROM ${this.nodeTableName} WHERE ${aliasConditions}`
+                    const queryResult = await db.query(query)
+
+                    if (queryResult && queryResult.length > 0) {
+                        const dbResult = queryResult[0] as { status: string; result: EntityRecord[] }
+                        if (dbResult.status === 'OK' && dbResult.result.length > 0) {
+                            result.existing.push(dbResult.result[0])
+                            exists = true
+                        }
+                    }
+                }
+
+                if (!exists) {
+                    result.nonExisting.push({
+                        name: entity.name,
+                        aliases: entity.aliases,
+                        description: entity.description,
+                        type: entity.type
+                    })
+                }
+            }
+
+            return result
+        } catch (error: any) {
+            this.logger.error(`Error validating entities existence:`, error)
+            throw error
         }
     }
 }

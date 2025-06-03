@@ -15,6 +15,7 @@ import pLimit from 'p-limit';
 import { SemanticChunkingConfig, semantic_chunking } from '@/lib/chunking/semantic_chunking'; // Import semantic_chunking
 import { createAlibabaBatchEmbeddingJob } from '@/lib/embedding/AlibabaBatchEmbedder'; // Import batch embedder
 import PropertyStorage from './PropertyStorage';
+import { EntityExtractor } from './EntityExtractor';
 
 
 export interface KnowledgeGraphWeaverConfig {
@@ -42,6 +43,7 @@ export default class KnowledgeGraphWeaver {
     config: KnowledgeGraphWeaverConfig;
     sourceManager: SourceManager;
     knowledgeGraphProcessor!: KnowledgeGraphProcessor;
+    entity_extractor: EntityExtractor
 
 
     constructor(config: KnowledgeGraphWeaverConfig) {
@@ -70,6 +72,7 @@ export default class KnowledgeGraphWeaver {
             reference_table_name: this.config.reference_table_name
         });
         this.knowledgeGraphProcessor = new KnowledgeGraphProcessor(this.config, this.logger);
+        this.entity_extractor = new EntityExtractor(this.chunkStorage)
     }
 
     async weave(file_path: string) {
@@ -127,17 +130,13 @@ export default class KnowledgeGraphWeaver {
     }
 
     async chunking_and_embedding_from_path(file_path: string): Promise<void> {
-        this.logger.debug(`Starting chunking_and_embedding from file path: ${file_path} without saving to reference storage.`);
+        this.logger.debug(`Starting chunking_and_embedding from file path: ${file_path}`);
         try {
             // First read the file content
             const content = await require('fs').promises.readFile(file_path, 'utf-8');
             
-            // Generate a temporary RecordId for processing
-            const tempId = new RecordId('temp_document', Date.now().toString());
-            this.logger.debug(`Generated temporary ID ${tempId.id} for file ${file_path}`);
-
-            // Add source with metadata
-            await this.sourceManager.addSource(content, {
+            // Add source with metadata first to get a proper RecordId
+            const metadata = await this.sourceManager.addSource(content, {
                 name: file_path.split('/').pop() || file_path,
                 type: file_path.endsWith('.pdf') ? 'pdf' :
                       file_path.endsWith('.md') ? 'markdown' : 'txt',
@@ -145,13 +144,18 @@ export default class KnowledgeGraphWeaver {
                 description: 'Temporary source for chunking and embedding'
             });
 
-            // Get content through source manager (now properly registered)
-            const storedContent = await this.sourceManager.getSourceContent(tempId);
+            if (!metadata?.id) {
+                throw new Error('Failed to create source metadata');
+            }
+
+            // Get content through source manager using the metadata ID
+            const storedContent = await this.sourceManager.getSourceContent(metadata.id);
             if (!storedContent) {
                 throw new Error(`Failed to get content for file ${file_path}`);
             }
 
-            await this.chunkProcessor.processDocument(tempId, storedContent);
+            // Process the document chunks using the metadata ID
+            await this.chunkProcessor.processDocument(metadata.id, storedContent);
             this.logger.debug(`Finished chunking_and_embedding from file path: ${file_path}`);
         } catch (error) {
             this.logger.error(`Error during chunking and embedding from file path ${file_path}:`, error);
