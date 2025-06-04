@@ -84,7 +84,7 @@ export async function semantic_chunking(
     const sentenceEmbeddings: Float32Array[] = [];
 
     // Process sentences in batches for embedding and token counting
-    const batchSize = 64; // Adjust batch size as needed
+    const batchSize = 10; // Adjust batch size as needed
     logger.info(`Processing sentences in batches of ${batchSize} for embedding and token counting`);
 
     const embeddingProgressBar = new ProgressBar('Embedding and token counting [:bar] :percent :etas', {
