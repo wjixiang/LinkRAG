@@ -1,10 +1,10 @@
 import { surrealDBClient } from "@/database/surrealdbClient";
 import { semanticSearchResult, ChunkDocument } from "../database/chunkStorage";
 import { BaseRetriever } from "./BaseRetriever";
-import { KnowledgeGraphRetrieverConfig } from "./KnowledgeGraphRetriever";
+import { KnowledgeBaseRetrieverConfig } from "./KnowledgeBaseRetriever";
 
 export class ChunkRetriever extends BaseRetriever {
-    constructor(config: KnowledgeGraphRetrieverConfig) {
+    constructor(config: KnowledgeBaseRetrieverConfig) {
         super(config, 'ChunkRetriever');
     }
 

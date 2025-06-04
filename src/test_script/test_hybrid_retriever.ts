@@ -1,10 +1,10 @@
 import { KnowledgeGraphRetriever_Config } from "@/settings";
-import KnowledgeGraphRetriever, { RetrievalResult } from "../core/KnowledgeGraphRetriever"; // Import RetrievalResult
+import KnowledgeBaseRetriever, { RetrievalResult } from "../core/KnowledgeBaseRetriever"; // Import RetrievalResult
 import { surrealDBClient } from "@/database/surrealdbClient";
 
 async function main() {
     // Initialize retriever with config
-    const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config); 
+    const retriever = new KnowledgeBaseRetriever(KnowledgeGraphRetriever_Config); 
 
     // Test queries
     const queries = [

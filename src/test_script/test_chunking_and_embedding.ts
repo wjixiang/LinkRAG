@@ -1,4 +1,4 @@
-import KnowledgeGraphWeaver, { KnowledgeGraphWeaverConfig } from '../core/KnowledgeGraphWeaver';
+import KnowledgeBaseEditor, { KnowledgeGraphWeaverConfig } from '../core/KnowledgeBaseEditor';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
 import winston from 'winston';
@@ -17,11 +17,11 @@ async function runTest() {
 
 
 
-        // Instantiate KnowledgeGraphWeaver
-        logger.debug('Instantiating KnowledgeGraphWeaver with config:', KnowledgeGraphWeaver_config);
-        const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
-        logger.info('KnowledgeGraphWeaver instantiated.');
-        logger.debug('KnowledgeGraphWeaver successfully instantiated.');
+        // Instantiate KnowledgeBaseEditor
+        logger.debug('Instantiating KnowledgeBaseEditor with config:', KnowledgeGraphWeaver_config);
+        const weaver = new KnowledgeBaseEditor(KnowledgeGraphWeaver_config);
+        logger.info('KnowledgeBaseEditor instantiated.');
+        logger.debug('KnowledgeBaseEditor successfully instantiated.');
 
         // Input RecordId
         const inputId: RecordId = new RecordId(  'reference_documents',  'qm2tqmu4wvpx2epwa2qe' )

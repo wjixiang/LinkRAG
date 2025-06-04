@@ -1,5 +1,5 @@
-import { KnowledgeGraphRetrieverConfig } from "./core/KnowledgeGraphRetriever";
-import { KnowledgeGraphWeaverConfig } from "./core/KnowledgeGraphWeaver";
+import { KnowledgeBaseRetrieverConfig } from "./core/KnowledgeBaseRetriever";
+import { KnowledgeGraphWeaverConfig } from "./core/KnowledgeBaseEditor";
 
 
 export const KnowledgeGraphWeaver_config:KnowledgeGraphWeaverConfig = {
@@ -18,7 +18,7 @@ export const KnowledgeGraphWeaver_config:KnowledgeGraphWeaverConfig = {
 };
 
 
-export const KnowledgeGraphRetriever_Config: KnowledgeGraphRetrieverConfig = {
+export const KnowledgeGraphRetriever_Config: KnowledgeBaseRetrieverConfig = {
     chunkTableName: KnowledgeGraphWeaver_config.chunkTableName,
     property_table_name: "property",
     entity_table_name: KnowledgeGraphWeaver_config.entity_table_name,

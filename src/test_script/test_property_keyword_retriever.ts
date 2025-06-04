@@ -1,4 +1,4 @@
-import KnowledgeGraphRetriever from '../core/KnowledgeGraphRetriever';
+import KnowledgeBaseRetriever from '../core/KnowledgeBaseRetriever';
 import { surrealDBClient } from '../database/surrealdbClient';
 import createLoggerWithPrefix from '../lib/console/logger';
 import { KnowledgeGraphRetriever_Config } from '@/settings';
@@ -13,8 +13,8 @@ async function testPropertyKeywordRetriever() {
 
 
 
-        const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
-        logger.info('KnowledgeGraphRetriever initialized.');
+        const retriever = new KnowledgeBaseRetriever(KnowledgeGraphRetriever_Config);
+        logger.info('KnowledgeBaseRetriever initialized.');
 
         // Test query
         const query = "皮肌炎的症状";

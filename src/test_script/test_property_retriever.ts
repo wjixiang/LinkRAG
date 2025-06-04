@@ -1,11 +1,11 @@
 import { KnowledgeGraphRetriever_Config } from "@/settings";
-import KnowledgeGraphRetriever from "../core/KnowledgeGraphRetriever";
+import KnowledgeBaseRetriever from "../core/KnowledgeBaseRetriever";
 import { surrealDBClient } from "@/database/surrealdbClient";
 // import { setEmbeddingProvider } from "@/lib/embedding";
 
 async function main() {
     // Mock configuration for testing
-    const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
+    const retriever = new KnowledgeBaseRetriever(KnowledgeGraphRetriever_Config);
 
     // Sample query and top_k
     //2003N73A 在类风湿关节炎发病中起主要作用的细胞是\nA. A.CD3⁺细胞\nB. B.CD4⁺细胞\nC. C.CD8⁺细胞\nD. D.B淋巴细胞\nE. E.巨噬细胞

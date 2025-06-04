@@ -1,4 +1,4 @@
-import KnowledgeGraphRetriever from '../../core/KnowledgeGraphRetriever';
+import KnowledgeBaseRetriever from '../../core/KnowledgeBaseRetriever';
 import { b } from '../../../baml_client';
 import { RetrievedDocument } from '../../../baml_client';
 import { language } from '../../type';
@@ -12,7 +12,7 @@ import createLoggerWithPrefix from '../console/logger';
  * Optionally uses HyDE (Hypothetical Document Embedding) for retrieval.
  * test script: `src/test_script/test_rag_workflow.ts`
  *
- * @param KnowledgeGraphRetriever - An instance of KnowledgeGraphRetriever for document retrieval.
+ * @param KnowledgeBaseRetriever - An instance of KnowledgeBaseRetriever for document retrieval.
  * @param query - The user's query.
  * @param top_k - The number of top documents to retrieve.
  * @param HyDE - Whether to use HyDE for retrieval (defaults to true).
@@ -21,7 +21,7 @@ import createLoggerWithPrefix from '../console/logger';
  * @throws If an error occurs during HyDE rewrite, document retrieval, or answer generation.
  */
 export default async function baseline_rag_workflow(
-    KnowledgeGraphRetriever: KnowledgeGraphRetriever, 
+    KnowledgeBaseRetriever: KnowledgeBaseRetriever, 
     query: string, 
     top_k: number, 
     HyDE: boolean = true, 
@@ -44,7 +44,7 @@ export default async function baseline_rag_workflow(
 
     logger.info(`Retrieving documents for query: ${retrievalQuery}`);
     try {
-        const searchResults = await KnowledgeGraphRetriever.chunks_retriver(retrievalQuery, top_k);
+        const searchResults = await KnowledgeBaseRetriever.chunks_retriver(retrievalQuery, top_k);
 
         // Map retrieved documents to the BAML RetrievedDocument type
         const bamlDocuments: RetrievedDocument[] = searchResults.map(result => ({

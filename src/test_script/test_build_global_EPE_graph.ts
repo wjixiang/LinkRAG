@@ -1,5 +1,5 @@
 import { KnowledgeGraphWeaver_config } from '@/settings';
-import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
+import KnowledgeBaseEditor from '../core/KnowledgeBaseEditor';
 import { surrealDBClient } from '../database/surrealdbClient';
 import winston from 'winston';
 import createLoggerWithPrefix from '../lib/console/logger';
@@ -13,7 +13,7 @@ async function main() {
         await surrealDBClient.getDb();
 
         // Create weaver with test config
-        const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
+        const weaver = new KnowledgeBaseEditor(KnowledgeGraphWeaver_config);
 
         logger.info('Starting to build global EPE graph...');
         

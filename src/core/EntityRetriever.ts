@@ -1,7 +1,7 @@
 import { surrealDBClient } from "@/database/surrealdbClient";
 import { RetrievedEntityRecord, RelationRecord } from "@/type";
 import { BaseRetriever } from "./BaseRetriever";
-import { KnowledgeGraphRetrieverConfig } from "./KnowledgeGraphRetriever";
+import { KnowledgeBaseRetrieverConfig } from "./KnowledgeBaseRetriever";
 import { KeywordExtractor } from "./KeywordExtractor";
 import { RecordId } from "surrealdb";
 
@@ -9,7 +9,7 @@ export class EntityRetriever extends BaseRetriever {
     private keywordExtractor: KeywordExtractor;
     private relationCache: Map<string, {in_relations: RelationRecord[], out_relations: RelationRecord[]}>;
 
-    constructor(config: KnowledgeGraphRetrieverConfig) {
+    constructor(config: KnowledgeBaseRetrieverConfig) {
         super(config, 'EntityRetriever');
         this.keywordExtractor = new KeywordExtractor();
         this.relationCache = new Map();

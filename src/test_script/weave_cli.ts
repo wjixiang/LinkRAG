@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 import 'tsconfig-paths/register';
-import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
+import KnowledgeBaseEditor from '../core/KnowledgeBaseEditor';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import dotenv from 'dotenv';
@@ -12,7 +12,7 @@ dotenv.config();
 async function processFile(filePath: string) {
     // await surrealDBClient.connect()
     try {
-        const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
+        const weaver = new KnowledgeBaseEditor(KnowledgeGraphWeaver_config);
         
         console.log(`Processing file: ${filePath}`);
         await weaver.weave(filePath);
@@ -30,7 +30,7 @@ async function chunkAndEmbedFile(filePath: string, chunkTable: string, concurren
             chunkTableName: chunkTable,
             embeddingConcurrencyLimit: concurrency
         };
-        const weaver = new KnowledgeGraphWeaver(config);
+        const weaver = new KnowledgeBaseEditor(config);
         
         console.log(`Chunking and embedding file: ${filePath}`);
         await weaver.chunking_and_embedding_from_path(filePath);

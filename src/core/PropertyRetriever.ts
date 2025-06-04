@@ -1,11 +1,11 @@
 import { surrealDBClient } from "@/database/surrealdbClient";
 import { RetrievedProperty } from "@/type";
 import { BaseRetriever } from "./BaseRetriever";
-import { KnowledgeGraphRetrieverConfig } from "./KnowledgeGraphRetriever";
+import { KnowledgeBaseRetrieverConfig } from "./KnowledgeBaseRetriever";
 import { b } from "baml_client/async_client";
 
 export class PropertyRetriever extends BaseRetriever {
-    constructor(config: KnowledgeGraphRetrieverConfig) {
+    constructor(config: KnowledgeBaseRetrieverConfig) {
         super(config, 'PropertyRetriever');
     }
 

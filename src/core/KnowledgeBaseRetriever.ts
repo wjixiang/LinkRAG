@@ -19,7 +19,7 @@ interface HybridRetrievalConfig {
     propertyQueryPatterns: RegExp[];
 }
 
-export interface KnowledgeGraphRetrieverConfig {
+export interface KnowledgeBaseRetrieverConfig {
     chunkTableName: string;
     property_table_name: string;
     entity_table_name: string;
@@ -28,9 +28,9 @@ export interface KnowledgeGraphRetrieverConfig {
     hybridRetrieval?: HybridRetrievalConfig;
 }
 
-export default class KnowledgeGraphRetriever {
+export default class KnowledgeBaseRetriever {
     private logger: winston.Logger;
-    config: KnowledgeGraphRetrieverConfig;
+    config: KnowledgeBaseRetrieverConfig;
     private hybridRetriever: HybridRetriever;
     private defaultHybridConfig: HybridRetrievalConfig = {
         entityWeight: 0.4,
@@ -48,8 +48,8 @@ export default class KnowledgeGraphRetriever {
         ]
     };
 
-    constructor(config: KnowledgeGraphRetrieverConfig) {
-        this.logger = createLoggerWithPrefix('KnowledgeGraphRetriever');
+    constructor(config: KnowledgeBaseRetrieverConfig) {
+        this.logger = createLoggerWithPrefix('KnowledgeBaseRetriever');
         this.config = {
             ...config,
             hybridRetrieval: {
@@ -89,8 +89,19 @@ export default class KnowledgeGraphRetriever {
         return this.hybridRetriever.retrieve(query, top_k, HyDE);
     }
 
+    /**
+     * Generate EPA outline of input property
+     * @param propertyId 
+     */
     async outline_property(propertyId: RecordId) {
         const db = await surrealDBClient.getDb()
-        
+        const query = `SELECT core_entity.name AS entity_name ,prop_name, ->superset->nodes.name AS subentity_name FROM property WHERE id == $propertyId`
+        const outline = (await db.query<{
+            entity_name: string,
+            subentity_name: string[],
+            prop_name: string
+        }[][]>(query, {propertyId: propertyId}))[0][0]
+
+        this.logger.info(`Retrieved local EPA outline: \n ${JSON.stringify(outline,null,"  ")}`)
     }
 }

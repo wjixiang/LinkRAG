@@ -1,5 +1,5 @@
 import { surrealDBClient } from "@/database/surrealdbClient";
-import KnowledgeGraphRetriever from "@/core/KnowledgeGraphRetriever";
+import KnowledgeBaseRetriever from "@/core/KnowledgeBaseRetriever";
 import { KnowledgeGraphRetriever_Config } from "@/settings"; // Import config from settings
 
 async function testEntityRetriever() {
@@ -8,7 +8,7 @@ async function testEntityRetriever() {
         const config = KnowledgeGraphRetriever_Config;
 
         // Create and initialize the retriever
-        const retriever = new KnowledgeGraphRetriever(config);
+        const retriever = new KnowledgeBaseRetriever(config);
 
         // Define a test query
         const testQuery = "糖尿病的发病机制"; // Replace with a relevant test query

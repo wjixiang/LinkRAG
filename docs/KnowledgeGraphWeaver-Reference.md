@@ -1,7 +1,7 @@
-# KnowledgeGraphWeaver Reference
+# KnowledgeBaseEditor Reference
 
 ## Overview
-The `KnowledgeGraphWeaver` class orchestrates the construction of knowledge graphs from documents through a multi-step pipeline:
+The `KnowledgeBaseEditor` class orchestrates the construction of knowledge graphs from documents through a multi-step pipeline:
 
 1. Document ingestion and storage
 2. Semantic chunking and embedding
@@ -103,5 +103,5 @@ const config = {
     semantic_search_threshold: 0.8
 };
 
-const weaver = new KnowledgeGraphWeaver(config);
+const weaver = new KnowledgeBaseEditor(config);
 await weaver.weave('medical_textbook.pdf');

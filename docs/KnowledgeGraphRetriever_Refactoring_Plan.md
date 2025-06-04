@@ -1,10 +1,10 @@
-# KnowledgeGraphRetriever Refactoring Plan
+# KnowledgeBaseRetriever Refactoring Plan
 
-This document outlines a refactoring plan for the `KnowledgeGraphRetriever` class to improve its structure, maintainability, and adherence to the Single Responsibility Principle.
+This document outlines a refactoring plan for the `KnowledgeBaseRetriever` class to improve its structure, maintainability, and adherence to the Single Responsibility Principle.
 
 ## Current State Analysis
 
-The existing `KnowledgeGraphRetriever` class currently handles multiple responsibilities, including:
+The existing `KnowledgeBaseRetriever` class currently handles multiple responsibilities, including:
 - Chunk retrieval
 - Property retrieval
 - Entity retrieval (both keyword and semantic)
@@ -16,11 +16,11 @@ This leads to a large class with complex methods, making it harder to understand
 
 ## Proposed Refactoring Structure
 
-The refactoring proposes splitting the `KnowledgeGraphRetriever` into smaller, more focused classes, each responsible for a specific type of retrieval or coordination.
+The refactoring proposes splitting the `KnowledgeBaseRetriever` into smaller, more focused classes, each responsible for a specific type of retrieval or coordination.
 
 ```mermaid
 classDiagram
-    class KnowledgeGraphRetriever {
+    class KnowledgeBaseRetriever {
         -logger
         -config
         -hybridRetrieve()
@@ -54,7 +54,7 @@ classDiagram
         +retrieve()
     }
 
-    KnowledgeGraphRetriever --> HybridRetriever
+    KnowledgeBaseRetriever --> HybridRetriever
     HybridRetriever --> EntityRetriever
     HybridRetriever --> PropertyRetriever
     HybridRetriever --> ChunkRetriever
@@ -65,7 +65,7 @@ classDiagram
 
 ## Key Changes and Responsibilities
 
-1.  **`KnowledgeGraphRetriever` (Orchestrator)**:
+1.  **`KnowledgeBaseRetriever` (Orchestrator)**:
     *   This class will become the orchestrator, primarily responsible for initializing and coordinating the various specialized retrievers.
     *   It will expose the main `hybridRetrieve` method, delegating the actual retrieval logic to the new specialized classes.
     *   It will manage the overall configuration.
@@ -115,7 +115,7 @@ classDiagram
 
 Once this plan is approved, the implementation will involve:
 1.  Creating new files for `BaseRetriever`, `EntityRetriever`, `PropertyRetriever`, `ChunkRetriever`, and `HybridRetriever`.
-2.  Migrating relevant methods and logic from `KnowledgeGraphRetriever.ts` to the new files.
-3.  Updating `KnowledgeGraphRetriever.ts` to instantiate and use the new specialized retriever classes.
+2.  Migrating relevant methods and logic from `KnowledgeBaseRetriever.ts` to the new files.
+3.  Updating `KnowledgeBaseRetriever.ts` to instantiate and use the new specialized retriever classes.
 4.  Updating imports and references across the codebase as needed.
 5.  Ensuring all existing functionalities are preserved and tested.

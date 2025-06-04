@@ -1,4 +1,4 @@
-import { KnowledgeGraphRetrieverConfig } from "./KnowledgeGraphRetriever";
+import { KnowledgeBaseRetrieverConfig } from "./KnowledgeBaseRetriever";
 import { EntityRetriever } from "./EntityRetriever";
 import { PropertyRetriever } from "./PropertyRetriever";
 import { ChunkRetriever } from "./ChunkRetriever";
@@ -18,10 +18,10 @@ export class HybridRetriever {
     private entityRetriever: EntityRetriever;
     private propertyRetriever: PropertyRetriever;
     private chunkRetriever: ChunkRetriever;
-    private config: KnowledgeGraphRetrieverConfig;
+    private config: KnowledgeBaseRetrieverConfig;
     private logger: winston.Logger;
 
-    constructor(config: KnowledgeGraphRetrieverConfig) {
+    constructor(config: KnowledgeBaseRetrieverConfig) {
         this.config = config;
         this.entityRetriever = new EntityRetriever(config);
         this.propertyRetriever = new PropertyRetriever(config);
@@ -88,7 +88,7 @@ export class HybridRetriever {
         };
     }
 
-    // Expose specific retriever methods if needed by KnowledgeGraphRetriever
+    // Expose specific retriever methods if needed by KnowledgeBaseRetriever
     public getEntityRetriever(): EntityRetriever {
         return this.entityRetriever;
     }

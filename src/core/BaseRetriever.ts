@@ -1,13 +1,13 @@
 import winston from 'winston';
 import createLoggerWithPrefix from "../lib/console/logger";
 import { embedding } from "@/lib/embedding";
-import { KnowledgeGraphRetrieverConfig } from "./KnowledgeGraphRetriever";
+import { KnowledgeBaseRetrieverConfig } from "./KnowledgeBaseRetriever";
 
 export abstract class BaseRetriever {
     protected logger: winston.Logger;
-    protected config: KnowledgeGraphRetrieverConfig;
+    protected config: KnowledgeBaseRetrieverConfig;
 
-    constructor(config: KnowledgeGraphRetrieverConfig, loggerName: string) {
+    constructor(config: KnowledgeBaseRetrieverConfig, loggerName: string) {
         this.config = config;
         this.logger = createLoggerWithPrefix(loggerName);
     }

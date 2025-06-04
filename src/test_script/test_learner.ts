@@ -1,16 +1,12 @@
-import { KnowledgeGraphRetriever_Config, KnowledgeGraphWeaver_config } from "@/settings";
-import KnowledgeGraphRetriever from "../core/KnowledgeGraphRetriever";
-import Learner from "../core/Learner";
+import {KnowledgeGraphWeaver_config } from "@/settings";
 import createLoggerWithPrefix from "../lib/console/logger";
-import KnowledgeGraphWeaver from "@/core/KnowledgeGraphWeaver";
+import KnowledgeBaseEditor from "@/core/KnowledgeBaseEditor";
 
 async function main() {
     // Initialize dependencies
     const logger = createLoggerWithPrefix('TestLearner');
-    const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
-    const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config)
-    const learner = new Learner(retriever, weaver);
-
+    const weaver = new KnowledgeBaseEditor(KnowledgeGraphWeaver_config)
+    
     // Test with existing entity
     // logger.info("Testing with existing entity...");
     // const existingResult = await learner.summarize_new_property(
@@ -21,7 +17,7 @@ async function main() {
 
     // Test with new entity
     logger.info("\nTesting with new entity...");
-    const newResult = await learner.summarize_new_property(
+    const newResult = await weaver.summarize_new_property(
         "颅内高压",
         "临床表现"
     );

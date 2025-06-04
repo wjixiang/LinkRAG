@@ -1,4 +1,4 @@
-import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
+import KnowledgeBaseEditor from '../core/KnowledgeBaseEditor';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient'; // Import surrealDBClient
 import { KnowledgeGraphWeaver_config } from '@/settings';
@@ -14,7 +14,7 @@ async function testClassifyRelation() {
     }
 
 
-    const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
+    const weaver = new KnowledgeBaseEditor(KnowledgeGraphWeaver_config);
 
     // Wait for initialization to complete
     await (weaver as any).initializeComponents();

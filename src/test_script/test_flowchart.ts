@@ -1,6 +1,6 @@
 import Learner from '@/core/Learner';
-import KnowledgeGraphRetriever from '@/core/KnowledgeGraphRetriever';
-import KnowledgeGraphWeaver from '@/core/KnowledgeGraphWeaver';
+import KnowledgeBaseRetriever from '@/core/KnowledgeBaseRetriever';
+import KnowledgeBaseEditor from '@/core/KnowledgeBaseEditor';
 import PropertyStorage from '@/core/PropertyStorage';
 import EntityStorage from '@/database/EntityStorage';
 import { surrealDBClient } from '@/database/surrealdbClient';
@@ -45,7 +45,7 @@ async function main() {
     );
     
     // Create knowledge graph components
-    const retriever = new KnowledgeGraphRetriever({
+    const retriever = new KnowledgeBaseRetriever({
       chunkTableName: KnowledgeGraphWeaver_config.chunkTableName,
       property_table_name: KnowledgeGraphWeaver_config.property_table_name,
       entity_table_name: KnowledgeGraphWeaver_config.entity_table_name,
@@ -53,7 +53,7 @@ async function main() {
       language: 'en'
     });
     
-    const weaver = new KnowledgeGraphWeaver({
+    const weaver = new KnowledgeBaseEditor({
       ...KnowledgeGraphWeaver_config,
       embeddingConcurrencyLimit: 5 // Lower limit for testing
     });

@@ -4,8 +4,8 @@ import { hideBin } from 'yargs/helpers';
 import path from 'path';
 import fs from 'fs';
 import { RecordId } from 'surrealdb';
-import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
-import { KnowledgeGraphWeaverConfig } from '../core/KnowledgeGraphWeaver';
+import KnowledgeBaseEditor from '../core/KnowledgeBaseEditor';
+import { KnowledgeGraphWeaverConfig } from '../core/KnowledgeBaseEditor';
 import { SemanticChunkingConfig } from '../lib/chunking/semantic_chunking';
 
 async function main() {
@@ -57,7 +57,7 @@ async function main() {
             } as SemanticChunkingConfig
         };
 
-        const weaver = new KnowledgeGraphWeaver(config);
+        const weaver = new KnowledgeBaseEditor(config);
         
         // Connect to DB and process only chunking and embedding
         await weaver.save_to_reference_document_storage(filePath)

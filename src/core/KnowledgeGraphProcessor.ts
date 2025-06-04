@@ -5,10 +5,10 @@ import { surrealDBClient } from '../database/surrealdbClient';
 import { embedding } from '../lib/embedding';
 import { default as ChunkStorage } from '../database/chunkStorage';
 import { PropertySummarizeResult, RelationRecord } from '@/type';
-import KnowledgeGraphRetriever from './KnowledgeGraphRetriever';
+import KnowledgeBaseRetriever from './KnowledgeBaseRetriever';
 import { b, Entity, Property, Relation, RelationReference } from 'baml_client';
 import pLimit from 'p-limit';
-import { KnowledgeGraphWeaverConfig } from './KnowledgeGraphWeaver'; // Assuming config is the same
+import { KnowledgeGraphWeaverConfig } from './KnowledgeBaseEditor'; // Assuming config is the same
 import { KnowledgeGraphRetriever_Config } from '@/settings';
 
 /**
@@ -48,8 +48,8 @@ export class KnowledgeGraphProcessor {
             );
             this.logger.debug(`ChunkStorage initialized with table: ${this.config.chunkTableName}`);
 
-            const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
-            this.logger.debug('KnowledgeGraphRetriever initialized.');
+            const retriever = new KnowledgeBaseRetriever(KnowledgeGraphRetriever_Config);
+            this.logger.debug('KnowledgeBaseRetriever initialized.');
 
             const relationRecords = await retriever.get_relations_of_entity(entity_id);
             this.logger.info(`Retrieved ${relationRecords.in_relations.length} in_relations and ${relationRecords.out_relations.length} out_relations for entity ${entity_id}`);
@@ -180,8 +180,8 @@ export class KnowledgeGraphProcessor {
             this.logger.debug(`Retrieved ${relation_groups.length} relation groups.`);
 
             // Get all relation records first
-            const retriever = new KnowledgeGraphRetriever(KnowledgeGraphRetriever_Config);
-            this.logger.debug('KnowledgeGraphRetriever initialized for property extraction.');
+            const retriever = new KnowledgeBaseRetriever(KnowledgeGraphRetriever_Config);
+            this.logger.debug('KnowledgeBaseRetriever initialized for property extraction.');
 
             const relationRecords = await retriever.get_relations_of_entity(id);
             this.logger.debug(`Retrieved relation records for entity ${id}.`);

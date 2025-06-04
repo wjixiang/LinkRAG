@@ -1,4 +1,4 @@
-import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
+import KnowledgeBaseEditor from '../core/KnowledgeBaseEditor';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
 import { KnowledgeGraphWeaver_config } from '@/settings';
@@ -13,7 +13,7 @@ async function testExtractEntityProps() {
         return; // Exit if connection fails
     }
 
-    const weaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
+    const weaver = new KnowledgeBaseEditor(KnowledgeGraphWeaver_config);
 
     // Wait for initialization to complete
     // @ts-ignore - Accessing private method for testing

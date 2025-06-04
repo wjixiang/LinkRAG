@@ -1,5 +1,5 @@
 import { surrealDBClient } from '../database/surrealdbClient';
-import KnowledgeGraphWeaver from '../core/KnowledgeGraphWeaver';
+import KnowledgeBaseEditor from '../core/KnowledgeBaseEditor';
 import { RecordId } from 'surrealdb';
 import pLimit from 'p-limit';
 import { KnowledgeGraphWeaver_config } from '@/settings';
@@ -8,7 +8,7 @@ async function main() {
     try {
         await surrealDBClient.connect(); // Ensure DB connection is open FIRST
 
-        // Basic configuration for KnowledgeGraphWeaver
+        // Basic configuration for KnowledgeBaseEditor
         const config = {
             chunkTableName: 'chunks_test', // Assuming this is the correct chunk table name
             embeddingConcurrencyLimit: 20, // Reasonable concurrency limit
@@ -16,7 +16,7 @@ async function main() {
             reference_table_name: "reference"
         };
 
-        const kgWeaver = new KnowledgeGraphWeaver(KnowledgeGraphWeaver_config);
+        const kgWeaver = new KnowledgeBaseEditor(KnowledgeGraphWeaver_config);
         // Wait for storage initialization
         await new Promise(resolve => setTimeout(resolve, 1000));
 
