@@ -23,7 +23,7 @@ import { Property, PropertyGenerateRes } from "baml_client";
 import KnowledgeBaseRetriever from './KnowledgeBaseRetriever';
 import { ChunkRetriever } from './ChunkRetriever';
 
-export interface KnowledgeGraphWeaverConfig {
+export interface KnowledgeBaseEditorConfig {
     chunkTableName: string;
     embeddingConcurrencyLimit: number;
     entity_table_name: string;
@@ -52,7 +52,7 @@ export default class KnowledgeBaseEditor {
     chunkStorage: ChunkStorage;
     entityStorage!: EntityStorage;
     propertyStorage: PropertyStorage;
-    config: KnowledgeGraphWeaverConfig;
+    config: KnowledgeBaseEditorConfig;
     sourceManager: SourceManager;
     knowledgeGraphProcessor!: KnowledgeGraphProcessor;
     entity_extractor: EntityExtractor;
@@ -60,7 +60,7 @@ export default class KnowledgeBaseEditor {
     private retriever: KnowledgeBaseRetriever;
     private chunkRetriever: ChunkRetriever;
 
-    constructor(config: KnowledgeGraphWeaverConfig) {
+    constructor(config: KnowledgeBaseEditorConfig) {
         this.config = config;
         this.logger = createLoggerWithPrefix('KnowledgeBaseEditor');
         this.documentProcessor = new DocumentProcessor();
@@ -388,7 +388,7 @@ export default class KnowledgeBaseEditor {
         const entity_definition = await b.DefineEntityWithReferences(
             entityName,
             retrieved_chunks.map(e => e.document.content),
-            "中文"
+            this.config.language
         );
         const {reference, ...entity} = entity_definition;
 

@@ -1,8 +1,8 @@
 import { KnowledgeBaseRetrieverConfig } from "./core/KnowledgeBaseRetriever";
-import { KnowledgeGraphWeaverConfig } from "./core/KnowledgeBaseEditor";
+import { KnowledgeBaseEditorConfig } from "./core/KnowledgeBaseEditor";
 
 
-export const KnowledgeGraphWeaver_config:KnowledgeGraphWeaverConfig = {
+export const KnowledgeGraphWeaver_config:KnowledgeBaseEditorConfig = {
     chunkTableName: 'test_chunks',
     embeddingConcurrencyLimit: 10,
     relation_table_name: 'relation',

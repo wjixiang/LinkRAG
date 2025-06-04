@@ -8,7 +8,7 @@ import { PropertySummarizeResult, RelationRecord } from '@/type';
 import KnowledgeBaseRetriever from './KnowledgeBaseRetriever';
 import { b, Entity, Property, Relation, RelationReference } from 'baml_client';
 import pLimit from 'p-limit';
-import { KnowledgeGraphWeaverConfig } from './KnowledgeBaseEditor'; // Assuming config is the same
+import { KnowledgeBaseEditorConfig } from './KnowledgeBaseEditor'; // Assuming config is the same
 import { KnowledgeGraphRetriever_Config } from '@/settings';
 
 /**
@@ -17,14 +17,14 @@ import { KnowledgeGraphRetriever_Config } from '@/settings';
  */
 export class KnowledgeGraphProcessor {
     private logger: winston.Logger;
-    private config: KnowledgeGraphWeaverConfig;
+    private config: KnowledgeBaseEditorConfig;
 
     /**
      * Constructs a new KnowledgeGraphProcessor instance.
      * @param config - The configuration for the knowledge graph weaver.
      * @param logger - The logger instance to use for logging.
      */
-    constructor(config: KnowledgeGraphWeaverConfig, logger: winston.Logger) {
+    constructor(config: KnowledgeBaseEditorConfig, logger: winston.Logger) {
         this.config = config;
         this.logger = logger;
         this.logger.info('KnowledgeGraphProcessor initialized.');

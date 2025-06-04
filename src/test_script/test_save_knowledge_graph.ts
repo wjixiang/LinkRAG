@@ -1,4 +1,4 @@
-import KnowledgeBaseEditor, { KnowledgeGraphWeaverConfig } from '../core/KnowledgeBaseEditor';
+import KnowledgeBaseEditor, { KnowledgeBaseEditorConfig } from '../core/KnowledgeBaseEditor';
 import winston from 'winston';
 import createLoggerWithPrefix from '../lib/console/logger';
 import { surrealDBClient } from '../database/surrealdbClient';

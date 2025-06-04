@@ -8,10 +8,10 @@ The `KnowledgeBaseEditor` class orchestrates the construction of knowledge graph
 3. Knowledge graph generation
 4. Graph merging and global graph construction
 
-## Configuration (`KnowledgeGraphWeaverConfig`)
+## Configuration (`KnowledgeBaseEditorConfig`)
 
 ```typescript
-interface KnowledgeGraphWeaverConfig {
+interface KnowledgeBaseEditorConfig {
     chunkTableName: string;          // Database table name for chunks
     embeddingConcurrencyLimit: number; // Max parallel embedding operations
     entity_table_name: string;       // Database table for entities
@@ -25,7 +25,7 @@ interface KnowledgeGraphWeaverConfig {
 
 ## Core Methods
 
-### `constructor(config: KnowledgeGraphWeaverConfig)`
+### `constructor(config: KnowledgeBaseEditorConfig)`
 Initializes all components with the provided configuration.
 
 ### `weave(file_path: string)`

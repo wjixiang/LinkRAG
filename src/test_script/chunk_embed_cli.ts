@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import { RecordId } from 'surrealdb';
 import KnowledgeBaseEditor from '../core/KnowledgeBaseEditor';
-import { KnowledgeGraphWeaverConfig } from '../core/KnowledgeBaseEditor';
+import { KnowledgeBaseEditorConfig } from '../core/KnowledgeBaseEditor';
 import { SemanticChunkingConfig } from '../lib/chunking/semantic_chunking';
 
 async function main() {
@@ -41,7 +41,7 @@ async function main() {
         }
 
         // Minimal config for chunking and embedding
-        const config: KnowledgeGraphWeaverConfig = {
+        const config: KnowledgeBaseEditorConfig = {
             chunkTableName: argv.chunkTable,
             embeddingConcurrencyLimit: argv.concurrency,
             entity_table_name: 'entities', // Required but not used
@@ -49,6 +49,7 @@ async function main() {
             reference_table_name: 'reference_documents', // Required but not used
             property_table_name: 'properties', // Required but not used
             semantic_search_threshold: 0.8, // Required but not used
+            language: "zh",
             SemanticChunkingConfig: {
                 maxChunkSize: 512,
                 minChunkSize: 100,

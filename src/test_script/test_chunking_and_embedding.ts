@@ -1,4 +1,4 @@
-import KnowledgeBaseEditor, { KnowledgeGraphWeaverConfig } from '../core/KnowledgeBaseEditor';
+import KnowledgeBaseEditor, { KnowledgeBaseEditorConfig } from '../core/KnowledgeBaseEditor';
 import { RecordId } from 'surrealdb';
 import { surrealDBClient } from '../database/surrealdbClient';
 import winston from 'winston';

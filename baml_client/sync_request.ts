@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SummarizedProperty, UpdatedSummary} from "./types"
+import type {Attribute, EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SummarizedProperty, UpdatedSummary} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -80,6 +80,26 @@ export class HttpRequest {
         "DefineEntityWithReferences",
         {
           "entity_name": entity_name,"reference_documents": reference_documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractAttributesFromText(
+      text: string,attribute_types: string[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "ExtractAttributesFromText",
+        {
+          "text": text,"attribute_types": attribute_types
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -546,6 +566,26 @@ export class HttpStreamRequest {
         "DefineEntityWithReferences",
         {
           "entity_name": entity_name,"reference_documents": reference_documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ExtractAttributesFromText(
+      text: string,attribute_types: string[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "ExtractAttributesFromText",
+        {
+          "text": text,"attribute_types": attribute_types
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
