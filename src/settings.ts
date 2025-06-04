@@ -10,11 +10,12 @@ export const KnowledgeGraphWeaver_config:KnowledgeBaseEditorConfig = {
     entity_table_name: "nodes",
     SemanticChunkingConfig: {
         similarityThreshold: 0.35,
-        maxTokenSize: 300,
-        
+        maxTokenSize: 800,
     },
     property_table_name: "property", // Added property_table_name
     semantic_search_threshold: 0.33 // Added semantic_search_threshold
+    ,
+    language: "zh"
 };
 
 

@@ -45,7 +45,7 @@ export class ChunkProcessor {
             this.logger.debug(`Semantic chunking finished. Generated ${chunks.length} chunks.`);
 
             // Merge consecutive short chunks until minimum length is reached
-            const minTokenSize = this.config.SemanticChunkingConfig.minTokenSize ?? 50;
+            const minTokenSize = this.config.SemanticChunkingConfig.minTokenSize ?? 300;
             const mergedChunks: string[] = [];
             let currentMergedChunk = '';
             let currentTokenCount = 0;

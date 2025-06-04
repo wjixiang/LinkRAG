@@ -6,9 +6,9 @@ import createLoggerWithPrefix from '../console/logger';
 import ProgressBar from 'progress';
 
 // Define default options
-const DEFAULT_MAX_TOKEN_SIZE = 512; // Example value, adjust as needed
-const DEFAULT_SIMILARITY_THRESHOLD = 0.5; // Example value, adjust as needed
-const DEFAULT_MIN_TOKEN_SIZE = 50; // Example value, adjust as needed for merging small chunks
+const DEFAULT_MAX_TOKEN_SIZE = 800; // Example value, adjust as needed
+const DEFAULT_SIMILARITY_THRESHOLD = 0.6; // Example value, adjust as needed
+const DEFAULT_MIN_TOKEN_SIZE = 300; // Example value, adjust as needed for merging small chunks
 
 /**
  * Interface for options passed to the semantic_chunking function.
