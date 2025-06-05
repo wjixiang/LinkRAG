@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {Attribute, EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SummarizedProperty, UpdatedSummary} from "./types"
+import type {EP_extract_result, EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SubQuestion, SummarizedProperty, UpdatedSummary} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -38,26 +38,6 @@ export class AsyncHttpRequest {
     try {
       return await this.runtime.buildRequest(
         "BaselineRAGRetrieveProperty",
-        {
-          "query": query
-        },
-        this.ctxManager.cloneContext(),
-        __baml_options__?.tb?.__tb(),
-        __baml_options__?.clientRegistry,
-        false,
-      )
-    } catch (error) {
-      throw toBamlError(error);
-    }
-  }
-  
-  async ConvertQueryToEP(
-      query: string,
-      __baml_options__?: BamlCallOptions
-  ): Promise<HTTPRequest> {
-    try {
-      return await this.runtime.buildRequest(
-        "ConvertQueryToEP",
         {
           "query": query
         },
@@ -91,35 +71,15 @@ export class AsyncHttpRequest {
     }
   }
   
-  async ExtractAttributesFromText(
-      text: string,attribute_types: string[],
-      __baml_options__?: BamlCallOptions
-  ): Promise<HTTPRequest> {
-    try {
-      return await this.runtime.buildRequest(
-        "ExtractAttributesFromText",
-        {
-          "text": text,"attribute_types": attribute_types
-        },
-        this.ctxManager.cloneContext(),
-        __baml_options__?.tb?.__tb(),
-        __baml_options__?.clientRegistry,
-        false,
-      )
-    } catch (error) {
-      throw toBamlError(error);
-    }
-  }
-  
   async ExtractEP(
-      query: string,
+      query: string,lang: string,
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
         "ExtractEP",
         {
-          "query": query
+          "query": query,"lang": lang
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -537,26 +497,6 @@ export class AsyncHttpStreamRequest {
     }
   }
   
-  async ConvertQueryToEP(
-      query: string,
-      __baml_options__?: BamlCallOptions
-  ): Promise<HTTPRequest> {
-    try {
-      return await this.runtime.buildRequest(
-        "ConvertQueryToEP",
-        {
-          "query": query
-        },
-        this.ctxManager.cloneContext(),
-        __baml_options__?.tb?.__tb(),
-        __baml_options__?.clientRegistry,
-        true,
-      )
-    } catch (error) {
-      throw toBamlError(error);
-    }
-  }
-  
   async DefineEntityWithReferences(
       entity_name: string,reference_documents: string[],language: string,
       __baml_options__?: BamlCallOptions
@@ -577,35 +517,15 @@ export class AsyncHttpStreamRequest {
     }
   }
   
-  async ExtractAttributesFromText(
-      text: string,attribute_types: string[],
-      __baml_options__?: BamlCallOptions
-  ): Promise<HTTPRequest> {
-    try {
-      return await this.runtime.buildRequest(
-        "ExtractAttributesFromText",
-        {
-          "text": text,"attribute_types": attribute_types
-        },
-        this.ctxManager.cloneContext(),
-        __baml_options__?.tb?.__tb(),
-        __baml_options__?.clientRegistry,
-        true,
-      )
-    } catch (error) {
-      throw toBamlError(error);
-    }
-  }
-  
   async ExtractEP(
-      query: string,
+      query: string,lang: string,
       __baml_options__?: BamlCallOptions
   ): Promise<HTTPRequest> {
     try {
       return await this.runtime.buildRequest(
         "ExtractEP",
         {
-          "query": query
+          "query": query,"lang": lang
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

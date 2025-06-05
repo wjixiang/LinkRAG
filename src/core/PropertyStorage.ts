@@ -174,4 +174,8 @@ export default class PropertyStorage {
             throw error;
         }
     }
+
+    async get_property_types() {
+        
+    }
 }

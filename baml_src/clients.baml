@@ -17,6 +17,16 @@ client<llm> GLM4Flash {
   }
 }
 
+client<llm> GLM4Plus {
+  provider openai-generic
+  options {
+    model "glm-4-plus"
+    api_key env.GLM_API_KEY
+    base_url "https://open.bigmodel.cn/api/paas/v4"
+    retry_policy GLMRetry
+  }
+}
+
 client<llm> DeepseekV3 {
   provider  openai-generic
   options {

@@ -46,10 +46,9 @@ export function all_succeeded<CheckName extends string>(checks: Record<CheckName
 export function get_checks<CheckName extends string>(checks: Record<CheckName, Check>): Check[] {
     return Object.values(checks)
 }
-export interface Attribute {
-  name: string
-  description: string
-  type: string
+export interface EP_extract_result {
+  reasoning: string
+  subquestions: SubQuestion[]
   
 }
 
@@ -161,6 +160,12 @@ export interface RetrievedDocument {
 export interface RetrievedPropertyInfo {
   information: string
   sources: string[]
+  
+}
+
+export interface SubQuestion {
+  subquestion: string
+  ep_pair: EPpair
   
 }
 

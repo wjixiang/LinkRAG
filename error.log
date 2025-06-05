@@ -837,3 +837,24 @@
 [KnowledgeGraphWeaver:[31merror[39m] Error during chunking and embedding from file path /Users/a123/Documents/GitHub/LinkRAG/textbook/test.txt: Failed to get content for file /Users/a123/Documents/GitHub/LinkRAG/textbook/test.txt
 [KnowledgeGraphWeaver:[31merror[39m] Error during chunking and embedding from file path textbook/test.txt: Failed to get content for file textbook/test.txt
 [KnowledgeGraphWeaver:[31merror[39m] Error during chunking and embedding from file path textbook/test.txt: Failed to get content for file textbook/test.txt
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: write EPIPE
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400

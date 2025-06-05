@@ -41,6 +41,36 @@ async function chunkAndEmbedFile(filePath: string, chunkTable: string, concurren
     }
 }
 
+async function chunkAndEmbedFolder(folderPath: string, chunkTable: string, concurrency: number) {
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    
+    try {
+        const files = await fs.readdir(folderPath);
+        const config = {
+            ...KnowledgeGraphWeaver_config,
+            chunkTableName: chunkTable,
+            embeddingConcurrencyLimit: concurrency
+        };
+        const weaver = new KnowledgeBaseEditor(config);
+
+        for (const file of files) {
+            const filePath = path.join(folderPath, file);
+            try {
+                console.log(`Processing file: ${filePath}`);
+                await weaver.chunking_and_embedding_from_path(filePath);
+                console.log('Successfully processed file');
+            } catch (error) {
+                console.error(`Error processing file ${filePath}:`, error);
+                // Continue with next file
+            }
+        }
+    } catch (error) {
+        console.error('Error reading directory:', error);
+        process.exit(1);
+    }
+}
+
 yargs(hideBin(process.argv))
     .scriptName('weave-cli')
     .usage('$0 <command> [args]')
@@ -83,6 +113,33 @@ yargs(hideBin(process.argv))
         },
         async (argv) => {
             await chunkAndEmbedFile(argv.file as string, argv.chunkTable as string, argv.concurrency as number);
+        }
+    )
+    .command(
+        'chunk-embed-folder [folder]',
+        'Chunk and embed all files in a folder',
+        (yargs) => {
+            return yargs
+                .positional('folder', {
+                    describe: 'Path to the folder containing files to process',
+                    type: 'string',
+                    demandOption: true
+                })
+                .option('chunkTable', {
+                    alias: 't',
+                    type: 'string',
+                    description: 'Name of the chunk table in database',
+                    default: KnowledgeGraphWeaver_config.chunkTableName
+                })
+                .option('concurrency', {
+                    alias: 'c',
+                    type: 'number',
+                    description: 'Embedding concurrency limit',
+                    default: KnowledgeGraphWeaver_config.embeddingConcurrencyLimit
+                });
+        },
+        async (argv) => {
+            await chunkAndEmbedFolder(argv.folder as string, argv.chunkTable as string, argv.concurrency as number);
         }
     )
     .help()

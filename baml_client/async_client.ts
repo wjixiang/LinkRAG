@@ -20,7 +20,7 @@ import { toBamlError, BamlStream, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Attribute, EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SummarizedProperty, UpdatedSummary} from "./types"
+import type {EP_extract_result, EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SubQuestion, SummarizedProperty, UpdatedSummary} from "./types"
 import type TypeBuilder from "./type_builder"
 import { AsyncHttpRequest, AsyncHttpStreamRequest } from "./async_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -106,29 +106,6 @@ export class BamlAsyncClient {
     }
   }
   
-  async ConvertQueryToEP(
-      query: string,
-      __baml_options__?: BamlCallOptions
-  ): Promise<string[]> {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const raw = await this.runtime.callFunction(
-        "ConvertQueryToEP",
-        {
-          "query": query
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-      )
-      return raw.parsed(false) as string[]
-    } catch (error) {
-      throw toBamlError(error);
-    }
-  }
-  
   async DefineEntityWithReferences(
       entity_name: string,reference_documents: string[],language: string,
       __baml_options__?: BamlCallOptions
@@ -152,47 +129,24 @@ export class BamlAsyncClient {
     }
   }
   
-  async ExtractAttributesFromText(
-      text: string,attribute_types: string[],
-      __baml_options__?: BamlCallOptions
-  ): Promise<Attribute[]> {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const raw = await this.runtime.callFunction(
-        "ExtractAttributesFromText",
-        {
-          "text": text,"attribute_types": attribute_types
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-      )
-      return raw.parsed(false) as Attribute[]
-    } catch (error) {
-      throw toBamlError(error);
-    }
-  }
-  
   async ExtractEP(
-      query: string,
+      query: string,lang: string,
       __baml_options__?: BamlCallOptions
-  ): Promise<EPpair[]> {
+  ): Promise<EP_extract_result> {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = await this.runtime.callFunction(
         "ExtractEP",
         {
-          "query": query
+          "query": query,"lang": lang
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
         options.clientRegistry,
         collector,
       )
-      return raw.parsed(false) as EPpair[]
+      return raw.parsed(false) as EP_extract_result
     } catch (error) {
       throw toBamlError(error);
     }
@@ -678,35 +632,6 @@ class BamlStreamClient {
     }
   }
   
-  ConvertQueryToEP(
-      query: string,
-      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
-  ): BamlStream<(string | null)[], string[]> {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const raw = this.runtime.streamFunction(
-        "ConvertQueryToEP",
-        {
-          "query": query
-        },
-        undefined,
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-      )
-      return new BamlStream<(string | null)[], string[]>(
-        raw,
-        (a): (string | null)[] => a,
-        (a): string[] => a,
-        this.ctxManager.cloneContext(),
-      )
-    } catch (error) {
-      throw toBamlError(error);
-    }
-  }
-  
   DefineEntityWithReferences(
       entity_name: string,reference_documents: string[],language: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
@@ -736,46 +661,17 @@ class BamlStreamClient {
     }
   }
   
-  ExtractAttributesFromText(
-      text: string,attribute_types: string[],
-      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
-  ): BamlStream<(partial_types.Attribute | null)[], Attribute[]> {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const raw = this.runtime.streamFunction(
-        "ExtractAttributesFromText",
-        {
-          "text": text,"attribute_types": attribute_types
-        },
-        undefined,
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-      )
-      return new BamlStream<(partial_types.Attribute | null)[], Attribute[]>(
-        raw,
-        (a): (partial_types.Attribute | null)[] => a,
-        (a): Attribute[] => a,
-        this.ctxManager.cloneContext(),
-      )
-    } catch (error) {
-      throw toBamlError(error);
-    }
-  }
-  
   ExtractEP(
-      query: string,
+      query: string,lang: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
-  ): BamlStream<(partial_types.EPpair | null)[], EPpair[]> {
+  ): BamlStream<partial_types.EP_extract_result, EP_extract_result> {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
       const raw = this.runtime.streamFunction(
         "ExtractEP",
         {
-          "query": query
+          "query": query,"lang": lang
         },
         undefined,
         this.ctxManager.cloneContext(),
@@ -783,10 +679,10 @@ class BamlStreamClient {
         options.clientRegistry,
         collector,
       )
-      return new BamlStream<(partial_types.EPpair | null)[], EPpair[]>(
+      return new BamlStream<partial_types.EP_extract_result, EP_extract_result>(
         raw,
-        (a): (partial_types.EPpair | null)[] => a,
-        (a): EPpair[] => a,
+        (a): partial_types.EP_extract_result => a,
+        (a): EP_extract_result => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {

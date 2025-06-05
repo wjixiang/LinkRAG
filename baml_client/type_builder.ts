@@ -22,7 +22,7 @@ import { DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME } from "./
 export default class TypeBuilder {
     private tb: _TypeBuilder;
     
-    Attribute: ClassViewer<'Attribute', "name" | "description" | "type">;
+    EP_extract_result: ClassViewer<'EP_extract_result', "reasoning" | "subquestions">;
     
     EPpair: ClassViewer<'EPpair', "entity" | "property">;
     
@@ -58,6 +58,8 @@ export default class TypeBuilder {
     
     RetrievedPropertyInfo: ClassViewer<'RetrievedPropertyInfo', "information" | "sources">;
     
+    SubQuestion: ClassViewer<'SubQuestion', "subquestion" | "ep_pair">;
+    
     SummarizedProperty: ClassViewer<'SummarizedProperty', "summary">;
     
     UpdatedSummary: ClassViewer<'UpdatedSummary', "summary" | "changes">;
@@ -67,7 +69,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "Attribute","EPpair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","PropertyGenerateRes","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SummarizedProperty","UpdatedSummary",
+            "EP_extract_result","EPpair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","PropertyGenerateRes","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SubQuestion","SummarizedProperty","UpdatedSummary",
           ]),
           enums: new Set([
             
@@ -75,8 +77,8 @@ export default class TypeBuilder {
           runtime: DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME
         });
         
-        this.Attribute = this.tb.classViewer("Attribute", [
-          "name","description","type",
+        this.EP_extract_result = this.tb.classViewer("EP_extract_result", [
+          "reasoning","subquestions",
         ]);
         
         this.EPpair = this.tb.classViewer("EPpair", [
@@ -145,6 +147,10 @@ export default class TypeBuilder {
         
         this.RetrievedPropertyInfo = this.tb.classViewer("RetrievedPropertyInfo", [
           "information","sources",
+        ]);
+        
+        this.SubQuestion = this.tb.classViewer("SubQuestion", [
+          "subquestion","ep_pair",
         ]);
         
         this.SummarizedProperty = this.tb.classViewer("SummarizedProperty", [
