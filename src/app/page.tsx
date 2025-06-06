@@ -1,3 +1,9 @@
+import AssistantSidebar from "@/components/AssistantSidebar";
+
 export default function Page() {
-  return <h1>Hello, Next.js!</h1>
+  return <div className="p-5 h-screen">
+    <AssistantSidebar>
+
+    </AssistantSidebar>
+  </div>
 }

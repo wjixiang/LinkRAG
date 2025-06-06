@@ -1,5 +1,6 @@
 import { KnowledgeBaseRetrieverConfig } from "./core/KnowledgeBaseRetriever";
 import { KnowledgeBaseEditorConfig } from "./core/KnowledgeBaseEditor";
+import { Setting } from "./core/KnowledgeBase";
 
 
 export const KnowledgeGraphWeaver_config:KnowledgeBaseEditorConfig = {
@@ -26,3 +27,8 @@ export const KnowledgeGraphRetriever_Config: KnowledgeBaseRetrieverConfig = {
     semantic_search_threshold: 0.33,
     language: "zh"
 };
+
+export const setting: Setting = {
+    kb_editor_setting: KnowledgeGraphWeaver_config,
+    kb_retriever_setting: KnowledgeGraphRetriever_Config
+}

@@ -858,3 +858,25 @@
 [Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
 [Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
 [Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure WebAssembly is supported in your environment.
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure WebAssembly is supported in your environment.
+[baseline_rag_workflow:[31merror[39m] Error during document retrieval or answer generation: TypeError: Cannot read properties of undefined (reading 'chunks_retriver')
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
+[baseline_rag_workflow:[31merror[39m] Error during HyDE rewrite: Error: BamlError: BamlInvalidArgumentError:   Error: query: Expected type String, got `Null`
+  Error: language: Expected type String, got `Bool(true)`
+
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[ChunkRetriever:[31merror[39m] Failed to generate embedding for query. Cannot perform vector search.
+[baseline_rag_workflow:[31merror[39m] Error during document retrieval or answer generation: Error: BamlError: BamlInvalidArgumentError:   Error: query: Expected type String, got `Null`
+  Error: language: Expected type String, got `Bool(true)`
+
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure WebAssembly is supported in your environment.
+[baseline_rag_workflow:[31merror[39m] Error during HyDE rewrite: Error: BamlError: BamlInvalidArgumentError:   Error: query: Expected type String, got `Null`
+  Error: language: Expected type String, got `Bool(true)`
+
+[Embedding:[31merror[39m] Error fetching Alibaba embedding: Request failed with status code 400
+[ChunkRetriever:[31merror[39m] Failed to generate embedding for query. Cannot perform vector search.
+[baseline_rag_workflow:[31merror[39m] Error during document retrieval or answer generation: Error: BamlError: BamlInvalidArgumentError:   Error: query: Expected type String, got `Null`
+  Error: language: Expected type String, got `Bool(true)`
+
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure WebAssembly is supported in your environment.

@@ -46,6 +46,12 @@ export function all_succeeded<CheckName extends string>(checks: Record<CheckName
 export function get_checks<CheckName extends string>(checks: Record<CheckName, Check>): Check[] {
     return Object.values(checks)
 }
+export interface Decision {
+  response: string
+  selected_task: string
+  
+}
+
 export interface EP_extract_result {
   reasoning: string
   subquestions: SubQuestion[]
@@ -171,6 +177,13 @@ export interface SubQuestion {
 
 export interface SummarizedProperty {
   summary: string
+  
+}
+
+export interface Task {
+  task_name: string
+  task_description: string
+  task_example_user_query: string[]
   
 }
 

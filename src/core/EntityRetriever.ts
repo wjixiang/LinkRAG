@@ -2,102 +2,44 @@ import { surrealDBClient } from "@/database/surrealdbClient";
 import { RetrievedEntityRecord, RelationRecord } from "@/type";
 import { BaseRetriever } from "./BaseRetriever";
 import { KnowledgeBaseRetrieverConfig } from "./KnowledgeBaseRetriever";
-import { KeywordExtractor } from "./KeywordExtractor";
 import { RecordId } from "surrealdb";
 
 export class EntityRetriever extends BaseRetriever {
-    private keywordExtractor: KeywordExtractor;
     private relationCache: Map<string, {in_relations: RelationRecord[], out_relations: RelationRecord[]}>;
 
     constructor(config: KnowledgeBaseRetrieverConfig) {
         super(config, 'EntityRetriever');
-        this.keywordExtractor = new KeywordExtractor();
         this.relationCache = new Map();
     }
 
     async retrieve(query: string, top_k: number): Promise<RetrievedEntityRecord[]> {
-        // Keyword-based graph retrieval
-        const keywords = this.keywordExtractor.extractKeywords(query);
-        this.logger.debug(`keywords: ${keywords}`);
-    
-        const combinedResultsMap = new Map<string, RetrievedEntityRecord>();
-        const keywordSearchResults: RetrievedEntityRecord[] = [];
+        const queryEmbedding = await this.getQueryEmbedding(query);
+        const semanticSearchResults: RetrievedEntityRecord[] = [];
 
-        if (keywords.length > 0) {
-            const db = await surrealDBClient.getDb();
+        if (queryEmbedding !== null) {
+            let semanticSurrealQL = `
+                SELECT  id, name, description , vector::similarity::cosine(embedding, $queryEmbedding) AS score
+                FROM ${this.config.entity_table_name}
+                WHERE embedding != NONE
+                ORDER BY score DESC
+                LIMIT ${top_k};
+            `;
 
             try {
-                const keywordResult = await Promise.all(keywords.map(async(e)=>{
-                    return (await db.query<RetrievedEntityRecord[][]>(`SELECT id, name, description, (string::similarity::jaro($keyword, name)) AS score FROM nodes WHERE string::similarity::jaro($keyword, name) > 0.9`, { keyword: e }))[0];
-                }));
-                this.logger.info(`Keyword search raw result: ${JSON.stringify(keywordResult, null, 2)}`);
-                if (keywordResult && Array.isArray(keywordResult)) {
-                    keywordResult.forEach(resultArray => {
-                        if (Array.isArray(resultArray) && resultArray.length > 0) {
-                            keywordSearchResults.push(...resultArray);
-                        }
-                    });
+                const db = await surrealDBClient.getDb();
+                const result = await db.query<RetrievedEntityRecord[][]>(semanticSurrealQL, { queryEmbedding: queryEmbedding });
+                this.logger.info(`Semantic retrieve ${result[0].length} entities`);
+                if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
+                    semanticSearchResults.push(...this.filterResultsByScore(result[0]));
                 }
             } catch (error) {
-                this.logger.error("Error during keyword search:", error);
+                this.logger.error("Error during semantic search:", error);
             }
+        } else {
+            this.logger.error("Failed to generate embedding for query. Cannot perform semantic search.");
         }
 
-        // Only perform semantic search if keyword search returned no results
-        if (keywordSearchResults.length === 0) {
-            this.logger.info(`Retrieve 0 entity according to keywords [${keywords}], start semantic retrieve`);
-            const queryEmbedding = await this.getQueryEmbedding(query);
-            const semanticSearchResults: RetrievedEntityRecord[] = [];
-            if (queryEmbedding !== null) {
-                let semanticSurrealQL = `
-                    SELECT  id, name, description , vector::similarity::cosine(embedding, $queryEmbedding) AS score
-                    FROM ${this.config.entity_table_name}
-                    WHERE embedding != NONE
-                    ORDER BY score DESC
-                    LIMIT ${top_k};
-                `;
-
-                try {
-                    const db = await surrealDBClient.getDb();
-                    const result = await db.query<RetrievedEntityRecord[][]>(semanticSurrealQL, { queryEmbedding: queryEmbedding });
-                    this.logger.info(`Semantic retrieve ${result[0].length} entities`);
-                    if (result && Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
-                        semanticSearchResults.push(...this.filterResultsByScore(result[0]));
-                    }
-                } catch (error) {
-                    this.logger.error("Error during semantic search:", error);
-                    // Continue with keyword search even if semantic search fails
-                }
-            } else {
-                this.logger.error("Failed to generate embedding for query. Cannot perform semantic search.");
-            }
-
-            // Combine semantic results if keyword search was empty
-            semanticSearchResults.forEach(item => {
-                combinedResultsMap.set(item.id.toString(), item);
-            });
-        }
-
-        // Add keyword search results, prioritizing keyword matches (higher score)
-        keywordSearchResults.forEach(item => {
-            // If the entity is already in the map from semantic search, update the score if the keyword score is higher
-            if (combinedResultsMap.has(item.id.toString())) {
-                const existingItem = combinedResultsMap.get(item.id.toString())!;
-                // Only update if the new score is higher (keyword score 1.0 is higher than semantic score <= 1.0)
-                if (item.score > existingItem.score) {
-                     combinedResultsMap.set(item.id.toString(), item);
-                }
-            } else {
-                combinedResultsMap.set(item.id.toString(), item);
-            }
-        });
-
-        // Convert map values back to an array and sort by score
-        const finalResults = Array.from(combinedResultsMap.values())
-            .sort((a, b) => b.score - a.score)
-            .slice(0, top_k);
-
-        return finalResults;
+        return semanticSearchResults;
     }
 
     async entity_keyword_retriever(entities: string[]) {

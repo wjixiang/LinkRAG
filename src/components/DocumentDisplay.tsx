@@ -12,8 +12,6 @@ import remarkWikiLink from 'remark-wiki-link';
 import { visit } from 'unist-util-visit';
 import type { Node, Parent } from 'unist';
 import { useRouter } from 'next/navigation';
-import rehypeMermaid from 'rehype-mermaid';
-import mermaid from 'mermaid';
 import rehypeKatex from 'rehype-katex';
 import rehypeCallouts from 'rehype-callouts';
 
@@ -25,16 +23,6 @@ interface MarkdownRendererProps {
   basePath?: string;
   embedDepth?: number;
   references?: Reference[];
-}
-
-if (typeof window !== 'undefined') {
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'default', 
-    securityLevel: 'loose',
-    fontFamily: 'monospace'
-  });
-  mermaid.init(undefined, '.mermaid');
 }
 
 const contentCache = new Map<string, string>();
@@ -214,7 +202,6 @@ async function renderMarkdown(content: string, basePath: string, references: Ref
       })
       .use(rehypeRaw)
       .use(rehypeKatex)
-      .use(rehypeMermaid)
       .use(rehypeHighlight)
       .use(rehypeStringify)
       .use(remarkReferences(references))
@@ -328,16 +315,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.addedNodes.length) {
-          mermaid.run({
-            querySelector: '.mermaid',
-            nodes: Array.from(mutation.addedNodes)
-              .filter((node): node is HTMLElement => 
-                node.nodeType === Node.ELEMENT_NODE &&
-                (node as HTMLElement).querySelector('.mermaid') !== null
-              )
-          });
-        }
+        // Mermaid support removed
       });
     });
 
@@ -348,10 +326,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       characterData: false
     });
 
-    mermaid.run({
-      querySelector: '.mermaid',
-      nodes: Array.from(renderedRef.current.querySelectorAll('.mermaid')) as HTMLElement[]
-    });
+    // Mermaid support removed
 
     return () => observer.disconnect();
   }, [html]);

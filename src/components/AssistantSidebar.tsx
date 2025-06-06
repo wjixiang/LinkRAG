@@ -19,11 +19,9 @@ import { useChatRuntime } from "@/hooks/ChatRuntime";
 
 interface AssistantSidebarProps {
   children?: React.ReactNode;
-  onSendQuiz: () => string|null;
-  hasSelectedQuiz: boolean;
 }
 
-export default function AssistantSidebar({ children, onSendQuiz, hasSelectedQuiz }: AssistantSidebarProps) {
+export default function AssistantSidebar({ children }: AssistantSidebarProps) {
  
   const [input, setInput] = useState("");
   const [showSources, setShowSources] = useState<Record<string, boolean>>({});
@@ -182,12 +180,7 @@ export default function AssistantSidebar({ children, onSendQuiz, hasSelectedQuiz
     }
   };
 
-  const sendQuiz = ( ) => {
-    const quiz_content = onSendQuiz()
-    if(quiz_content) {
-      handleSendMessage(quiz_content)
-    }
-  }
+  
 
   useEffect(() => {
     if (!isMobile) { // Only add resize listeners for desktop
@@ -320,20 +313,6 @@ export default function AssistantSidebar({ children, onSendQuiz, hasSelectedQuiz
 
           {/* 工具栏 - 现在位于输入区域上方 */}
           <div id="toolBar" className="w-full bg-transparent mb-2">
-                       {/* 发送试题按钮 */}
-        {hasSelectedQuiz && (
-          <div className="p-2 flex">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={sendQuiz}
-              className="rounded-xl"
-            >
-              发送当前试题
-            </Button>
-          </div>
-        )}
-
             <div className="flex justify-between items-center px-2 bg-transparent">
             <TooltipProvider>
               <Tooltip>
