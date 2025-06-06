@@ -38,15 +38,16 @@ graph TD
 
 
 ## Features
-
-- **SurrealDB Integration** - Full-featured graph database for knowledge storage:
+- **Progressive knowledge graph construction**: 
+    - Build up optimal and task-oriented knowledge base step by step
+    - Self learning & managment powered by LLM agents
+- **SurrealDB Integration** : Full-featured graph database for knowledge storage:
   - Nodes for entities and properties
   - Edges for relationships
   - Automatic schema-less document storage
   - Graph traversal queries
   - Built-in authentication and permissions
 - Semantic chunking and embedding
-- Multiple LLM workflow configurations
 
 ## Installation
 

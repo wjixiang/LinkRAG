@@ -1,3 +1,5 @@
+import KnowledgeBaseEditor from '@/core/KnowledgeBaseEditor';
+import { KnowledgeGraphWeaver_config } from '@/settings';
 import { QueryDecomposer, QueryDecomposerConfig } from '../core/QueryDecomposer';
 
 const config: QueryDecomposerConfig = {
@@ -24,6 +26,13 @@ async function main() {
   console.log(`Testing query: "${query3}"`);
   const result3 = await decomposer.convert_query(query3);
   console.log('Result:', result3);
+
+  // Experiment:
+  const weaver = new KnowledgeBaseEditor(KnowledgeGraphWeaver_config)
+  for(const e of result3.subquestions) {
+    await weaver.summarize_new_property(e.ep_pair.entity, e.ep_pair.property)
+  }
+
 }
 
 main().catch(console.error);

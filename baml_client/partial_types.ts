@@ -78,7 +78,7 @@ export namespace partial_types {
     }
     
     export interface HyDE_rewrite_query {
-        HyDE_answer?: (string | null)
+        HyDE_answer: string
     }
     
     export interface HypothesizedProperty {

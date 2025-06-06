@@ -18,7 +18,7 @@ async function main() {
     // Test with new entity
     logger.info("\nTesting with new entity...");
     const newResult = await weaver.summarize_new_property(
-        "颅内高压",
+        "糖尿病",
         "临床表现"
     );
     console.log("New entity result:", newResult);
