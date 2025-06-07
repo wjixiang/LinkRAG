@@ -2,9 +2,11 @@ import { AgentNode, AgentStep } from "./Agent"; // Import from quizAgent.ts
 
 import KnowledgeBase from "@/core/KnowledgeBase";
 
-import baseline_rag_workflow from "../llm_workflow/baseline_rag_workflow";
 import { ChatMessage } from '../../components/MessageItem';
 import { semanticSearchResult } from '../../database/chunkStorage';
+import { b } from "baml_client/async_client";
+import { setting } from "@/settings";
+import { RetrievedDocument } from "baml_client/types";
 
 interface BamlDocument { // Define interface for document structure
     content: string;
@@ -28,13 +30,43 @@ export class ExecuteRAGNode implements AgentNode {
         try {
             // const documents: semanticSearchResult[] = await this.retriever.retriever.chunks_retriver(query, 10);
 
-            // yield {
-            //     type: "notice",
-            //     content: "找到文档"
-            // }
+            const hydeResult = b.stream.HyDE_rewrite(query, "zh");
+            let retrievalQuery = ""
+            for await (const chunk of hydeResult) {
+                yield {
+                    type: 'stream',
+                    content: chunk.HyDE_answer.startsWith(retrievalQuery) ? chunk.HyDE_answer.substring(retrievalQuery.length) : "",
+                    task: this.taskName
+                }
+                retrievalQuery = chunk.HyDE_answer 
+            }
+            yield {
+                type: 'stream',
+                content: 'HyDE execution completed',
+                isFinal: true,
+                task: this.taskName,
+            }
 
-            // delete
-            const {stream, bamlDocuments} = await baseline_rag_workflow(query, 10, true, "zh");
+
+            const kb = new KnowledgeBase(setting)
+            let documents: semanticSearchResult[] = await kb.retriever.chunks_retriver(retrievalQuery, 10);
+            
+    
+            // Map retrieved documents to the BAML RetrievedDocument type
+            const bamlDocuments: RetrievedDocument[] = documents.map((doc: semanticSearchResult) => ({
+                content: doc.document.content, // Assuming the retrieved document has a 'text' property for content
+                metadata: JSON.stringify(doc.score) // Assuming the retrieved document has a 'metadata' property
+            }));
+            
+            yield {
+                type: "push",
+                content: `I have retrieved ${documents.length} documents.`
+            }
+                
+            const stream = b.stream.GenerateAnswer(query, bamlDocuments, "zh");
+
+    
+            
             let preChunk = ''
             for await (const chunk of stream) {
                 yield {

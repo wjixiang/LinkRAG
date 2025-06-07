@@ -66,17 +66,12 @@ export default function AssistantSidebar({ children }: AssistantSidebarProps) {
     clearChat
   } = useChatRuntime();
 
-  // // 滚动到最新消息
+  // Scrolling to latest message
   // useEffect(() => {
   //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   // }, [messages, currentAiMessage]);
 
-  // 滚动到最新消息
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, currentAiMessage]);
-
-  // 自动调整输入框高度
+  // Auto adjuest height of inputbox
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -102,7 +97,7 @@ export default function AssistantSidebar({ children }: AssistantSidebarProps) {
       
       setCurrentStatus({
         node: nodeStatus.node,
-        status: statusMap[nodeStatus.status],
+        status: "processing",
         error: nodeStatus.error
       });
     }
@@ -111,15 +106,7 @@ export default function AssistantSidebar({ children }: AssistantSidebarProps) {
   // 发送消息
   const sendMessage = async () => {
     if (input.trim() === "" || loading) return;
-    // setMessages((current)=>{
-    //   return [...current, {
-    //     content: input.trim(),
-    //     sender: "user",
-    //     timestamp: new Date(),
-    //     isVisible: true
 
-    //   }]
-    // })
     try {
       await handleSendMessage(
         input.trim()
@@ -127,7 +114,7 @@ export default function AssistantSidebar({ children }: AssistantSidebarProps) {
       setInput("");
     } catch (error) {
       console.error('Error sending message:', error);
-      toast.error('发送消息失败');
+      toast.error('Send message fail');
     }
   };
 

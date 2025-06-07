@@ -36,7 +36,7 @@ export namespace partial_types {
     
     export interface Decision {
         response?: (string | null)
-        selected_task?: (string | null)
+        selected_task?: ("Execute_RAG" | ((null | null) | null) | null)
     }
     
     export interface EP_extract_result {

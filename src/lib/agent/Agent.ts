@@ -5,6 +5,7 @@ import { ExecuteRAGNode } from "./ExecuteRAGNode"; // Import concrete node imple
 import { b } from 'baml_client/async_client';
 import { setting } from "@/settings";
 import KnowledgeBase from "@/core/KnowledgeBase";
+import TaskClassifyNode from "./TaskClassifyNode";
 
 /**
  * Represents the initial tasks that the Agent can execute.
@@ -18,7 +19,7 @@ const inital_tasks: Task[] = [
     }
 ]
 
-export type MessageType = 'step'  | 'result' | 'error' | 'notice' | 'stream';
+export type MessageType = 'step'  | 'result' | 'error' | 'notice' | 'stream' | 'push';
 
 /**
  * Represents a step in the agent's execution process.
@@ -97,36 +98,9 @@ export class Agent {
      */
     async *start(query: string): AsyncGenerator<AgentStep> {
         try {
-            const {selected_task, response} = await b.PlanNextStep(query, inital_tasks)
 
-            // Yield the planned step
-            yield {
-                type: 'step',
-                content: `Planned next step: ${selected_task}`,
-                task: selected_task
-            }
-
-            yield {
-                type: 'notice',
-                content: response,
-                task: selected_task
-            }
-
-            // Find and execute the appropriate node
-            const nodeToExecute = this.nodes.find(node => node.taskName === selected_task);
-
-            if (nodeToExecute) {
-                for await (const step of nodeToExecute.execute(this.state, query)) {
-                    yield step; // Yield results from the node
-                }
-            } else {
-                 console.warn(`No node found for task: ${selected_task}`)
-                 yield {
-                     type: 'error',
-                     content: `No node found for task: ${selected_task}`,
-                     task: selected_task
-                 }
-            }
+           const pipeline = new TaskClassifyNode().execute(this.state ,query)
+           for await(const i of pipeline) yield i
 
         } catch (error) {
             console.error("Failed to plan next step:", error)

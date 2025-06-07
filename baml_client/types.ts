@@ -48,7 +48,7 @@ export function get_checks<CheckName extends string>(checks: Record<CheckName, C
 }
 export interface Decision {
   response: string
-  selected_task: string
+  selected_task?: "Execute_RAG" | null | null
   
 }
 

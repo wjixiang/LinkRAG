@@ -27,7 +27,7 @@ interface ControlMessage extends BaseMessage {
 }
 
 interface ContentMessage extends BaseMessage {
-  type: 'stream' 
+  type: 'stream' | 'push'
   content: string;
   isFinal?: boolean;
   references?: any[]; // For backward compatibility
@@ -108,10 +108,10 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
       case 'notice': // Handle notice messages from Agent
         handleControlMessage(parsedChunk);
         break;
+      case "push":
       case 'stream':
         handleContentMessage(parsedChunk);
-        break;
-        
+        break; 
     }
   }, []);
 
@@ -138,23 +138,21 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
       }]);
     }
 
-    // if (message.type === 'status') {
-    //   setMessages(prev => [...prev, {
-    //     messageType: "status",
-    //     sender: "ai",
-    //     timestamp: new Date(),
-    //     isVisible: true,
-    //     content: message.content || ''
-    //   }]);
-    // }
   }, []);
 
   const handleContentMessage = useCallback((message: ContentMessage) => {
     const content = message.content || '';
     if (message.type === 'stream') {
+      // Reset accumulated content if this is the first chunk of a new stream
+      if (!accumulatedContentRef.current) {
+        accumulatedContentRef.current = "";
+      }
+      
+      accumulatedContentRef.current += content;
+      
       setCurrentAiMessage(prev => {
         const newMessage: ChatMessage = {
-          content: prev.content + content,
+          content: accumulatedContentRef.current,
           timestamp: new Date(),
           sources: message.references || message.sources,
           sender: "ai" as const,
@@ -173,6 +171,8 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
           timestamp: new Date(),
           sources: message.references || message.sources
         }]);
+        // Reset accumulated content after final message
+        accumulatedContentRef.current = "";
       }
     } else {
       setMessages(prev => [...prev, {

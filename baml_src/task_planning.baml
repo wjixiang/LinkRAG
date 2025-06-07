@@ -9,7 +9,7 @@ class Decision {
   response string @description(#"
     Your reasoning of given query
   "#)
-  selected_task string @description(#"
+  selected_task "Execute_RAG" | null @description(#"
     必须为传入tasks中的一个，**必须与所给task的task_name一致**
   "#)
 }
