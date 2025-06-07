@@ -42,7 +42,7 @@ export class AgentService {
 
     public async *transformAgentStream(stream: AsyncGenerator<AgentStep>) {
         let documents: Reference[] = [];
-        let quizzes: any[] = [];
+        
 
         for await (const step of stream) {
             // Forward all steps directly to maintain consistency
@@ -52,9 +52,6 @@ export class AgentService {
             if (step.type === 'result' && step.task === 'Execute_RAG') {
                 documents = step.data?.documents || documents;
             }
-            if (step.type === 'result' && step.task === 'Fetch_Quizzes') {
-                quizzes = step.data?.quizzes || quizzes;
-            }
 
             // Send final message with all accumulated data
             if (step.type === 'result') {
@@ -62,7 +59,6 @@ export class AgentService {
                     type: 'done',
                     content: step.content,
                     references: documents,
-                    quizzes: quizzes.length ? quizzes : undefined
                 };
             }
         }

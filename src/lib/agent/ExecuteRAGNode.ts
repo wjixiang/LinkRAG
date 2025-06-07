@@ -38,15 +38,16 @@ export class ExecuteRAGNode implements AgentNode {
             let preChunk = ''
             for await (const chunk of stream) {
                 yield {
-                    type: 'update',
+                    type: 'stream',
                     content: chunk.startsWith(preChunk) ? chunk.substring(preChunk.length) : chunk,
                     task: this.taskName
                 }
                 preChunk = chunk
             }
             yield {
-                type: 'result',
+                type: 'stream',
                 content: 'RAG execution completed',
+                isFinal: true,
                 task: this.taskName,
                 data: { documents: (bamlDocuments as BamlDocument[]).map(e=>{ // Cast to BamlDocument[] and use typed parameter
                     return {

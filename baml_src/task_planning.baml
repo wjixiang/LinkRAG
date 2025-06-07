@@ -6,14 +6,16 @@ class Task {
 
 
 class Decision {
-  response string
+  response string @description(#"
+    Your reasoning of given query
+  "#)
   selected_task string @description(#"
     必须为传入tasks中的一个，**必须与所给task的task_name一致**
   "#)
 }
 
 function PlanNextStep(user_query:string, tasks_avaliable: Task[]) -> Decision {
-    client "GLM4Flash"
+    client "QwenTurbo"
     prompt #"
         {{_.role("system")}}
         You are a task planner to decide what to do in next step accroding to the given query.

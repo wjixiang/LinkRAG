@@ -18,14 +18,17 @@ const inital_tasks: Task[] = [
     }
 ]
 
+export type MessageType = 'step'  | 'result' | 'error' | 'notice' | 'stream';
+
 /**
  * Represents a step in the agent's execution process.
  */
 export type AgentStep = {
-    type: 'step' | 'update' | 'result' | 'error' | 'notice';
+    type: MessageType;
     content: string;
     task?: string;
     data?: any;
+    isFinal?: boolean;
 };
 
 /**

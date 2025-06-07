@@ -17,10 +17,30 @@ export async function POST(req: NextRequest) {
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
+        // Send initialization message
+        const initMessage = {
+          type: 'init',
+          timestamp: new Date(),
+          status: 'start'
+        };
+        controller.enqueue(encoder.encode(JSON.stringify(initMessage) + '\n'));
+
+        // Process and send stream chunks
         for await (const step of transformedStream) {
-          const chunk = JSON.stringify(step) + '\n';
+          const chunk = JSON.stringify({
+            ...step,
+            timestamp: new Date() // Add timestamp to each message
+          }) + '\n';
           controller.enqueue(encoder.encode(chunk));
         }
+
+        // Send completion message
+        const doneMessage = {
+          type: 'init',
+          timestamp: new Date(),
+          status: 'end'
+        };
+        controller.enqueue(encoder.encode(JSON.stringify(doneMessage) + '\n'));
         controller.close();
       }
     });

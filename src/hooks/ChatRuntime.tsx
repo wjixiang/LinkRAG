@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { ChatMessage } from "@/components/MessageItem";
 import { toast } from 'sonner';
+import { MessageType } from "@/lib/agent/Agent";
 
 export interface ChatReq {
   mode: 'simple' | 'agent';
@@ -12,19 +13,37 @@ export interface ChatReq {
   selectedSource?: string;
 }
 
-export interface ChatResponseChunk {
-  type: 'step' | 'update' | 'done' | 'error' | 'references' | 'notice';
-  content: string;
-  references?: any[];
+interface BaseMessage {
+  type: MessageType;
+  timestamp: Date;
   node?: string;
+}
+
+interface ControlMessage extends BaseMessage {
+  type: "step" | "notice" | "error"
   status?: 'start' | 'end' | 'error';
   error?: string;
-  quizzes?: any[];
+  content?: string; // Optional for status messages
 }
+
+interface ContentMessage extends BaseMessage {
+  type: 'stream' 
+  content: string;
+  isFinal?: boolean;
+  references?: any[]; // For backward compatibility
+  sources?: any[]; // Alternative name for references
+}
+
+interface MetadataMessage extends BaseMessage {
+  type: "step"
+  data: any[];
+}
+
+export type ChatResponseChunk = ControlMessage | ContentMessage | MetadataMessage;
 
 export interface NodeStatus {
   node: string;
-  status: 'start' | 'end' | 'error';
+  status: 'start' | 'end' | 'error' 
   error?: string;
 }
 
@@ -71,75 +90,107 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const accumulatedContentRef = useRef<string>("");
+  const currentAiMessageRef = useRef<ChatMessage>({
+    content: "",
+    sender: "ai",
+    timestamp: new Date(),
+    isVisible: true,
+    messageType: "content"
+  });
 
-  const [currentQuizSetId, setCurrentQuizSetId] = useState<string | null>(null);
-
-  const processChunk = useCallback((parsedChunk: ChatResponseChunk) => {
-    console.log('Processing chunk type:', parsedChunk.type, 'content:', parsedChunk.content);
   
-
+  
+  const processChunk = useCallback((parsedChunk: ChatResponseChunk) => {
+    
+    // Message router
     switch(parsedChunk.type) {
-      case 'step':
-        console.log('Step message:', parsedChunk.content);
-        setMessages(prev => [...prev, {
-          messageType: "status",
-          sender: "ai",
-          timestamp: new Date(),
-          isVisible: true,
-          content: parsedChunk.content,
-        }])
-        // setStatusMessages(prev => [...prev, parsedChunk.content]);
-        break;
-      case 'notice':
-        console.log('Step message:', parsedChunk.content);
-        setMessages(prev => [...prev, {
-          messageType: "content",
-          sender: "ai",
-          timestamp: new Date(),
-          isVisible: true,
-          content: parsedChunk.content,
-        }])
-        // setStatusMessages(prev => [...prev, parsedChunk.content]);
-        break;
-      case 'update':
-        console.log('Update message:', parsedChunk.content);
-        setCurrentAiMessage((prev) => ({
-          ...prev,
-          content: prev.content + parsedChunk.content,
-          timestamp: new Date(),
-          sources: parsedChunk.references ? parsedChunk.references : undefined
-        }));
-        break;
-      case 'done' :
-        console.log('Done message with references:', parsedChunk.references);
-        if (parsedChunk.references) {
-          setReferences(parsedChunk.references);
-        }
-        setMessages(prev=>[...prev, {
-          ...currentAiMessage,
-          content: accumulatedContentRef.current,
-          sources: parsedChunk.references
-        }])
-        break;
       case 'error':
-        console.error('Error chunk:', parsedChunk.error);
-        toast.error(parsedChunk.content);
+      case 'notice': // Handle notice messages from Agent
+        handleControlMessage(parsedChunk);
         break;
-      case 'references':
-        console.log('References chunk:', parsedChunk.references);
-        setReferences(parsedChunk.references || []);
+      case 'stream':
+        handleContentMessage(parsedChunk);
         break;
-    }
-
-    if (parsedChunk.node && parsedChunk.status) {
-      setNodeStatus({
-        node: parsedChunk.node,
-        status: parsedChunk.status,
-        error: parsedChunk.error,
-      });
+        
     }
   }, []);
 
+  const handleControlMessage = useCallback((message: ControlMessage) => {
+    if (message.type === 'error') {
+      toast.error(message.error || 'An error occurred');
+    }
+    
+    if (message.node && message.status) {
+      setNodeStatus({
+        node: message.node,
+        status: message.status,
+        error: message.error,
+      });
+    }
+
+    if (message.type === 'notice') {
+      setMessages(prev => [...prev, {
+        messageType: "status",
+        sender: "ai",
+        timestamp: new Date(),
+        isVisible: true,
+        content: message.content || ''
+      }]);
+    }
+
+    // if (message.type === 'status') {
+    //   setMessages(prev => [...prev, {
+    //     messageType: "status",
+    //     sender: "ai",
+    //     timestamp: new Date(),
+    //     isVisible: true,
+    //     content: message.content || ''
+    //   }]);
+    // }
+  }, []);
+
+  const handleContentMessage = useCallback((message: ContentMessage) => {
+    const content = message.content || '';
+    if (message.type === 'stream') {
+      setCurrentAiMessage(prev => {
+        const newMessage: ChatMessage = {
+          content: prev.content + content,
+          timestamp: new Date(),
+          sources: message.references || message.sources,
+          sender: "ai" as const,
+          isVisible: true,
+          messageType: "content" as const
+        };
+        currentAiMessageRef.current = newMessage;
+        return newMessage;
+      });
+
+      // Add to messages when stream is complete
+      if (message.isFinal) {
+        console.log("final", currentAiMessageRef.current)
+        setMessages(prev => [...prev, {
+          ...currentAiMessageRef.current,
+          timestamp: new Date(),
+          sources: message.references || message.sources
+        }]);
+      }
+    } else {
+      setMessages(prev => [...prev, {
+        messageType: "content",
+        sender: "ai",
+        timestamp: new Date(),
+        isVisible: true,
+        content,
+        sources: message.references || message.sources
+      }]);
+    }
+  }, []);
+
+  // const handleMetadataMessage = useCallback((message: MetadataMessage) => {
+  //   if (message.type === 'references') {
+  //     setReferences(message.data || []);
+  //   }
+  // }, []);
   const sendMessage = useCallback(async (
     input: string,
     selectedSource: string = 'vault',
@@ -223,13 +274,9 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
         for (const message of messages) {
           try {
             const parsedChunk: ChatResponseChunk = JSON.parse(message);
-            console.log('Received chunk:', parsedChunk); // Debug logging
+            // console.log('Received chunk:', parsedChunk); // Debug logging
             processChunk(parsedChunk);
 
-            if (parsedChunk.type === 'update') {
-              console.log('Content update:', parsedChunk.content); // Debug logging
-              accumulatedContentRef.current += parsedChunk.content;
-            }
           } catch (parseError) {
             console.error('Failed to parse JSON chunk:', parseError, 'Chunk:', message); // Log the problematic chunk
           }
@@ -241,10 +288,7 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
           const parsedChunk: ChatResponseChunk = JSON.parse(buffer);
           console.log('Received final chunk:', parsedChunk);
           processChunk(parsedChunk);
-          if (parsedChunk.type === 'update') {
-            console.log('Content update:', parsedChunk.content);
-            accumulatedContentRef.current += parsedChunk.content;
-          }
+
         } catch (parseError) {
           console.error('Failed to parse final JSON chunk:', parseError, 'Chunk:', buffer);
         }

@@ -60,6 +60,16 @@ client<llm> QWen3 {
     model "qwen-plus-latest"
     api_key env.ALIBABA_API_KEY
     base_url "https://dashscope.aliyuncs.com/compatible-mode/v1/"
+    enable_thinking true
+  }
+}
+
+client<llm> QwenTurbo {
+  provider openai-generic
+  options {
+    model "qwen-turbo-latest"
+    api_key env.ALIBABA_API_KEY
+    base_url "https://dashscope.aliyuncs.com/compatible-mode/v1/"
   }
 }
 

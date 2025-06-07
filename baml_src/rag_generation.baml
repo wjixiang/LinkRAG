@@ -4,7 +4,7 @@ class RetrievedDocument {
 }
 
 function GenerateAnswer(query: string, documents: RetrievedDocument[], language: string) -> string {
-  client "QiniuDeepseekV3" // Using GLM4Flash as an example client
+  client "QWen3" // Using GLM4Flash as an example client
   prompt #"
   {{_.role('system')}}
   You are a helpful assistant that answers questions in "{{language}}" language based on the provided documents.
