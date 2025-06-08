@@ -9,6 +9,7 @@ import MarkdownRenderer, { Reference } from "./DocumentDisplay";
 import { MessageSources } from "./MessageSources";
 
 export interface ChatMessage {
+    id: string;
     originalMessage?: string;
     sender: "user" | "ai" | "system";
     timestamp: Date;
@@ -18,6 +19,7 @@ export interface ChatMessage {
     sources?: Reference[];
     content: string;
     isErrorMessage?: boolean;
+    isLatest?: boolean;
     metadata?: {
         node?: string;
         progress?: number;

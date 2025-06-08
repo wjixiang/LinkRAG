@@ -6,6 +6,7 @@ import { AgentStep, Agent } from '../../../lib/agent/Agent';
 import { EmbeddingFunc } from "@/database/chunkStorage";
 import KnowledgeBase from "@/core/KnowledgeBase";
 import { setting } from "@/settings";
+import { language } from "@/type";
 
 
 export class AgentService {
@@ -23,12 +24,11 @@ export class AgentService {
             return this.instances.get(sessionId)!;
         }
 
-        await surrealDBClient.connect();
-        const db = await surrealDBClient.getDb();
         
-     
         const kb = new KnowledgeBase(setting)
-        const agent = new Agent(db);
+        const agent = new Agent({
+            language: setting.kb_editor_setting.language
+        });
         const service = new AgentService(agent, kb);
         this.instances.set(sessionId, service);
         return service;

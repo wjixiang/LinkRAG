@@ -1,10 +1,11 @@
 class HyDE_rewrite_query {
+  topic string
   HyDE_answer string @stream.not_null
 }
 
 
 function HyDE_rewrite(query:string, language: string ) -> HyDE_rewrite_query {
-    client "GLM4Plus"
+    client "QwenTurbo"
     prompt #"
     {{_.role('system')}}
     You are a helpful medical assistant that answer the given query .

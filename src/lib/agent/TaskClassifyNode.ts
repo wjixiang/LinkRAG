@@ -1,10 +1,9 @@
 import { ChatMessage } from '@/components/MessageItem';
-import { AgentNode, AgentStep } from './Agent';
+import { Agent } from './Agent';
+import { AgentNode, AgentStep, BaseNode } from './BaseNode';
 import { Task } from 'baml_client/types';
 import { b } from 'baml_client/async_client';
-import { ExecuteRAGNode } from './ExecuteRAGNode';
-import KnowledgeBase from '@/core/KnowledgeBase';
-import { setting } from '@/settings';
+import { _handleStream } from '../utils';
 
 /**
  * Represents the initial tasks that the Agent can execute.
@@ -18,37 +17,31 @@ const inital_tasks: Task[] = [
     }
 ]
 
-export default class TaskClassifyNode implements AgentNode {
-    taskName = "Analysis query";
+export default class TaskClassifyNode extends BaseNode {
+    taskName = "Plan next step";
+    
+    constructor(agent: Agent) {
+        super(agent);
+    }
 
-    async *execute(state: ChatMessage[], query: string): AsyncGenerator<AgentStep> {
-        try {
-            const {selected_task, response} = await b.PlanNextStep(query, inital_tasks)
-        
-                    // Yield the planned step
-            yield {
-                type: 'notice',
-                content: `Planned next step: ${selected_task}`,
-                task: selected_task
-            }
+    protected async *work(state: ChatMessage[], query: string): AsyncGenerator<AgentStep, { nextTask: string } > {
+        const stream =  b.stream.PlanNextStep(query, inital_tasks)
+        yield* _handleStream(stream, (i) => (i.response ?? ""));
+        const {selected_task} = await stream.getFinalResponse()
 
-            yield {
-                type: 'push',
-                content: response,
-                isFinal: true,
-                task: selected_task
-            }
-
-            let next_node
-            switch(selected_task) {
-                case "Execute_RAG":
-                    next_node =  new ExecuteRAGNode(new KnowledgeBase(setting)).execute(state, query)
-                    for await(const i of next_node) yield i
-                default:
-            }
-        } catch (error) {
-            throw(error)
+        if (!selected_task) {
+            throw new Error('No task selected');
         }
+        return {
+            nextTask: selected_task
+        }
+
+        // const next_node = this.agent.getNode(selected_task)?.execute(this.agent.state, query);
+        // if(next_node) for await(const i of next_node) yield i
+    }
+
+    protected proceed(result: { nextTask: string; data?: any; }): AgentNode|null  {
+        return this.agent.getNode(result.nextTask) ?? null
     }
 
 }

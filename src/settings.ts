@@ -16,7 +16,7 @@ export const KnowledgeGraphWeaver_config:KnowledgeBaseEditorConfig = {
     property_table_name: "property", // Added property_table_name
     semantic_search_threshold: 0.33 // Added semantic_search_threshold
     ,
-    language: "zh"
+    language: "zh中文"
 };
 
 
@@ -25,7 +25,7 @@ export const KnowledgeGraphRetriever_Config: KnowledgeBaseRetrieverConfig = {
     property_table_name: "property",
     entity_table_name: KnowledgeGraphWeaver_config.entity_table_name,
     semantic_search_threshold: 0.33,
-    language: "zh"
+    language: "zh中文"
 };
 
 export const setting: Setting = {

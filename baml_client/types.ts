@@ -103,6 +103,7 @@ export interface EntityWithRef {
 }
 
 export interface HyDE_rewrite_query {
+  topic: string
   HyDE_answer: string
   
 }

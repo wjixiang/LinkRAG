@@ -63,7 +63,8 @@ export default function AssistantSidebar({ children }: AssistantSidebarProps) {
     sendMessage: handleSendMessage,
     cancelRequest,
     regenerateLastMessage,
-    clearChat
+    clearChat,
+    currentTask
   } = useChatRuntime();
 
   // Scrolling to latest message
@@ -282,23 +283,29 @@ export default function AssistantSidebar({ children }: AssistantSidebarProps) {
                 </>
               )}
               
-             {/* 当前生成的AI消息 */}
              {currentAiMessage.content && (
              <MessageItem message={{
                ...currentAiMessage,
                timestamp: new Date()
              }} />)}
+
+              {loading && (
+            <div className="flex items-center justify-center mt-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              {currentTask}
+            </div>
+          )}
               
               <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
         </div>
 
-        {/* 输入区域容器 */}
+        {/* Input area */}
         <div className="relative bg-transparent z-10">
 
 
-          {/* 工具栏 - 现在位于输入区域上方 */}
+          {/* Tool panel */}
           <div id="toolBar" className="w-full bg-transparent mb-2">
             <div className="flex justify-between items-center px-2 bg-transparent">
             <TooltipProvider>
@@ -409,12 +416,6 @@ export default function AssistantSidebar({ children }: AssistantSidebarProps) {
             
           </div>
          
-          {loading && (
-            <div className="flex items-center justify-center mt-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              正在从检索相关内容...
-            </div>
-          )}
         </div>
       </div>
     </Card>

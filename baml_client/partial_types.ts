@@ -83,6 +83,7 @@ export namespace partial_types {
     }
     
     export interface HyDE_rewrite_query {
+        topic?: (string | null)
         HyDE_answer: string
     }
     

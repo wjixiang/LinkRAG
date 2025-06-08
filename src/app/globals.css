@@ -145,4 +145,119 @@ h3 {
 .embed {
   border-left: 0.2rem solid hsl(var(--primary));
   padding-left: 10px;
+  margin: 1rem 0;
+}
+
+.embed-content {
+  padding: 0.5rem;
+}
+
+.embed-loading {
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.embed-error {
+  color: hsl(var(--destructive));
+  padding: 0.5rem;
+  background-color: hsl(var(--destructive)/0.1);
+  border-radius: var(--radius);
+}
+
+.embed-more-link {
+  margin-top: 0.5rem;
+  text-align: right;
+}
+
+.embed-more {
+  color: hsl(var(--link));
+  text-decoration: none;
+}
+
+.embed-max-depth {
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+  padding: 0.5rem;
+}
+
+/* 引用样式 */
+.reference {
+  color: hsl(var(--link));
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.reference-tooltip {
+  background-color: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  z-index: 50;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* Markdown 渲染状态样式 */
+.markdown-error {
+  color: hsl(var(--destructive));
+  padding: 1rem;
+  background-color: hsl(var(--destructive)/0.1);
+  border-radius: var(--radius);
+}
+
+.markdown-loading {
+  color: hsl(var(--muted-foreground));
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Markdown 列表样式 */
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.prose li {
+  margin: 0.5rem 0;
+  padding-left: 0.5rem;
+}
+
+.prose li::marker {
+  color: hsl(var(--muted-foreground));
+}
+
+/* 嵌套列表样式 */
+.prose ul ul,
+.prose ol ul {
+  list-style-type: circle;
+}
+
+.prose ol ol,
+.prose ul ol {
+  list-style-type: lower-roman;
+}
+
+/* 任务列表样式 */
+.prose ul.contains-task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose .task-list-item {
+  display: flex;
+  align-items: center;
+}
+
+.prose .task-list-item-checkbox {
+  margin-right: 0.5rem;
 }

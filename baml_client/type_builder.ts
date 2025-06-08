@@ -38,7 +38,7 @@ export default class TypeBuilder {
     
     EntityWithRef: ClassViewer<'EntityWithRef', "name" | "description" | "type" | "aliases" | "reference">;
     
-    HyDE_rewrite_query: ClassViewer<'HyDE_rewrite_query', "HyDE_answer">;
+    HyDE_rewrite_query: ClassViewer<'HyDE_rewrite_query', "topic" | "HyDE_answer">;
     
     HypothesizedProperty: ClassViewer<'HypothesizedProperty', "hypothesis">;
     
@@ -114,7 +114,7 @@ export default class TypeBuilder {
         ]);
         
         this.HyDE_rewrite_query = this.tb.classViewer("HyDE_rewrite_query", [
-          "HyDE_answer",
+          "topic","HyDE_answer",
         ]);
         
         this.HypothesizedProperty = this.tb.classViewer("HypothesizedProperty", [

@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { ChatMessage } from "@/components/MessageItem";
 import { toast } from 'sonner';
-import { MessageType } from "@/lib/agent/Agent";
+import { ControlMessageStatus, MessageType } from "@/lib/agent/Agent";
 
 export interface ChatReq {
   mode: 'simple' | 'agent';
@@ -21,9 +21,10 @@ interface BaseMessage {
 
 interface ControlMessage extends BaseMessage {
   type: "step" | "notice" | "error"
-  status?: 'start' | 'end' | 'error';
+  status?: ControlMessageStatus;
   error?: string;
   content?: string; // Optional for status messages
+  id: string;
 }
 
 interface ContentMessage extends BaseMessage {
@@ -70,6 +71,7 @@ export interface UseChatRuntime {
     workerLLMId?: string
   ) => Promise<void>;
   clearChat: () => void;
+  currentTask: string;
 }
 
 export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseChatRuntime => {
@@ -87,6 +89,7 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
   const [graphState, setGraphState] = useState<any>(null);
   const [nodeStatus, setNodeStatus] = useState<NodeStatus | null>(null);
   const [references, setReferences] = useState<any[]>([]);
+  const [currentTask, setCurrentTask] = useState<string>("");
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const accumulatedContentRef = useRef<string>("");
@@ -127,15 +130,18 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
         error: message.error,
       });
     }
-
     if (message.type === 'notice') {
-      setMessages(prev => [...prev, {
+      if(message.status === "start") {
+        setCurrentTask(message.content ?? "")
+      }else{
+        setMessages(prev => [...prev, {
         messageType: "status",
         sender: "ai",
         timestamp: new Date(),
         isVisible: true,
         content: message.content || ''
       }]);
+      }
     }
 
   }, []);
@@ -404,6 +410,7 @@ export const useChatRuntime = (initialMode: 'simple' | 'agent' = 'simple'): UseC
     sendMessage,
     cancelRequest,
     regenerateLastMessage,
-    clearChat
+    clearChat,
+    currentTask,
   };
 };

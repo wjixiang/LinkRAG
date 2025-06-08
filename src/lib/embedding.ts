@@ -105,7 +105,7 @@ async function getAlibabaEmbedding(text: string | string[]): Promise<number[] | 
         logger.warn(`Rate limit exceeded. Retrying in ${delay}ms... (Attempt ${retries}/${MAX_RETRIES})`);
         await new Promise(resolve => setTimeout(resolve, delay));
       } else {
-        logger.error('Error fetching Alibaba embedding:', error);
+        logger.error(`Error fetching Alibaba embedding: \n${JSON.stringify(error)}`);
         return null;
       }
     }
