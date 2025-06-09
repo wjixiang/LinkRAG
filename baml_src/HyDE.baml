@@ -32,3 +32,19 @@ test TestHyDE_rewrite {
     "#
   }
 }
+
+function FunctionName(arg:string) -> string {
+  client "DeepseekR1"
+  prompt #"
+    高血压的治疗
+  "#
+}
+
+test TestName {
+  functions [FunctionName]
+  args {
+    arg #"
+      hello world
+    "#
+  }
+}

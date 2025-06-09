@@ -39,11 +39,11 @@ export class ONNXEmbedder {
             env.backends.onnx.wasm.proxy = true;
 
             // Load tokenizer
-            this.tokenizer = await AutoTokenizer.from_pretrained('models/Xenova/all-MiniLM-L6-v2');
+            this.tokenizer = await AutoTokenizer.from_pretrained('all-MiniLM-L6-v2');
 
             // Try loading model with default settings (may use GPU if available)
             try {
-                this.model = await AutoModel.from_pretrained('models/Xenova/all-MiniLM-L6-v2', {
+                this.model = await AutoModel.from_pretrained('all-MiniLM-L6-v2', {
                     quantized: true,
                     config: {
                         model_file: 'onnx/model_quantized.onnx'

@@ -382,14 +382,15 @@ export default class KnowledgeBaseEditor {
     }
 
     async create_new_entity(entityName: string): Promise<EntityWithRefDoc> {
-        const HydeEntity = await b.HyDEDefineEntity(entityName, "zh");
+        const stream = b.stream.HyDEDefineEntity(entityName, "zh");
+        const HydeEntity = await stream.getFinalResponse()
         
         const retrieved_chunks = await this.chunkRetriever.retrieve(`${HydeEntity.name} ${HydeEntity.description}`, 10);
-        const entity_definition = await b.DefineEntityWithReferences(
+        const entity_definition = await b.stream.DefineEntityWithReferences(
             entityName,
             retrieved_chunks.map(e => e.document.content),
             this.config.language
-        );
+        ).getFinalResponse()
         const {reference, ...entity} = entity_definition;
 
         const entity_with_ref_doc = {

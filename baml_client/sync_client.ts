@@ -315,6 +315,29 @@ export class BamlSyncClient {
     }
   }
   
+  FunctionName(
+      arg: string,
+      __baml_options__?: BamlCallOptions
+  ): string {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.callFunctionSync(
+        "FunctionName",
+        {
+          "arg": arg
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as string
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
   GenerateAnswer(
       query: string,documents: RetrievedDocument[],language: string,
       __baml_options__?: BamlCallOptions

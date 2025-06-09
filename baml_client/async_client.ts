@@ -313,6 +313,29 @@ export class BamlAsyncClient {
     }
   }
   
+  async FunctionName(
+      arg: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<string> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = await this.runtime.callFunction(
+        "FunctionName",
+        {
+          "arg": arg
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return raw.parsed(false) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async GenerateAnswer(
       query: string,documents: RetrievedDocument[],language: string,
       __baml_options__?: BamlCallOptions
@@ -909,6 +932,35 @@ class BamlStreamClient {
         raw,
         (a): (partial_types.Relation | null)[] => a,
         (a): Relation[] => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  FunctionName(
+      arg: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[] }
+  ): BamlStream<string, string> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const raw = this.runtime.streamFunction(
+        "FunctionName",
+        {
+          "arg": arg
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+      )
+      return new BamlStream<string, string>(
+        raw,
+        (a): string => a,
+        (a): string => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {

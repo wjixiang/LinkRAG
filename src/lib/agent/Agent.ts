@@ -1,26 +1,23 @@
 import { ChatMessage } from "@/components/chat_components/MessageItem"
-import { Task } from "baml_client"
-import { Surreal } from 'surrealdb'
-import { ExecuteRAGNode } from "./ExecuteRAGNode"; // Import concrete node implementations
 import { setting } from "@/settings";
 import KnowledgeBase from "@/core/KnowledgeBase";
-import TaskClassifyNode from "./TaskClassifyNode";
 import { language } from '../../type';
-import QueryAnalysisNode from "./QueryAnalysisNode";
 import { AgentNode, AgentStep } from "./BaseNode";
+
+export interface AgentConfig {
+    language: language
+}
 
 /**
  * The main Agent class responsible for managing and executing various tasks.
  * It coordinates between different nodes to handle user queries related to medical knowledge.
  */
-export class Agent {
+export abstract class Agent {
     /**
      * The current chat message state.
      */
     state: ChatMessage[] = []
-    config: {
-        language: language;
-    }
+    config: AgentConfig
 
     /**
      * Retrieves knowledge graph data.
@@ -44,7 +41,7 @@ export class Agent {
      * Creates a new Agent instance.
      * @param config - Agent configuration
      */
-    constructor(config: { language: language }) {
+    constructor(config: AgentConfig) {
         this.config = config;
         this.knowledgeBase = new KnowledgeBase(setting);
         this.registerCoreNodes();
@@ -53,11 +50,7 @@ export class Agent {
     /**
      * Registers core nodes that should always be available.
      */
-    private registerCoreNodes() {
-        this.registerNode(new TaskClassifyNode(this));
-        this.registerNode(new ExecuteRAGNode(this));
-        this.registerNode(new QueryAnalysisNode(this));
-    }
+    protected registerCoreNodes() {}
 
     /**
      * Registers a node with the agent.
@@ -84,31 +77,6 @@ export class Agent {
      * @param query - The user query to process.
      * @returns An async generator yielding AgentStep objects representing the execution process.
      */
-    async *start(query: string): AsyncGenerator<AgentStep> {
-        this.state.push({
-            sender: "user",
-            messageType: "content",
-            content: query,
-            id: Math.random().toString(),
-            timestamp: new Date(),
-            isVisible: true,
-            isLatest: true,
-        });
-
-        try {
-            // Initial task classification
-            const pipeline = new QueryAnalysisNode(this).execute(this.state, query)
-            for await (const step of pipeline) {
-                yield step;
-            }
-
-        } catch (error) {
-            console.error("Failed to plan next step:", error)
-            yield {
-                type: 'error',
-                task: "Agent", // Add task property
-                content: error instanceof Error ? error.message : 'Unknown error'
-            }
-        }
+    public async *start(query: string): AsyncGenerator<AgentStep> {
     }
 }

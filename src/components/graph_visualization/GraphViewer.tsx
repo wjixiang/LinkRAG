@@ -146,7 +146,8 @@ export const GraphViewer = ({ data }: Props) => {
         simulationRef.current = d3.forceSimulation(nodes)
             .force("link", d3.forceLink<Node, Link>(links).id(d => d.id).distance(100))
             .force("charge", d3.forceManyBody().strength(-300))
-            .force("center", d3.forceCenter(width / 2, height / 2));
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("radial", d3.forceRadial(width / 3, width / 2, height / 2).strength(0.1));
 
         // Define arrow markers
         svg.append("defs").selectAll("marker")

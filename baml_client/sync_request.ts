@@ -231,6 +231,26 @@ export class HttpRequest {
     }
   }
   
+  FunctionName(
+      arg: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "FunctionName",
+        {
+          "arg": arg
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   GenerateAnswer(
       query: string,documents: RetrievedDocument[],language: string,
       __baml_options__?: BamlCallOptions
@@ -686,6 +706,26 @@ export class HttpStreamRequest {
         "Extract_relations_Loop",
         {
           "content": content,"language": language,"already_identified_relations": already_identified_relations,"new_indentified_entities": new_indentified_entities
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  FunctionName(
+      arg: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      return this.runtime.buildRequestSync(
+        "FunctionName",
+        {
+          "arg": arg
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

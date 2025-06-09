@@ -27,12 +27,12 @@ client<llm> GLM4Plus {
   }
 }
 
-client<llm> DeepseekV3 {
+client<llm> DeepseekR1 {
   provider  openai-generic
   options {
-    model ""
-    api_key ""
-    base_url ""
+    model "deepseek-reasoner"
+    api_key "sk-d31cb4c9371344fdab8bc78b1cc420ce"
+    base_url "https://api.deepseek.com"
   }
 }
 
@@ -57,10 +57,10 @@ client<llm> OpenrouterQWEN3 {
 client<llm> QWen3 {
   provider openai-generic
   options {
-    model "qwen-plus-latest"
+    model "qwen-turbo-latest"
     api_key env.ALIBABA_API_KEY
     base_url "https://dashscope.aliyuncs.com/compatible-mode/v1/"
-    enable_thinking true
+    enable_thinking false
   }
 }
 

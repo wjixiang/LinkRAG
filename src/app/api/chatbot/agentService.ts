@@ -2,11 +2,13 @@
 import { surrealDBClient } from "@/database/surrealdbClient";
 import { ChatReq } from "@/hooks/ChatRuntime";
 import { Reference } from "@/components/chat_components/DocumentDisplay";
-import { AgentStep, Agent } from '../../../lib/agent/Agent';
+import { Agent } from '../../../lib/agent/Agent';
+import { AgentStep } from "@/lib/agent/BaseNode";
 import { EmbeddingFunc } from "@/database/chunkStorage";
 import KnowledgeBase from "@/core/KnowledgeBase";
 import { setting } from "@/settings";
 import { language } from "@/type";
+import AssistantAgent from "@/lib/agent/assistant/AssistantAgent";
 
 
 export class AgentService {
@@ -26,7 +28,7 @@ export class AgentService {
 
         
         const kb = new KnowledgeBase(setting)
-        const agent = new Agent({
+        const agent = new AssistantAgent({
             language: setting.kb_editor_setting.language
         });
         const service = new AgentService(agent, kb);

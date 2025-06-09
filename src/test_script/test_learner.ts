@@ -18,8 +18,8 @@ async function main() {
     // Test with new entity
     logger.info("\nTesting with new entity...");
     const newResult = await weaver.summarize_new_property(
-        "糖尿病",
-        "临床表现"
+        "抗利尿激素",
+        "生理功能"
     );
     console.log("New entity result:", newResult);
 }

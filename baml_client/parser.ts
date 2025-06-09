@@ -207,6 +207,24 @@ export class LlmResponseParser {
     }
   }
   
+  FunctionName(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): string {
+    try {
+      return this.runtime.parseLlmResponse(
+        "FunctionName",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as string
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   GenerateAnswer(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -622,6 +640,24 @@ export class LlmStreamParser {
         __baml_options__?.tb?.__tb(),
         __baml_options__?.clientRegistry,
       ) as (partial_types.Relation | null)[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  FunctionName(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): string {
+    try {
+      return this.runtime.parseLlmResponse(
+        "FunctionName",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      ) as string
     } catch (error) {
       throw toBamlError(error);
     }
