@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/components/MessageItem"
+import { ChatMessage } from "@/components/chat_components/MessageItem"
 import { Task } from "baml_client"
 import { Surreal } from 'surrealdb'
 import { ExecuteRAGNode } from "./ExecuteRAGNode"; // Import concrete node implementations

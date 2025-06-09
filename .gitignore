@@ -7,3 +7,5 @@ storage
 coverage
 export.surql
 textbook/books
+*storybook.log
+storybook-static

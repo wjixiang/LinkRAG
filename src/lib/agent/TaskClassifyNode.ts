@@ -1,4 +1,4 @@
-import { ChatMessage } from '@/components/MessageItem';
+import { ChatMessage } from '@/components/chat_components/MessageItem';
 import { Agent } from './Agent';
 import { AgentNode, AgentStep, BaseNode } from './BaseNode';
 import { Task } from 'baml_client/types';

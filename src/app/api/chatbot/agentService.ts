@@ -1,7 +1,7 @@
 
 import { surrealDBClient } from "@/database/surrealdbClient";
 import { ChatReq } from "@/hooks/ChatRuntime";
-import { Reference } from "@/components/DocumentDisplay";
+import { Reference } from "@/components/chat_components/DocumentDisplay";
 import { AgentStep, Agent } from '../../../lib/agent/Agent';
 import { EmbeddingFunc } from "@/database/chunkStorage";
 import KnowledgeBase from "@/core/KnowledgeBase";

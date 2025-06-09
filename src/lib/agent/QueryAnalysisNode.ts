@@ -1,4 +1,4 @@
-import { ChatMessage } from '@/components/MessageItem';
+import { ChatMessage } from '@/components/chat_components/MessageItem';
 import { Agent } from './Agent';
 import { AgentNode, AgentStep, BaseNode } from './BaseNode';
 import { b } from 'baml_client/async_client';
@@ -16,7 +16,8 @@ export default class QueryAnalysisNode extends BaseNode {
     
     protected async *work(state: ChatMessage[], query: string): AsyncGenerator<AgentStep, { nextTask?: string }> {
         try {
-            const eps = b.stream.ExtractEP(query, this.agent.config.language);
+            const history = state.map(e=>`${e.sender}\n${e.content}\n`).join("\n")
+            const eps = b.stream.ExtractEP(history+"user:\n"+query, this.agent.config.language);
             const result = yield* _handleStream(eps, (i) => (i.reasoning ?? ""));
             
             // Always return next task to ensure consistent flow

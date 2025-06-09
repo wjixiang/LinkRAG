@@ -1,6 +1,6 @@
 import { Agent } from "./Agent";
 import { BaseNode, AgentStep } from "./BaseNode";
-import { ChatMessage } from '../../components/MessageItem';
+import { ChatMessage } from '../../components/chat_components/MessageItem';
 import { semanticSearchResult } from '../../database/chunkStorage';
 import { b } from "baml_client/async_client";
 import { RetrievedDocument } from "baml_client/types";

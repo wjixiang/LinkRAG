@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react";
-import { ChatMessage } from "@/components/MessageItem";
+import { ChatMessage } from "@/components/chat_components/MessageItem";
 import { toast } from 'sonner';
 import { ControlMessageStatus, MessageType } from "@/lib/agent/Agent";
 
