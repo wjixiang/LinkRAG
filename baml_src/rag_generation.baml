@@ -51,4 +51,32 @@ function GenerateAnswer(query: string, documents: RetrievedDocument[], language:
     {{ ctx.output_format }}
   "#
 }
+class EP_pair {
+  entity string
+  property string
+}
 
+class EPA_result {
+  subquestion string
+  ep_pair EP_pair
+  content string
+}
+
+function GenerateAnswerEPAbased(query:string, epa_docuemnts: EPA_result[]) -> string {
+  client QWen3
+  prompt #"
+    {{_.role("user")}}
+    Answer query based gon given documents and subquestions
+
+    ## Query
+    {{query}}
+
+    ## Documents
+    {% for doc in epa_docuemnts %}
+    ### Subquestion: {{doc.subquestion}}
+    {{doc.ep_pair}}
+    {{doc.content}}
+
+    {% endfor %}
+  "#
+}

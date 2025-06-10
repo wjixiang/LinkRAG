@@ -24,7 +24,11 @@ export default class TypeBuilder {
     
     Decision: ClassViewer<'Decision', "response" | "selected_task">;
     
+    EPA_result: ClassViewer<'EPA_result', "subquestion" | "ep_pair" | "content">;
+    
     EP_extract_result: ClassViewer<'EP_extract_result', "reasoning" | "subquestions">;
+    
+    EP_pair: ClassViewer<'EP_pair', "entity" | "property">;
     
     EPpair: ClassViewer<'EPpair', "entity" | "property">;
     
@@ -73,7 +77,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "Decision","EP_extract_result","EPpair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","PropertyGenerateRes","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SubQuestion","SummarizedProperty","Task","UpdatedSummary",
+            "Decision","EPA_result","EP_extract_result","EP_pair","EPpair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","PropertyGenerateRes","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SubQuestion","SummarizedProperty","Task","UpdatedSummary",
           ]),
           enums: new Set([
             
@@ -85,8 +89,16 @@ export default class TypeBuilder {
           "response","selected_task",
         ]);
         
+        this.EPA_result = this.tb.classViewer("EPA_result", [
+          "subquestion","ep_pair","content",
+        ]);
+        
         this.EP_extract_result = this.tb.classViewer("EP_extract_result", [
           "reasoning","subquestions",
+        ]);
+        
+        this.EP_pair = this.tb.classViewer("EP_pair", [
+          "entity","property",
         ]);
         
         this.EPpair = this.tb.classViewer("EPpair", [

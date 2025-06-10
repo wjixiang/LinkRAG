@@ -19,7 +19,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio } from "
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {Decision, EP_extract_result, EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SubQuestion, SummarizedProperty, Task, UpdatedSummary} from "./types"
+import type {Decision, EPA_result, EP_extract_result, EP_pair, EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SubQuestion, SummarizedProperty, Task, UpdatedSummary} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -260,6 +260,26 @@ export class AsyncHttpRequest {
         "GenerateAnswer",
         {
           "query": query,"documents": documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateAnswerEPAbased(
+      query: string,epa_docuemnts: EPA_result[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "GenerateAnswerEPAbased",
+        {
+          "query": query,"epa_docuemnts": epa_docuemnts
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -746,6 +766,26 @@ export class AsyncHttpStreamRequest {
         "GenerateAnswer",
         {
           "query": query,"documents": documents,"language": language
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateAnswerEPAbased(
+      query: string,epa_docuemnts: EPA_result[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      return await this.runtime.buildRequest(
+        "GenerateAnswerEPAbased",
+        {
+          "query": query,"epa_docuemnts": epa_docuemnts
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

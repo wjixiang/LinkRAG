@@ -40,7 +40,7 @@ type Node = {
 type Link = {
     source: Node;
     target: Node;
-    direction: 'subset' | 'superset'; // 区分连接方向
+    direction: 'subset' | 'superset'; // distinguish connection direction
 };
 
 export const GraphViewer = ({ data }: Props) => {
@@ -65,11 +65,11 @@ export const GraphViewer = ({ data }: Props) => {
             
             // Create property links
             entity.property.forEach(prop => {
-                // 先创建临时连接，稍后添加目标节点
+                // create temporary link first, add target node later
                 links.push({
                     source: entityNode,
-                    target: null as any, // 稍后填充
-                    direction: 'subset' // entity->property是subset关系
+                    target: null as any, // to be filled later
+                    direction: 'subset' // entity->property is subset relationship
                 });
             });
         });
@@ -83,13 +83,13 @@ export const GraphViewer = ({ data }: Props) => {
             };
             nodes.push(propNode);
             
-            // 更新之前创建的临时连接的目标节点
+            // update target nodes of previously created temporary links
             links.forEach(link => {
                 if (link.target === null && link.source.type === 'entity') {
                     const entityId = link.source.id;
                     const propId = prop.id.toString();
                     
-                    // 检查此属性是否属于当前实体
+                    // check if this property belongs to current entity
                     const entity = data.entity_data.find(e => e.id.toString() === entityId);
                     if (entity && entity.property.some(p => p.id.toString() === propId)) {
                         link.target = propNode;
@@ -112,7 +112,7 @@ export const GraphViewer = ({ data }: Props) => {
             });
         });
         
-        // 移除未完成的临时连接
+        // remove incomplete temporary links
         const validLinks = links.filter(link => link.target !== null);
         links.length = 0;
         links.push(...validLinks);
@@ -120,8 +120,8 @@ export const GraphViewer = ({ data }: Props) => {
         // If there are no nodes, exit
         if (nodes.length === 0) return;
 
-        console.log('Generated links:', links);  // 调试输出连接关系
-        console.log('Generated nodes:', nodes);  // 调试输出节点
+        console.log('Generated links:', links);  // debug output for link relationships
+        console.log('Generated nodes:', nodes);  // debug output for nodes
 
         const svg = d3.select<SVGSVGElement, unknown>(svgRef.current!);
         const width = svgRef.current?.clientWidth || 800;
@@ -149,6 +149,18 @@ export const GraphViewer = ({ data }: Props) => {
             .force("center", d3.forceCenter(width / 2, height / 2))
             .force("radial", d3.forceRadial(width / 3, width / 2, height / 2).strength(0.1));
 
+        // Add glow filter for highlighted nodes
+        const defs = svg.append("defs");
+        defs.append("filter")
+            .attr("id", "node-glow")
+            .append("feGaussianBlur")
+            .attr("stdDeviation", "3.5")
+            .attr("result", "coloredBlur");
+        
+        const feMerge = defs.select("filter").append("feMerge");
+        feMerge.append("feMergeNode").attr("in", "coloredBlur");
+        feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
         // Define arrow markers
         svg.append("defs").selectAll("marker")
             .data(["subset", "superset"])
@@ -163,13 +175,13 @@ export const GraphViewer = ({ data }: Props) => {
             .attr("orient", "auto")
             .append("path")
             .attr("d", "M0,-5L10,0L0,5")
-            .attr("fill", d => d === "subset" ? "#69b3a2" : "#ff7f0e");
+            .attr("fill", d => d === "subset" ? "hsl(var(--primary))" : "hsl(var(--accent))");
 
         // Draw links first (ensure they are below nodes)
         const link = container.append("g")
             .attr("class", "links")
-            .attr("stroke", "#4a6bff")
-            .attr("stroke-opacity", 0.9)
+            .attr("stroke", "hsl(var(--primary))")
+            .attr("stroke-opacity", 1)
             .selectAll("line")
             .data(links)
             .join("line")
@@ -183,11 +195,72 @@ export const GraphViewer = ({ data }: Props) => {
             .data(nodes)
             .join("circle")
             .attr("r", 10)
-            .attr("fill", (d) => d.type === 'entity' ? "#69b3a2" : "#ff7f0e")
+            .attr("fill", (d) => d.type === 'entity' ? "hsl(var(--primary))" : "hsl(var(--secondary))")
+            .attr("opacity", 1)
             .call(d3.drag<SVGCircleElement, Node, Node>()
                 .on("start", (event, d) => dragstarted(event, d))
                 .on("drag", (event, d) => dragged(event, d))
-                .on("end", (event, d) => dragended(event, d)) as any);
+                .on("end", (event, d) => dragended(event, d)) as any)
+            .on("mouseover", function(event, d) {
+                // Highlight hovered node
+                d3.select(this)
+                    .transition()
+                    .duration(200)
+                    .attr("r", 14)
+                    .attr("stroke", "white")
+                    .attr("stroke-width", 3)
+                    .attr("filter", "url(#node-glow)")
+                    .attr("stroke-opacity", 0.8);
+
+                // Find connected nodes
+                const connectedNodes = new Set<string>();
+                links.forEach(link => {
+                    if (link.source.id === d.id) connectedNodes.add(link.target.id);
+                    if (link.target.id === d.id) connectedNodes.add(link.source.id);
+                });
+
+                // Highlight connected nodes and links
+                node
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", n => connectedNodes.has(n.id) || n.id === d.id ? 1 : 0.2);
+
+                link
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", l =>
+                        l.source.id === d.id || l.target.id === d.id ? 1 : 0.2);
+
+                label
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", n =>
+                        connectedNodes.has(n.id) || n.id === d.id ? 1 : 0.2);
+            })
+            .on("mouseout", function() {
+                // Restore all nodes and links
+                d3.select(this)
+                    .transition()
+                    .duration(200)
+                    .attr("r", 10)
+                    .attr("stroke", null)
+                    .attr("filter", null);
+
+                node
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", 1);
+
+                link
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", 1);
+
+                label
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", 1);
+            });
 
         // Add labels
         const label = container.append("g")
@@ -197,7 +270,8 @@ export const GraphViewer = ({ data }: Props) => {
             .text(d => d.name)
             .attr("font-size", 12)
             .attr("dx", 12)
-            .attr("dy", 4);
+            .attr("dy", 4)
+            .attr("fill", "hsl(var(--foreground))");
 
         // Update position on each tick
         simulationRef.current?.on("tick", () => {
@@ -249,7 +323,7 @@ export const GraphViewer = ({ data }: Props) => {
             style={{
                 overflow: "visible",
                 display: "block",
-                backgroundColor: "#f8f9fa"
+                backgroundColor: "hsl(var(--background))"
             }}
         ></svg>
     );

@@ -976,3 +976,13 @@
 [Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Could not locate file: "https://huggingface.co/models/Xenova/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
 [Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Could not locate file: "https://huggingface.co/models/Xenova/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure WebAssembly is supported in your environment.
 [Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure WebAssembly is supported in your environment.
+[Agent(Assistant):[31merror[39m] BamlError: BamlInvalidArgumentError:   Error: epa_docuemnts: Expected type String, got `Object {
+    "summary": String("高血压治疗涉及多种方法，包括生活方式的改变（如饮食调整、增加运动、减轻体重、戒烟限酒）、药物治疗（如利尿剂、ACE抑制剂、ARBs等）以及定期监测血压，以控制血压水平，预防心血管疾病并发症的发生。"),
+}`
+
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure WebAssembly is supported in your environment.

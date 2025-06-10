@@ -1,5 +1,7 @@
 import { ChatMessage } from "@/components/chat_components/MessageItem"
 import { Agent } from "./Agent";
+import winston from "winston";
+import createLoggerWithPrefix from "../console/logger";
 
 /**
  * Abstract base class for agent nodes that implements the AgentNode interface.
@@ -8,9 +10,15 @@ import { Agent } from "./Agent";
 export abstract class BaseNode implements AgentNode {
     abstract taskName: string;
     agent: Agent;
+    protected logger!: winston.Logger;
 
     constructor(agent: Agent) {
         this.agent = agent;
+        this.initialize()
+    }
+
+    initialize() {
+        this.logger = createLoggerWithPrefix(this.taskName)
     }
 
     /**
@@ -29,6 +37,7 @@ export abstract class BaseNode implements AgentNode {
     protected proceed?(result: { nextTask: string; data?: any } ): AgentNode | null | Promise<AgentNode | null>;
 
     /**
+     * Runtime of agent node.
      * Wraps the work() method with common execution logic.
      * @param state - Current chat message state
      * @param query - User query
@@ -36,7 +45,7 @@ export abstract class BaseNode implements AgentNode {
      */
     async *execute(state: ChatMessage[], query: string): AsyncGenerator<AgentStep> {
         try {
-            console.log(`[${this.constructor.name}] Starting execution for task: ${this.taskName}`);
+            this.logger.info(`Starting execution for task: ${this.taskName}`);
             
             // Common pre-execution logic
             yield {
@@ -57,7 +66,7 @@ export abstract class BaseNode implements AgentNode {
 
             // Capture the final return value
             returnValue = next.value;
-            console.log(`[${this.constructor.name}] work() completed with:`, returnValue);
+            this.logger.info(`work() completed with: ${returnValue}`);
 
             yield {
                 type: "notice",

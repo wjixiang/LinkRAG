@@ -52,9 +52,22 @@ export interface Decision {
   
 }
 
+export interface EPA_result {
+  subquestion: string
+  ep_pair: EP_pair
+  content: string
+  
+}
+
 export interface EP_extract_result {
   reasoning: string
   subquestions: SubQuestion[]
+  
+}
+
+export interface EP_pair {
+  entity: string
+  property: string
   
 }
 

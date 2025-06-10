@@ -3,9 +3,12 @@ import { setting } from "@/settings";
 import KnowledgeBase from "@/core/KnowledgeBase";
 import { language } from '../../type';
 import { AgentNode, AgentStep } from "./BaseNode";
+import winston from "winston";
+import createLoggerWithPrefix from "../console/logger";
 
 export interface AgentConfig {
-    language: language
+    language: language;
+    name: string;
 }
 
 /**
@@ -18,6 +21,7 @@ export abstract class Agent {
      */
     state: ChatMessage[] = []
     config: AgentConfig
+    protected logger: winston.Logger;
 
     /**
      * Retrieves knowledge graph data.
@@ -44,13 +48,8 @@ export abstract class Agent {
     constructor(config: AgentConfig) {
         this.config = config;
         this.knowledgeBase = new KnowledgeBase(setting);
-        this.registerCoreNodes();
+        this.logger = createLoggerWithPrefix(`Agent(${this.config.name})`)
     }
-
-    /**
-     * Registers core nodes that should always be available.
-     */
-    protected registerCoreNodes() {}
 
     /**
      * Registers a node with the agent.
@@ -77,6 +76,5 @@ export abstract class Agent {
      * @param query - The user query to process.
      * @returns An async generator yielding AgentStep objects representing the execution process.
      */
-    public async *start(query: string): AsyncGenerator<AgentStep> {
-    }
+    public abstract start(query: string): AsyncGenerator<AgentStep>
 }
