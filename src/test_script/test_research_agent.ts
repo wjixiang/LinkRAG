@@ -1,5 +1,9 @@
-import ResearchAgent from "../lib/agent/researcher/ResearchAgent";
-import { b } from "baml_client/async_client";
+import { language } from "@/type";
+import ResearchAgent, { ResearchAgentConfig } from "../lib/agent/researcher/ResearchAgent";
+import * as dotenv from 'dotenv';
+import KnowledgeBase from "@/core/KnowledgeBase";
+import { setting } from "@/settings";
+dotenv.config()
 
 // Minimal ResearchAgent config that only requires name and language
 interface TestConfig {
@@ -7,28 +11,21 @@ interface TestConfig {
   language: string;
 }
 
-// Mock logger implementation
-class TestLogger {
-  info(msg: string) { console.log(`[INFO] ${msg}`); }
-  error(msg: string) { console.error(`[ERROR] ${msg}`); }
-}
+
 
 // Simple CLI test for ResearchAgent
 async function testResearchAgent() {
   // Create minimal config
-  const config: TestConfig = {
-    name: "test-research-agent",
-    language: "zh"
+  const config: ResearchAgentConfig = {
+    language: "中文" as language,
+    knowledgebase: new KnowledgeBase(setting)
   };
 
   // Initialize ResearchAgent with mock logger
-  const agent = new ResearchAgent({
-    ...config,
-    logger: new TestLogger()
-  } as any);
+  const agent = new ResearchAgent(config);
 
   // Test query
-  const query = "如何鉴别糖尿病酮症酸中毒与低血糖昏迷";
+  const query = "高血压病的临床表现";
 
   console.log(`Testing ResearchAgent with query: "${query}"`);
   

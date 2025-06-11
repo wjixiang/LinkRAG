@@ -298,7 +298,7 @@ export default class KnowledgeBaseEditor {
     }
 
     private async handleNewEntityFlow(entityName: string, propertyName: string): Promise<string> {
-        this.logger.info(`Entity ${entityName} not found, starting HyDE+RAG flow`);
+        this.logger.info(`Entity ${entityName} not found, start extracting flow`);
         
         const entity = await this.create_new_entity(entityName);
         const property = await this.generate_new_property(entity, propertyName);
@@ -381,8 +381,13 @@ export default class KnowledgeBaseEditor {
         }
     }
 
+    /**
+     * Extract & save new entity based on RAG
+     * @param entityName 
+     * @returns 
+     */
     async create_new_entity(entityName: string): Promise<EntityWithRefDoc> {
-        const stream = b.stream.HyDEDefineEntity(entityName, "zh");
+        const stream = b.stream.HyDEDefineEntity(entityName, this.config.language);
         const HydeEntity = await stream.getFinalResponse()
         
         const retrieved_chunks = await this.chunkRetriever.retrieve(`${HydeEntity.name} ${HydeEntity.description}`, 10);

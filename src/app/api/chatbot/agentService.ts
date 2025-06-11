@@ -27,7 +27,7 @@ export class AgentService {
         const kb = new KnowledgeBase(setting)
         const agent = new ResearchAgent({
             language: setting.kb_editor_setting.language,
-            name: "Assistant"
+            knowledgebase: kb
         });
         // const agent = new AssistantAgent({
         //     language: setting.kb_editor_setting.language,

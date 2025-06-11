@@ -1,5 +1,5 @@
 import { ChatMessage } from "@/components/chat_components/MessageItem"
-import { setting } from "@/settings";
+import pLimit from 'p-limit';
 import KnowledgeBase from "@/core/KnowledgeBase";
 import { language } from '../../type';
 import { AgentNode, AgentStep } from "./BaseNode";
@@ -8,7 +8,8 @@ import createLoggerWithPrefix from "../console/logger";
 
 export interface AgentConfig {
     language: language;
-    name: string;
+    knowledgebase: KnowledgeBase;
+    concurrency?: number; // 全局并发控制
 }
 
 /**
@@ -16,12 +17,22 @@ export interface AgentConfig {
  * It coordinates between different nodes to handle user queries related to medical knowledge.
  */
 export abstract class Agent {
+    
+    abstract name: string;
+
     /**
      * The current chat message state.
      */
     state: ChatMessage[] = []
     config: AgentConfig
-    protected logger: winston.Logger;
+    protected get logger(): winston.Logger {
+        return createLoggerWithPrefix(`Agent(${this.name})`)
+    }
+
+    /**
+     * Global concurrency limiter
+     */
+    protected limiter!: ReturnType<typeof pLimit>; // 使用明确赋值断言
 
     /**
      * Retrieves knowledge graph data.
@@ -47,8 +58,8 @@ export abstract class Agent {
      */
     constructor(config: AgentConfig) {
         this.config = config;
-        this.knowledgeBase = new KnowledgeBase(setting);
-        this.logger = createLoggerWithPrefix(`Agent(${this.config.name})`)
+        this.knowledgeBase = this.config.knowledgebase;
+        this.limiter = pLimit(config.concurrency || 5); // 初始化全局并发限制器
     }
 
     /**

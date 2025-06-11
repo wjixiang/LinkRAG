@@ -1,4 +1,5 @@
-import { AutoTokenizer, AutoModel, env } from '@xenova/transformers';
+import { AutoTokenizer, env } from '@xenova/transformers';
+import { BertModel } from '@xenova/transformers';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -43,7 +44,7 @@ export class ONNXEmbedder {
 
             // Try loading model with default settings (may use GPU if available)
             try {
-                this.model = await AutoModel.from_pretrained('all-MiniLM-L6-v2', {
+                this.model = await BertModel.from_pretrained('all-MiniLM-L6-v2', {
                     quantized: true,
                     config: {
                         model_file: 'onnx/model_quantized.onnx'
@@ -56,7 +57,7 @@ export class ONNXEmbedder {
                     'ort-wasm.wasm': '/node_modules/onnxruntime-web/dist/ort-wasm.wasm',
                     'ort-wasm-simd.wasm': '/node_modules/onnxruntime-web/dist/ort-wasm-simd.wasm'
                 };
-                this.model = await AutoModel.from_pretrained('all-MiniLM-L6-v2', {
+                this.model = await BertModel.from_pretrained('all-MiniLM-L6-v2', {
                     quantized: true,
                     config: {
                         model_file: 'onnx/model_quantized.onnx'
@@ -67,7 +68,10 @@ export class ONNXEmbedder {
             this.initialized = true;
         } catch (error: any) {
             console.error('Failed to initialize ONNXEmbedder:', error);
-            throw new Error(`ONNX initialization failed: ${error.message}. Please ensure WebAssembly is supported in your environment.`);
+            throw new Error(`ONNX initialization failed: ${error.message}. Please ensure:
+1. WebAssembly is supported in your environment
+2. The model files exist at ${env.localModelPath}
+3. The ONNX model is properly formatted`);
         }
     }
 

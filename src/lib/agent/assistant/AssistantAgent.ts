@@ -11,6 +11,7 @@ export interface AssistantAgentConfig extends AgentConfig {
 }
 
 export default class AssistantAgent extends Agent {
+    name =  "Assistant"
     config: AssistantAgentConfig
     constructor(config: AssistantAgentConfig){
         super(config);
