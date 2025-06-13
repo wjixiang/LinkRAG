@@ -2,7 +2,7 @@ import { surrealDBClient } from "@/database/surrealdbClient";
 import { RetrievedProperty } from "@/type";
 import { BaseRetriever } from "./BaseRetriever";
 import { KnowledgeBaseRetrieverConfig } from "./KnowledgeBaseRetriever";
-import { b } from "baml_client/async_client";
+import { RecordId } from "surrealdb";
 
 export class PropertyRetriever extends BaseRetriever {
     constructor(config: KnowledgeBaseRetrieverConfig) {
@@ -45,46 +45,35 @@ export class PropertyRetriever extends BaseRetriever {
      * Retrieve property documents based on keywords
      * @param query 
      */
-    async property_keyword_retriever(query: string, hit_entities_names: string[]) {
-        const entity_property_pairs = await b.ExtractEP(query);
-        this.logger.debug("extracted EPs:", entity_property_pairs);
+    async property_keyword_retriever(property_name: string, hit_entity_recordId: RecordId) {
+        
+
+        if (!property_name) {
+            return [];
+        }
 
         const db = await surrealDBClient.getDb();
-        const hit_properties_raw = await Promise.all(entity_property_pairs.map(async (e) => {
-            const hit_res = await db.query<RetrievedProperty[][]>(`
-                SELECT id, core_entity.id ,core_entity.name, property_name, property_content, (string::similarity::jaro($keyword, property_name)) AS score 
-                FROM ${this.config.property_table_name} 
-                WHERE 
-                    string::similarity::jaro($keyword, property_name) > 0.9
-                    AND
-                    core_entity.name INSIDE $entities
-                FETCH core_entity
-                    `, { 
-                        keyword: e.property ,
-                        entities: hit_entities_names
-                    });
-            return hit_res[0];
-        }));
-
-        // Flatten the array of arrays and merge properties with the same ID
-        const flattened_properties = hit_properties_raw.flat();
-        const mergedPropertiesMap = new Map<string, RetrievedProperty>();
-
-        flattened_properties.forEach(property => {
-            const propertyId = property.id.toString();
-            if (mergedPropertiesMap.has(propertyId)) {
-                const existingProperty = mergedPropertiesMap.get(propertyId)!;
-                // Keep the property with the higher score
-                if (property.score > existingProperty.score) {
-                    mergedPropertiesMap.set(propertyId, property);
-                }
-            } else {
-                mergedPropertiesMap.set(propertyId, property);
-            }
-        });
-
-        const hit_properties = Array.from(mergedPropertiesMap.values());
-        this.logger.debug(JSON.stringify(hit_properties, null, "\t"));
-        return hit_properties;
+        
+        const hit_res = await db.query<RetrievedProperty[][]>(`
+            SELECT
+                id AS id,
+                core_entity.id AS core_entity_id,
+                core_entity.name AS core_entity_name,
+                prop_name AS prop_name,
+                content AS content,
+                (string::similarity::jaro("${property_name}", prop_name)) AS score
+            FROM ${this.config.property_table_name}
+            WHERE
+                string::similarity::jaro("${property_name}", prop_name) > 0.9
+                AND
+                core_entity == $core_entity_id
+            FETCH core_entity
+                `, {
+                    core_entity_id: hit_entity_recordId,
+                    property_name: property_name
+                });
+        
+            
+        return hit_res[0];
     }
 }

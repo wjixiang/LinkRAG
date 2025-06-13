@@ -5,12 +5,6 @@ import KnowledgeBase from "@/core/KnowledgeBase";
 import { setting } from "@/settings";
 dotenv.config()
 
-// Minimal ResearchAgent config that only requires name and language
-interface TestConfig {
-  name: string;
-  language: string;
-}
-
 
 
 // Simple CLI test for ResearchAgent
@@ -25,7 +19,7 @@ async function testResearchAgent() {
   const agent = new ResearchAgent(config);
 
   // Test query
-  const query = "高血压病的临床表现";
+  const query = "Courvoisier征阳性的疾病最可能是";
 
   console.log(`Testing ResearchAgent with query: "${query}"`);
   

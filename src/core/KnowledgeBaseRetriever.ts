@@ -81,8 +81,8 @@ export default class KnowledgeBaseRetriever {
         return this.hybridRetriever.getEntityRetriever().entity_keyword_retriever(entities);
     }
 
-    public async property_keyword_retriever(query: string, hit_entities_names: string[]) {
-        return this.hybridRetriever.getPropertyRetriever().property_keyword_retriever(query, hit_entities_names);
+    public async property_keyword_retriever(property_name: string, hit_entity_recordId: RecordId) {
+        return this.hybridRetriever.getPropertyRetriever().property_keyword_retriever(property_name, hit_entity_recordId);
     }
 
     async hybridRetrieve(query: string, top_k: number, HyDE: boolean = false) {

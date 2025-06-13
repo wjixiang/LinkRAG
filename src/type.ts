@@ -48,13 +48,10 @@ export interface PropertySummarizeResult {
 
 export interface PropertyRecord extends Property {
     id: RecordId;
-    core_entity: RecordId;
+    core_entity_id: RecordId;
+    core_entity_name: string;
 }  
 
-export interface RetrievedProperty{
-    id: RecordId;
-    core_entity: RecordId;
-    property_name: string;
-    property_content: string;
+export interface RetrievedProperty extends PropertyRecord{
     score: number;
 }

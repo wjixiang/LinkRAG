@@ -3,10 +3,20 @@ import { Agent, AgentConfig } from "../Agent";
 import { AgentStep } from "../BaseNode";
 import { _handleStream } from "@/lib/utils";
 import { StringDecoder } from "string_decoder";
-import { EntityRecord, EntityWithRefDoc } from "@/type";
+import { EntityRecord, EntityWithRefDoc, PropertyRecord } from "@/type";
+import { RecordId } from "surrealdb";
+import { EPA_result, EPpair } from "baml_client/types";
+import { EP_pair } from '../../../../baml_client/types';
 
 export interface ResearchAgentConfig extends AgentConfig {
     
+}
+
+interface ResearchResult {
+    subquestion: string;
+    ep_pair: EPpair;
+    retrieved_entity: EntityRecord;
+    retrieved_properties: PropertyRecord[];
 }
 
 export default class ResearchAgent extends Agent {
@@ -29,21 +39,36 @@ export default class ResearchAgent extends Agent {
             }
         }
 
-        // Perform research with concurrency limit
-        const research_result = await Promise.all(eps.subquestions.map(e =>
-            this.limiter(() => this.research_entity( // 使用父类的limiter
-                e.ep_pair.entity
-            ).then(content => ({
-                ep_pair: e.ep_pair,
-                subquestion: e.subquestion,
-                content
-            })))
+        // First get unique entities to avoid duplicate research
+        const uniqueEntities = [...new Set(eps.subquestions.map(e => e.ep_pair.entity))];
+        
+        // Research unique entities with concurrency limit
+        const entityResearchMap = new Map<string, EntityRecord>();
+        await Promise.all(uniqueEntities.map(entityName =>
+            this.limiter(async () => {
+                const result = await this.research_entity(entityName);
+                entityResearchMap.set(entityName, result);
+            })
         ));
 
-        // const stream = b.stream.GenerateAnswerEPAbased(query, research_result)
-        // yield* _handleStream(stream,(i)=>i)
-        
-        
+        // Map back to original subquestions with research results
+        const entities_research_result = eps.subquestions.map(e => ({
+            retrieved_entity: entityResearchMap.get(e.ep_pair.entity)!,
+            ...e
+        }));
+
+        const research_result: ResearchResult[] = await Promise.all(entities_research_result.map(e=>
+            this.limiter(async () => {
+                return {
+                    retrieved_properties: await this.research_property(e),
+                    ...e
+                }
+            })
+        ))
+
+        const context = research_result.map(r => this.parse_ep_context(r));
+        const stream = b.stream.GenerateAnswerEPAbased(query, context);
+        yield* _handleStream(stream, (i) => i);
     }
 
     async query_analysis_node ( query: string )  {
@@ -77,10 +102,75 @@ export default class ResearchAgent extends Agent {
             return entities[0]
         } else {
             this.logger.info(`Hit multiple entities from knowledgebase for: ${entityName}`)
-            // return this.handleMultipleEntitiesFlow(entities, entityName, propertyName);
-            throw new Error(`not implement`)
+            this.logger.warn(`Function not implement when hitting multiple entities`)
+            return entities[0]
         }
     }
 
+    research_property = async(
+        e: {
+            subquestion: string,
+            ep_pair: EPpair,
+            retrieved_entity: EntityRecord
+        }
+    ): Promise<PropertyRecord[]> => {
+        const properties = await this.knowledgeBase.retriever.property_keyword_retriever(e.ep_pair.property, e.retrieved_entity.id);
+        this.logger.debug(`${JSON.stringify(properties)}`)
+        this.logger.info(`Keyword matched ${properties.length} properties for: ${e.ep_pair.property}`)
 
+        if(properties.length===0){
+            this.logger.info(`Start property researching`)
+            const generated_property = await this.generate_new_property(e.retrieved_entity,e.ep_pair.property)
+            return [{
+                id: generated_property.id,
+                core_entity_id: e.retrieved_entity.id,
+                core_entity_name: e.ep_pair.entity,
+                prop_name: e.ep_pair.property,
+                content: generated_property.content
+            }]
+        }
+
+        return properties
+    }
+
+    parse_ep_context = (research_result: ResearchResult): EPA_result => {
+        const { subquestion, ep_pair, retrieved_entity, retrieved_properties } = research_result;
+        
+        return {
+            subquestion,
+            ep_pair,
+            content: retrieved_properties.map(e=>`${e.content}`).join("\n")
+        };
+    }
+
+    async generate_new_property(entity: EntityWithRefDoc | EntityRecord, propertyName: string) {
+        const hydeResult = await b.HyDEHypothesizeProperty(entity.name, propertyName);
+        const chunks = await this.knowledgeBase.retriever.chunks_retriver(hydeResult.hypothesis, 10);
+        const property = await b.GenerateProperty(
+            `What is ${propertyName} of ${entity.name} ?`,
+            chunks.map(e => {
+                return {
+                    content: e.document.content,
+                    metadata: String(e.score)
+                }
+            }),
+            "zh"
+        );
+        
+        const property_save_res = await this.knowledgeBase.editor.propertyStorage.storeProperty(
+            entity.id,
+            {
+                prop_name: propertyName,
+                content: property.content,
+            }, chunks.filter((c, index) => (index + 1) in property.referenceIndex).map(c => new RecordId(this.knowledgeBase.retriever.config.chunkTableName, c.document.id.id)));
+
+        await this.knowledgeBase.editor.extract_entity_from_property({
+            prop_name: propertyName, 
+            content: property.content,
+            id: property_save_res[0].id}, entity);
+        return {
+            id: property_save_res[0].id,
+            ...property
+        };
+    }
 }

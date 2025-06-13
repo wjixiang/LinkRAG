@@ -165,7 +165,7 @@ function ExtractEntityFromQuery(query: string) -> Entity[] {
 }
 
 function ExtractEntityFromProperty(core_entity_name: string,property_name: string, property_content: string, entity_type: string[]) -> Entity[] {
-  client "GLM4Flash"
+  client "GLM4Plus"
   prompt #"
   {{_.role('system')}}
   You are a medical knowledge extraction assistant that identifies subset entities from given content.
@@ -179,33 +179,10 @@ function ExtractEntityFromProperty(core_entity_name: string,property_name: strin
   6. The description should strictly follow the text, without additional interpretation. Prioritize using the original text.
   7. The type of extracted entities must belong to "{{property_name}} of {{core_entity_name}}". If one entity exist in given content but being descripted not belong to  "{{property_name}} of {{core_entity_name}}", don't output it.
 
-  ---example---
-  ###example_input###
-  青光眼的临床表现包括：
-  1. 头痛
-  2. 视物模糊
-
-  ###example_output###
-  [
-    {
-      name: "头痛",
-      description: "患者最近有头痛",
-      type: "symptom",
-      aliases: []
-    },
-    {
-      name: "视力模糊",
-      description: "患者有视力模糊",
-      type: "symptom",
-      aliases: []
-    },
-    {
-      name: "青光眼",
-      description: "怀疑是青光眼",
-      type: "disease",
-      aliases: []
-    }
-  ]
+  ---steps---
+  1. Find out entities
+  2. Exclude the entities which don't belong to {{property_name}}
+  3. Output final result
 
   ---input---
   {{ property_content }}

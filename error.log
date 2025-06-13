@@ -986,3 +986,45 @@
 [Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
 [Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer.json".. Please ensure WebAssembly is supported in your environment.
 [Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure WebAssembly is supported in your environment.
+[SentenceSimilarityCalculator:[31merror[39m] Visualization failed: Error: Cannot find module '../build/Release/canvas.node'
+Require stack:
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/lib/bindings.js
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/lib/canvas.js
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/index.js
+- /Users/a123/Documents/GitHub/LinkRAG/src/lib/chunking/SentenceSimilarityCalculator.ts
+- /Users/a123/Documents/GitHub/LinkRAG/src/test_script/test_sentence_similarity.ts
+[SentenceSimilarityCalculator:[31merror[39m] Visualization failed: Error: Cannot find module '../build/Release/canvas.node'
+Require stack:
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/lib/bindings.js
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/lib/canvas.js
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/index.js
+- /Users/a123/Documents/GitHub/LinkRAG/src/lib/chunking/SentenceSimilarityCalculator.ts
+- /Users/a123/Documents/GitHub/LinkRAG/src/test_script/test_sentence_similarity.ts
+[SentenceSimilarityCalculator:[31merror[39m] Visualization failed: Error: Cannot find module '../build/Release/canvas.node'
+Require stack:
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/lib/bindings.js
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/lib/canvas.js
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/index.js
+- /Users/a123/Documents/GitHub/LinkRAG/src/lib/chunking/SentenceSimilarityCalculator.ts
+- /Users/a123/Documents/GitHub/LinkRAG/src/test_script/test_sentence_similarity.ts
+[SentenceSimilarityCalculator:[31merror[39m] Visualization failed: Error: Cannot find module '../build/Release/canvas.node'
+Require stack:
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/lib/bindings.js
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/lib/canvas.js
+- /Users/a123/Documents/GitHub/LinkRAG/node_modules/.pnpm/canvas@3.1.0/node_modules/canvas/index.js
+- /Users/a123/Documents/GitHub/LinkRAG/src/lib/chunking/SentenceSimilarityCalculator.ts
+- /Users/a123/Documents/GitHub/LinkRAG/src/test_script/test_sentence_similarity.ts
+[SentenceSimilarityCalculator:[31merror[39m] Visualization failed: Error: Cannot find module 'canvas'
+Require stack:
+- /Users/a123/Documents/GitHub/LinkRAG/src/lib/chunking/SentenceSimilarityCalculator.ts
+- /Users/a123/Documents/GitHub/LinkRAG/src/test_script/test_sentence_similarity.ts
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure:
+1. WebAssembly is supported in your environment
+2. The model files exist at /Users/a123/Documents/GitHub/LinkRAG/.next/server/models/Xenova
+3. The ONNX model is properly formatted
+[Embedding:[31merror[39m] Failed to initialize ONNX embedder: ONNX initialization failed: Unauthorized access to file: "https://huggingface.co/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json".. Please ensure:
+1. WebAssembly is supported in your environment
+2. The model files exist at /Users/a123/Documents/GitHub/LinkRAG/.next/server/models/Xenova
+3. The ONNX model is properly formatted
+[ChunkProcessor:[31merror[39m] Failed to initialize storage: Failed to retrieve remote version. If the server is behind a proxy, make sure it's configured correctly.
+[EntityExtractor:[31merror[39m] Error during entities extraction: Error: BamlError: BamlClientError: Something went wrong with the LLM client: reqwest::Error { kind: Request, url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", source: hyper_util::client::legacy::Error(Connect, TimedOut) }
