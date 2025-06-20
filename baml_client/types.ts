@@ -71,12 +71,6 @@ export interface EP_pair {
   
 }
 
-export interface EPpair {
-  entity: string
-  property: string
-  
-}
-
 export interface Entity {
   name: string
   description: string
@@ -185,7 +179,7 @@ export interface RetrievedPropertyInfo {
 
 export interface SubQuestion {
   subquestion: string
-  ep_pair: EPpair
+  ep_pair: EP_pair
   
 }
 

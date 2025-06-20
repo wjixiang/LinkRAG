@@ -29,10 +29,7 @@ export class AgentService {
             language: setting.kb_editor_setting.language,
             knowledgebase: kb
         });
-        // const agent = new AssistantAgent({
-        //     language: setting.kb_editor_setting.language,
-        //     name: "Assistant"
-        // });
+    
         const service = new AgentService(agent, kb);
         this.instances.set(sessionId, service);
         return service;

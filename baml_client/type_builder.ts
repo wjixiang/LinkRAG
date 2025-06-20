@@ -30,8 +30,6 @@ export default class TypeBuilder {
     
     EP_pair: ClassViewer<'EP_pair', "entity" | "property">;
     
-    EPpair: ClassViewer<'EPpair', "entity" | "property">;
-    
     Entity: ClassViewer<'Entity', "name" | "description" | "type" | "aliases">;
     
     EntityExtractionExample: ClassViewer<'EntityExtractionExample', "entity_type" | "example_input" | "extracted_entities">;
@@ -77,7 +75,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "Decision","EPA_result","EP_extract_result","EP_pair","EPpair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","PropertyGenerateRes","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SubQuestion","SummarizedProperty","Task","UpdatedSummary",
+            "Decision","EPA_result","EP_extract_result","EP_pair","Entity","EntityExtractionExample","EntityMatch","EntityMatchResult","EntityWithRef","HyDE_rewrite_query","HypothesizedProperty","MissingEntityExtractionResult","Property","PropertyGenerateRes","Relation","RelationExtractResult","RelationGroup","RelationReference","RetrievedDocument","RetrievedPropertyInfo","SubQuestion","SummarizedProperty","Task","UpdatedSummary",
           ]),
           enums: new Set([
             
@@ -98,10 +96,6 @@ export default class TypeBuilder {
         ]);
         
         this.EP_pair = this.tb.classViewer("EP_pair", [
-          "entity","property",
-        ]);
-        
-        this.EPpair = this.tb.classViewer("EPpair", [
           "entity","property",
         ]);
         

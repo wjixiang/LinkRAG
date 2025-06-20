@@ -51,10 +51,7 @@ function GenerateAnswer(query: string, documents: RetrievedDocument[], language:
     {{ ctx.output_format }}
   "#
 }
-class EP_pair {
-  entity string
-  property string
-}
+
 
 class EPA_result {
   subquestion string

@@ -3,7 +3,11 @@
 import { GraphViewer } from "@/components/graph_visualization/GraphViewer";
 import { useEffect, useState } from "react";
 
-export default function GraphPage() {
+interface GraphPageProps {
+  onDocumentSelect?: (content: string) => void;
+}
+
+export default function GraphPage({ onDocumentSelect }: GraphPageProps) {
   const [graphData, setGraphData] = useState<{
     entity_data: any[];
     property_data: any[];
@@ -38,7 +42,7 @@ export default function GraphPage() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Knowledge Graph Visualization</h1>
       <div className="border rounded-lg overflow-hidden">
-        <GraphViewer data={graphData} />
+        <GraphViewer data={graphData} onDocumentSelect={onDocumentSelect} />
       </div>
     </div>
   );

@@ -93,7 +93,11 @@ export default class KnowledgeBaseRetriever {
      * Generate EPA outline of input property
      * @param propertyId 
      */
-    async outline_property(propertyId: RecordId) {
+    async outline_property(propertyId: RecordId): Promise<{
+            entity_name: string;
+            subentity_name: string[];
+            prop_name: string;
+        }> {
         const db = await surrealDBClient.getDb()
         const query = `SELECT core_entity.name AS entity_name ,prop_name, ->superset->nodes.name AS subentity_name FROM property WHERE id == $propertyId`
         const outline = (await db.query<{
@@ -102,6 +106,28 @@ export default class KnowledgeBaseRetriever {
             prop_name: string
         }[][]>(query, {propertyId: propertyId}))[0][0]
 
-        this.logger.info(`Retrieved local EPA outline: \n ${JSON.stringify(outline,null,"  ")}`)
+        this.logger.info(`Retrieved local EPA outline: \n ${JSON.stringify(outline, null,"  ")}`)
+        return outline
+    }
+
+    /**
+     * Generate EPA outline of input property
+     * @param propertyId 
+     */
+    async outline_entity(propertyId: RecordId): Promise<{
+            entity_name: string;
+            subentity_name: string[];
+            prop_name: string;
+        }> {
+        const db = await surrealDBClient.getDb()
+        const query = `SELECT core_entity.name AS entity_name ,prop_name, ->superset->nodes.name AS subentity_name FROM property WHERE id == $propertyId`
+        const outline = (await db.query<{
+            entity_name: string,
+            subentity_name: string[],
+            prop_name: string
+        }[][]>(query, {propertyId: propertyId}))[0][0]
+
+        this.logger.info(`Retrieved local EPA outline: \n ${JSON.stringify(outline, null,"  ")}`)
+        return outline
     }
 }

@@ -20,7 +20,7 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Decision, EPA_result, EP_extract_result, EP_pair, EPpair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SubQuestion, SummarizedProperty, Task, UpdatedSummary} from "./types"
+import type {Decision, EPA_result, EP_extract_result, EP_pair, Entity, EntityExtractionExample, EntityMatch, EntityMatchResult, EntityWithRef, HyDE_rewrite_query, HypothesizedProperty, MissingEntityExtractionResult, Property, PropertyGenerateRes, Relation, RelationExtractResult, RelationGroup, RelationReference, RetrievedDocument, RetrievedPropertyInfo, SubQuestion, SummarizedProperty, Task, UpdatedSummary} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {

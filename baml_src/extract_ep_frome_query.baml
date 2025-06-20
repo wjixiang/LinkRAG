@@ -1,11 +1,11 @@
-class EPpair {
+class EP_pair {
   entity string
   property string
 }
 
 class SubQuestion {
   subquestion string
-  ep_pair EPpair
+  ep_pair EP_pair
 }
 
 class EP_extract_result { 

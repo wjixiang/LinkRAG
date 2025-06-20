@@ -5,8 +5,7 @@ import { _handleStream } from "@/lib/utils";
 import { StringDecoder } from "string_decoder";
 import { EntityRecord, EntityWithRefDoc, PropertyRecord } from "@/type";
 import { RecordId } from "surrealdb";
-import { EPA_result, EPpair } from "baml_client/types";
-import { EP_pair } from '../../../../baml_client/types';
+import { EP_extract_result, EPA_result, EP_pair } from "baml_client/types";
 
 export interface ResearchAgentConfig extends AgentConfig {
     
@@ -14,7 +13,7 @@ export interface ResearchAgentConfig extends AgentConfig {
 
 interface ResearchResult {
     subquestion: string;
-    ep_pair: EPpair;
+    ep_pair: EP_pair;
     retrieved_entity: EntityRecord;
     retrieved_properties: PropertyRecord[];
 }
@@ -29,7 +28,9 @@ export default class ResearchAgent extends Agent {
     }
 
     async *start(query: string): AsyncGenerator<AgentStep>{
-        const eps = await this.query_analysis_node(query)
+        let eps: EP_extract_result = yield *this.withNotifications("Analysis query",async()=>{
+            return await this.query_analysis_node(query)
+        });
 
         if(eps.subquestions.length===0){
             yield {
@@ -39,17 +40,22 @@ export default class ResearchAgent extends Agent {
             }
         }
 
+        
+
         // First get unique entities to avoid duplicate research
+        
         const uniqueEntities = [...new Set(eps.subquestions.map(e => e.ep_pair.entity))];
         
         // Research unique entities with concurrency limit
         const entityResearchMap = new Map<string, EntityRecord>();
-        await Promise.all(uniqueEntities.map(entityName =>
+        yield *this.withNotifications("Research entity",async()=>{
+            await Promise.all(uniqueEntities.map(entityName =>
             this.limiter(async () => {
                 const result = await this.research_entity(entityName);
                 entityResearchMap.set(entityName, result);
             })
         ));
+        })
 
         // Map back to original subquestions with research results
         const entities_research_result = eps.subquestions.map(e => ({
@@ -57,7 +63,8 @@ export default class ResearchAgent extends Agent {
             ...e
         }));
 
-        const research_result: ResearchResult[] = await Promise.all(entities_research_result.map(e=>
+        const research_result: ResearchResult[] =  yield *this.withNotifications(`Research property`, async()=>{
+            return await Promise.all(entities_research_result.map(e=>
             this.limiter(async () => {
                 return {
                     retrieved_properties: await this.research_property(e),
@@ -65,6 +72,7 @@ export default class ResearchAgent extends Agent {
                 }
             })
         ))
+        })
 
         const context = research_result.map(r => this.parse_ep_context(r));
         const stream = b.stream.GenerateAnswerEPAbased(query, context);
@@ -110,7 +118,7 @@ export default class ResearchAgent extends Agent {
     research_property = async(
         e: {
             subquestion: string,
-            ep_pair: EPpair,
+            ep_pair: EP_pair,
             retrieved_entity: EntityRecord
         }
     ): Promise<PropertyRecord[]> => {
@@ -119,7 +127,10 @@ export default class ResearchAgent extends Agent {
         this.logger.info(`Keyword matched ${properties.length} properties for: ${e.ep_pair.property}`)
 
         if(properties.length===0){
-            this.logger.info(`Start property researching`)
+            this.logger.info(`Keyword retrieved 0 property, start researching`)
+            this.logger.warn(`Agent&Outline based property retrieve has not implemented`)
+
+
             const generated_property = await this.generate_new_property(e.retrieved_entity,e.ep_pair.property)
             return [{
                 id: generated_property.id,

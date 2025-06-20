@@ -6,7 +6,8 @@ type Props = {
     data: {
         entity_data: EntityData[],
         property_data: PropertyData[]
-    }
+    },
+    onDocumentSelect?: (content: string) => void
 }
 
 export interface EntityData {
@@ -43,7 +44,7 @@ type Link = {
     direction: 'subset' | 'superset'; // distinguish connection direction
 };
 
-export const GraphViewer = ({ data }: Props) => {
+export const GraphViewer = ({ data, onDocumentSelect }: Props) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const simulationRef = useRef<d3.Simulation<Node, Link>>(null);
 
@@ -197,6 +198,12 @@ export const GraphViewer = ({ data }: Props) => {
             .attr("r", 10)
             .attr("fill", (d) => d.type === 'entity' ? "hsl(var(--primary))" : "hsl(var(--secondary))")
             .attr("opacity", 1)
+            .on("click", (event, d) => {
+                if (d.type === 'entity' && onDocumentSelect) {
+                    // TODO: Fetch document content for this entity
+                    onDocumentSelect(`# ${d.name}\n\nDocument content for ${d.name} would go here`);
+                }
+            })
             .call(d3.drag<SVGCircleElement, Node, Node>()
                 .on("start", (event, d) => dragstarted(event, d))
                 .on("drag", (event, d) => dragged(event, d))

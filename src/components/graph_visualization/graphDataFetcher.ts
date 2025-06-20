@@ -5,7 +5,7 @@ export async function fetchEntityData(): Promise<EntityData[]> {
   try {
     const db = await surrealDBClient.getDb();
     const result = await db.query<EntityData[][]>(
-      `SELECT id, name, ->subset->property.{prop_name, id} AS property FROM nodes ORDER BY property DESC;`
+      `SELECT id, name, ->subset->property.{prop_name, id} AS property, ->reference->sources.{id, name, type} AS document FROM nodes ORDER BY property DESC;`
     );
     return result[0];
   } catch (error) {
